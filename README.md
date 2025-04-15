@@ -9,8 +9,8 @@ This repo is for NTU Cloud Native Application Decvelopment using **React + TypeS
 To run this repo:
 
 ```bash
-git clone https://github.com/macaca9519/Cloud-Native-Application-final-project-frontend.git
-cd Cloud-Native-Application-final-project-frontend
+git clone https://github.com/2025-Spring-CloudNative/dc-manager.git
+cd dc-manager
 npm install
 npm run dev
 ````
