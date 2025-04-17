@@ -12,5 +12,12 @@ To run this repo:
 git clone https://github.com/2025-Spring-CloudNative/dc-manager.git
 cd dc-manager
 npm install
+npm install --save-dev vite
+npm install --save-dev @types/react @types/react-dom
+npm install -D tailwindcss
+npm install tailwind-merge
+npm install -D @tailwindcss/postcss
+npm install clsx
+
 npm run dev
 ````
