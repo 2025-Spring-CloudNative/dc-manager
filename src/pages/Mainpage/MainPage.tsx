@@ -1,64 +1,70 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "../../components/ui/card";
+import mainpageTitleImg from "@/assets/mainpage-title.png";
+import dcms from "@/assets/DCMS.png";
+import "./MainPage.css";
 
-export const MainPage = () => {
-  // Navigation menu items data
+export const MainPage = (): JSX.Element => {
   const navItems = [
     { text: "編輯機櫃", href: "#" },
     { text: "編輯機器", href: "#" },
     { text: "登入系統", href: "#" },
   ];
 
-  // Card items data
   const cardItems = [
-    { text: "編輯機器", left: "329px" },
-    { text: "編輯機櫃", left: "790px" },
+    { text: "編輯機器" },
+    { text: "編輯機櫃" },
   ];
 
   return (
-    <div className="bg-white flex flex-row justify-center w-full">
-      <div className="bg-white w-full max-w-[1440px] h-[914px] relative">
-        <div className="w-full h-[473px] relative">
+    <div className="bg-white flex justify-center w-full">
+      {/* Constrained container */}
+      <div className="relative w-full h-full bg-white">
+        
+        {/* Hero: 60% of viewport height */}
+        <div className="absoulte w-full h-[80vh]">
+          {/* Banner image covers whole hero */}
           <img
-            className="w-full h-[400px] mt-[73px]"
+            src={mainpageTitleImg}
             alt="Mainpage title"
-            src="https://c.animaapp.com/FARpDybl/img/mainpage-title.png"
+            // className="absolute inset-0 w-full h-full object-cover z-0"
+            className="mainpage-hero"
           />
 
-          <header className="absolute w-full h-[77px] top-0 left-0 shadow-[0px_4px_4px_#00000040] [background:linear-gradient(90deg,rgba(139,222,255,1)_0%,rgba(73,183,162,1)_100%)] flex items-center justify-between px-6">
+          {/* Header bar: 8vh tall */}
+          <header className="absolute top-0 left-0 w-full h-[8vh] flex items-center justify-between px-[3vw] z-10 shadow-md bg-gradient-to-r from-[#8bdeff] to-[#49b7a2]">
             <Link to="/mainpage">
+              {/* Logo size scales with viewport */}
               <img
-                className="w-[138px] h-[30px]"
-                alt="Dcms"
-                src="https://c.animaapp.com/FARpDybl/img/dcms.svg"
+                className="w-[9vw] h-[2vh] object-contain"
+                alt="DCMS"
+                src={dcms}
               />
             </Link>
-
-            <nav className="flex">
+            <nav className="flex space-x-[2vw]">
               {navItems.map((item, index) => (
                 <Link
                   key={index}
-                  to="#"
-                  className="w-[156px] h-[43px] flex items-center justify-center"
+                  to={item.href}
+                  className="text-white text-[2.5vw] tracking-[0.5vw] font-normal"
                 >
-                  <span className="text-[#e5fbff] text-2xl tracking-[2.40px] [font-family:'Noto_Sans',Helvetica] font-normal text-center">
-                    {item.text}
-                  </span>
+                  {item.text}
                 </Link>
               ))}
             </nav>
           </header>
         </div>
 
-        <div className="flex justify-center gap-[140px] mt-8">
+        {/* Cards: gap & margin in viewport units */}
+        <div className="flex justify-center gap-[8vw] mt-[-10vh]">
           {cardItems.map((item, index) => (
             <Card
               key={index}
-              className="w-[321px] h-[159px] bg-[#6dccd54c] rounded-[45px] border border-solid border-[#6dccd503] backdrop-blur-[8.7px] backdrop-brightness-[100%] [-webkit-backdrop-filter:blur(8.7px)_brightness(100%)]"
+              className="w-[15vw] h-[20vh] bg-[#6dccd54c] rounded-[3vw] border border-solid border-[#6dccd503] backdrop-blur-[1vh] backdrop-brightness-[100%]"
             >
               <CardContent className="flex items-center justify-center h-full p-0">
-                <div className="w-52 text-variable-collection-color-7 text-[40px] tracking-[4.00px] [font-family:'Noto_Sans',Helvetica] font-normal text-center">
+                <div className="w-[10vw] text-variable-collection-color-7 text-[3vw] tracking-[0.5vw] font-normal text-center">
                   {item.text}
                 </div>
               </CardContent>

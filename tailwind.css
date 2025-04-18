@@ -5,6 +5,10 @@
   .all-\[unset\] {
     all: unset;
   }
+
+  .full-screen-image {
+    @apply w-screen h-screen object-cover;
+  }
 }
 
 :root {

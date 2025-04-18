@@ -1,7 +1,14 @@
 // src/App.tsx
-import { RouterProvider } from "react-router-dom";
-import router from "./router";
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import {MainPage} from './pages/Mainpage/MainPage';
 
-export const App = () => {
-  return <RouterProvider router={router} />;
+const App = (): JSX.Element => {
+  return (
+    <Routes>
+      <Route path="/" element={<MainPage />} />
+    </Routes>
+  );
 };
+
+export default App;
