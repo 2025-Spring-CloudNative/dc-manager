@@ -1,36 +1,32 @@
 // src/router.tsx
 import { createBrowserRouter } from "react-router-dom";
-import RootLayout from "./pages/RootLayout";
-// import IndexPage from "./pages/IndexPage";
 import {MainPage} from "./pages/Mainpage/MainPage";
-// import ManagementPage from "./pages/ManagementPage";
+import CabinetPage from "./pages/Cabinetpage/CabinetPage";
+import MachinePage from "./pages/Machinepage/MachinePage";
+import LoginPage from "./pages/Loginpage/LoginPage";
 
 const router = createBrowserRouter([
-  // {
-  //   path: "/",
-  //   element: <RootLayout />, // 帶有 <nav> 的主畫面框架
-  //   children: [
-  //   //   {
-  //   //     index: true, // 相當於 path: ""
-  //   //     element: <IndexPage />,
-  //   //   },
-  //   {
-  //       path: "mainpage",
-  //       element: <MainPage />, 
-  //     },
-  //   //   {
-  //   //     path: "management",
-  //   //     element: <ManagementPage />,
-  //   //   },
-  //     {
-  //       path: "*", // fallback for not-found
-  //       element: <MainPage />,
-  //     },
-  //   ],
-  // },
   {
-    path: "/*",
-    element: <MainPage />,
+    path: "/",
+    element: <MainPage />, // layout with navbar and <Outlet />
+    children: [
+      {
+        index: true,
+        element: <div>🏠 Welcome to the MainPage!</div>,
+      },
+      {
+        path: "cabinet",
+        element: <CabinetPage />,
+      },
+      {
+        path: "machine",
+        element: <MachinePage />,
+      },
+      {
+        path: "login",
+        element: <LoginPage />,
+      },
+    ],
   },
 ]);
 

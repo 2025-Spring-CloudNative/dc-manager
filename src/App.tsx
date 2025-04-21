@@ -1,13 +1,10 @@
 // src/App.tsx
-import React from 'react';
-import { Route, Routes } from 'react-router-dom';
-import {MainPage} from './pages/Mainpage/MainPage';
+import { RouterProvider } from "react-router-dom";
+import router from './router';
 
 const App = (): JSX.Element => {
   return (
-    <Routes>
-      <Route path="/" element={<MainPage />} />
-    </Routes>
+    <RouterProvider router={router} />
   );
 };
 

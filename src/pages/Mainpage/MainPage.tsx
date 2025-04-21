@@ -1,15 +1,18 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { Card, CardContent } from "../../components/ui/card";
+import { Outlet, Link } from "react-router-dom";
+import { Card, CardContent } from "../../components/ui/Card";
 import mainpageTitleImg from "@/assets/mainpage-title.png";
 import dcms from "@/assets/DCMS.png";
 import "./MainPage.css";
 
+// Main page styling
+const main = "relative w-full h-full bg-white"
+
 export const MainPage = (): JSX.Element => {
   const navItems = [
-    { text: "編輯機櫃", href: "#" },
-    { text: "編輯機器", href: "#" },
-    { text: "登入系統", href: "#" },
+    { text: "編輯機櫃", href: "/cabinet" },
+    { text: "編輯機器", href: "/machine" },
+    { text: "登入系統", href: "/login" },
   ];
 
   const cardItems = [
@@ -20,10 +23,10 @@ export const MainPage = (): JSX.Element => {
   return (
     <div className="bg-white flex justify-center w-full">
       {/* Constrained container */}
-      <div className="relative w-full h-full bg-white">
+      <div className={main}>
         
-        {/* Hero: 60% of viewport height */}
-        <div className="absoulte w-full h-[80vh]">
+        {/* Hero: 80% of viewport height */}
+        <div className="absoulte w-full h-[70vh]">
           {/* Banner image covers whole hero */}
           <img
             src={mainpageTitleImg}
@@ -70,6 +73,11 @@ export const MainPage = (): JSX.Element => {
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        {/* Subpage content */}
+        <div className="px-[5vw] py-[4vh]">
+          <Outlet />
         </div>
       </div>
     </div>
