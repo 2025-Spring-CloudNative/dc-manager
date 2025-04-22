@@ -2,7 +2,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import {MainPage} from "./pages/Mainpage/MainPage";
 import CabinetPage from "./pages/Cabinetpage/CabinetPage";
-import MachinePage from "./pages/Machinepage/MachinePage";
+import { ElementDcManagePage } from "./pages/Machinepage/MachinePage";
 import LoginPage from "./pages/Loginpage/LoginPage";
 
 const router = createBrowserRouter([
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
       },
       {
         path: "machine",
-        element: <MachinePage />,
+        element: <ElementDcManagePage />,
       },
       {
         path: "login",

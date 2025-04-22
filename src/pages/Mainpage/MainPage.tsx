@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, Link } from "react-router-dom";
-import { Card, CardContent } from "../../components/ui/Card";
+import { Card, CardContent } from "../../components/mainpage/Card";
 import mainpageTitleImg from "@/assets/mainpage-title.png";
 import dcms from "@/assets/DCMS.png";
 import "./MainPage.css";
