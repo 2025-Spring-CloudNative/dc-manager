@@ -1,7 +1,7 @@
 import React from "react";
-import { Button } from "../../../../components/ui/button";
-import { Card } from "../../../../components/ui/card";
-import { Separator } from "../../../../components/ui/separator";
+import { Button } from "../../../components/machinepage/button";
+import { Card } from "../../../components/machinepage/card";
+import { Separator } from "../../../components/machinepage/separator";
 import {
   Table,
   TableBody,
@@ -9,7 +9,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../../../components/ui/table";
+} from "../../../components/machinepage/table";
 
 export const DataCenterComponentSection = (): JSX.Element => {
   // Data for the rack tables

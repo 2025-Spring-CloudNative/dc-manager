@@ -1,10 +1,11 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-} from "../../../../components/ui/navigation-menu";
+} from "../../../components/machinepage/navigation-menu";
 
 export const NavigationBarSection = (): JSX.Element => {
   // Navigation items data
@@ -17,11 +18,14 @@ export const NavigationBarSection = (): JSX.Element => {
   return (
     <header className="w-full h-[77px] shadow-[0px_4px_4px_#00000040] [background:linear-gradient(90deg,rgba(139,222,255,1)_0%,rgba(73,183,162,1)_100%)] flex items-center justify-between px-6">
       <div className="flex items-center">
-        <img
-          className="w-[138px] h-[30px]"
-          alt="Dcms"
-          src="https://c.animaapp.com/25sGGoJV/img/dcms.svg"
-        />
+        <Link to="/">
+          <img
+            className="w-[138px] h-[30px]"
+            alt="Dcms"
+            src="https://c.animaapp.com/25sGGoJV/img/dcms.svg"
+          />
+        </Link>
+        
       </div>
 
       <NavigationMenu>

@@ -1,10 +1,13 @@
-// src/App.tsx
-import { RouterProvider } from "react-router-dom";
-import router from './router';
+import { Outlet } from "react-router-dom";
 
 const App = (): JSX.Element => {
   return (
-    <RouterProvider router={router} />
+    <div>
+      {/* Layout: Main content */}
+      <main>
+        <Outlet /> {/* This will render the content of the child routes */}
+      </main>
+    </div>
   );
 };
 

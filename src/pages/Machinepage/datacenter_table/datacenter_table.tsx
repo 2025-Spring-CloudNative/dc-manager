@@ -1,6 +1,6 @@
 import React from "react";
-import { Badge } from "../../../../components/ui/badge";
-import { Card } from "../../../../components/ui/card";
+import { Badge } from "../../../components/machinepage/badge";
+import { Card } from "../../../components/machinepage/card";
 import {
   Table,
   TableBody,
@@ -8,7 +8,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../../../../components/ui/table";
+} from "../../../components/machinepage/table";
 
 export const DataCenterTableSection = (): JSX.Element => {
   // Data for table rows

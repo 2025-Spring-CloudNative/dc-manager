@@ -1,6 +1,7 @@
 // src/router.tsx
 import { createBrowserRouter } from "react-router-dom";
-import {MainPage} from "./pages/Mainpage/MainPage";
+import App from "./App"; // Import App as the layout
+import { MainPage } from "./pages/Mainpage/MainPage";
 import CabinetPage from "./pages/Cabinetpage/CabinetPage";
 import { ElementDcManagePage } from "./pages/Machinepage/MachinePage";
 import LoginPage from "./pages/Loginpage/LoginPage";
@@ -8,11 +9,11 @@ import LoginPage from "./pages/Loginpage/LoginPage";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <MainPage />, // layout with navbar and <Outlet />
+    element: <App />, // Use App as the layout
     children: [
       {
         index: true,
-        element: <div>🏠 Welcome to the MainPage!</div>,
+        element: <MainPage />, // MainPage content
       },
       {
         path: "cabinet",

@@ -1,5 +1,5 @@
-import React from "react";
-import { Outlet, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { Card, CardContent } from "../../components/mainpage/Card";
 import mainpageTitleImg from "@/assets/mainpage-title.png";
 import dcms from "@/assets/DCMS.png";
@@ -20,6 +20,10 @@ export const MainPage = (): JSX.Element => {
     { text: "編輯機櫃" },
   ];
 
+// State to track hover status for each card
+const [hoveredCardIndex, setHoveredCardIndex] = useState<number | null>(null);
+
+
   return (
     <div className="bg-white flex justify-center w-full">
       {/* Constrained container */}
@@ -37,7 +41,7 @@ export const MainPage = (): JSX.Element => {
 
           {/* Header bar: 8vh tall */}
           <header className="absolute top-0 left-0 w-full h-[8vh] flex items-center justify-between px-[3vw] z-10 shadow-md bg-gradient-to-r from-[#8bdeff] to-[#49b7a2]">
-            <Link to="/mainpage">
+            <Link to="/">
               {/* Logo size scales with viewport */}
               <img
                 className="w-[9vw] h-[2vh] object-contain"
@@ -64,7 +68,13 @@ export const MainPage = (): JSX.Element => {
           {cardItems.map((item, index) => (
             <Card
               key={index}
-              className="w-[15vw] h-[20vh] bg-[#6dccd54c] rounded-[3vw] border border-solid border-[#6dccd503] backdrop-blur-[1vh] backdrop-brightness-[100%]"
+              className={
+                hoveredCardIndex === index
+                  ? "w-[15vw] h-[20vh] rounded-[3vw] border bg-[#6dccd580] border-[5px] border-solid border-[#cde9ec] backdrop-blur-[1vh] backdrop-brightness-[100%]"
+                  : "w-[15vw] h-[20vh] rounded-[3vw] border bg-[#6dccd54c]  border-solid border-[#6dccd503] backdrop-blur-[1vh] backdrop-brightness-[100%]"
+              }
+              onMouseEnter={() => setHoveredCardIndex(index)}
+              onMouseLeave={() => setHoveredCardIndex(null)}
             >
               <CardContent className="flex items-center justify-center h-full p-0">
                 <div className="w-[10vw] text-variable-collection-color-7 text-[3vw] tracking-[0.5vw] font-normal text-center">
@@ -75,10 +85,6 @@ export const MainPage = (): JSX.Element => {
           ))}
         </div>
 
-        {/* Subpage content */}
-        <div className="px-[5vw] py-[4vh]">
-          <Outlet />
-        </div>
       </div>
     </div>
   );

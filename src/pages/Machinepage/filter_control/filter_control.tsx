@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from "../../../../components/ui/button";
+import { Button } from "../../../components/machinepage/button";
 
 export const FilterControlsSection = (): JSX.Element => {
   // Filter button data for mapping
@@ -24,3 +24,4 @@ export const FilterControlsSection = (): JSX.Element => {
     </section>
   );
 };
+
