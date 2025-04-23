@@ -21,3 +21,10 @@ npm install clsx
 
 npm run dev
 ````
+
+## TODO List
+
+-  Set up project structure
+-  Configure CSS style
+-  Change color of navbar item when mouse hover
+-  Write 上架新機器 page 
