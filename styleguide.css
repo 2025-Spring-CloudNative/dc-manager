@@ -1,0 +1,30 @@
+:root {
+  --content-s-font-family: "Poppins", Helvetica;
+  --content-s-font-size: 20px;
+  --content-s-font-style: normal;
+  --content-s-font-weight: 500;
+  --content-s-letter-spacing: 0px;
+  --content-s-line-height: normal;
+  --content-XS-font-family: "Poppins", Helvetica;
+  --content-XS-font-size: 16px;
+  --content-XS-font-style: normal;
+  --content-XS-font-weight: 500;
+  --content-XS-letter-spacing: 0px;
+  --content-XS-line-height: normal;
+  --layout-100: rgba(252, 252, 252, 1);
+  --layout-800: rgba(34, 34, 34, 1);
+  
+  /* unused variable */
+  --variable-collection-color: rgba(113, 201, 235, 1);
+  --variable-collection-color-2: rgba(143, 223, 255, 1);
+  --variable-collection-color-3: rgba(191, 237, 255, 1);
+  --variable-collection-color-4: rgba(219, 250, 255, 1);
+  --variable-collection-color-5: rgba(25, 104, 113, 1);
+  --variable-collection-color-6: rgba(109, 204, 213, 1);
+  --variable-collection-color-7: rgba(70, 164, 173, 1);
+  --variable-collection-color-8: rgba(107, 183, 190, 1);
+  
+  
+  --header-tile-collection-color:rgba(162, 225, 228, 0.5);
+  --font-color: rgba(34, 34, 34, 1);
+}

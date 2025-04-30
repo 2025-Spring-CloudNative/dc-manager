@@ -1,0 +1,29 @@
+.cardBase {
+    width: 15vw;
+    height: 20vh;
+    border-radius: 3vw;
+    border: 5px solid #6dccd503;
+    background-color: #6dccd54c;
+    backdrop-filter: blur(1vh) brightness(100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+  }
+  
+  .cardHovered {
+    background-color: #6dccd580;
+    border-color: #cde9ec;
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .cardContent {
+    width: 10vw;
+    font-size: 3vw;
+    letter-spacing: 0.5vw;
+    font-weight: 400;
+    text-align: center;
+    color: var(--variable-collection-color-7);
+  }
+  

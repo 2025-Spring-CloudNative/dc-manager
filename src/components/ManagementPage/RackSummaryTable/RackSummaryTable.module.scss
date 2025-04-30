@@ -1,0 +1,36 @@
+.dataCenterCard {
+  width: 100%;
+  margin: 1.75rem auto;
+  border-radius: 30px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.63);
+  backdrop-filter: blur(6.6px) brightness(100%);
+  -webkit-backdrop-filter: blur(6.6px) brightness(100%);
+}
+
+.tableWrapper {
+  padding: 1.75rem;
+}
+
+.ButtonGroup,
+.favoriteGroup {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.infoButton {
+  width: 100px;
+  height: 35px;
+  border-radius: 54px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--layout-800);
+  backdrop-filter: blur(6.6px) brightness(100%);
+  -webkit-backdrop-filter: blur(6.6px) brightness(100%);
+}
+
+/* 針對常用按鈕給淺藍底色 */
+.favoriteButton {
+  background-color: #d0f7f8;
+}

@@ -1,32 +1,14 @@
-import React from 'react'
-import { Routes, Route, Link } from 'react-router-dom'
-import IndexPage from './pages/IndexPage'
-import MainPage from './pages/MainPage'
-import ManagementPage from './pages/ManagementPage'
+import { Outlet } from "react-router-dom";
 
-const App = () => {
+const App = (): JSX.Element => {
   return (
     <div>
-      <nav>
-        <ul>
-          <li>
-            <Link to="/">Index</Link>
-          </li>
-          <li>
-            <Link to="/mainpage">Main Page</Link>
-          </li>
-          <li>
-            <Link to="/management">Management</Link>
-          </li>
-        </ul>
-      </nav>
-      <Routes>
-        <Route path="/" element={<IndexPage />} />
-        <Route path="/mainpage" element={<MainPage aaa="itjowg"><p>children say hello</p></MainPage>} />
-        <Route path="/management" element={<ManagementPage />} />
-      </Routes>
+      {/* Layout: Main content */}
+      <main>
+        <Outlet /> {/* This will render the content of the child routes */}
+      </main>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
