@@ -1,10 +1,10 @@
 import { XIcon } from "lucide-react";
 import React, { useState } from "react";
-import { Input } from "@/components/shared/Input/Input";
+import  Input  from "@/components/shared/Input";
 import  DataCenterComponentSection  from "@/components/ManagementPage/FavoriteRackMap";
 import  RackSummaryTable  from "@/components/ManagementPage/RackSummaryTable";
-import  FilterButton  from "@/components/ManagementPage/FilterButton/FilterButton";
-import  NvBar  from "@/components/shared/nvbar/NvBar"; // 這邊注意路徑，對應新位置
+import  FilterButton  from "@/components/ManagementPage/FilterButton";
+import  NvBar  from "@/components/shared/NvBar"; // 這邊注意路徑，對應新位置
 import styles from "./ManagementPage.module.scss";
 import searchicon from "@/assets/search.png";
 
