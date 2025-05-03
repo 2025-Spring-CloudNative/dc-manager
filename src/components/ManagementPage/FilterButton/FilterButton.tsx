@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ManagementPage/Button/Button";
+import  Button  from "@/components/shared/Button";
 import styles from "./FilterButton.module.scss";
 
 const FilterButton = (): JSX.Element => {

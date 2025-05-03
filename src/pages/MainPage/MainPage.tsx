@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/mainpage/Card/Card";
 import mainpageTitleImg from "@/assets/mainpage-title.png";
 import styles from "./MainPage.module.scss";
-import NvBar from "@/components/shared/nvbar/NvBar";
+import NvBar from "@/components/shared/NvBar";
 
 const MainPage = (): JSX.Element => {
   const cardItems = [

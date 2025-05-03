@@ -1,5 +1,5 @@
-import { Button } from "@/components/ManagementPage/Button/Button";
-import { Card } from "@/components/ManagementPage/Card/Card";
+import  Button  from "@/components/shared/Button";
+import  Card  from "@/components/ManagementPage/Card";
 import {
   Table,
   TableBody,
@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ManagementPage/Table/Table";
+} from "@/components/shared/Table";
 
 import styles from "./RackSummaryTable.module.scss";
 
