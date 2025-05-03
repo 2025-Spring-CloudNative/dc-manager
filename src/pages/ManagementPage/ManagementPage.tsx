@@ -8,11 +8,12 @@ import NvBar from "@/components/shared/nvbar/NvBar" // 這邊注意路徑，對�
 import styles from "./ManagementPage.module.scss"
 import searchicon from "@/assets/search.png"
 
-import { useDataCenterQuery } from "@features/dataCenter/hooks/useDataCenter"
+import { useGetDataCentersQuery } from "@features/dataCenter/hooks/useDataCenter"
 
 const ManagementPage = () => {
     const [inputValue, setInputValue] = useState("")
-    const { data, isLoading, isError, isSuccess, error } = useDataCenterQuery()
+    const { data, isLoading, isError, isSuccess, error } =
+        useGetDataCentersQuery()
 
     if (isSuccess) {
         console.log(data)
