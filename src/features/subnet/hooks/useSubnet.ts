@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query"
-import { getDataCenters } from "../apis/dataCenterApi"
+import { getSubnets } from "../apis/subnetApi"
 
-export function useGetDataCentersQuery() {
+export function useGetSubnetsQuery() {
     const { data, isLoading, isError, isSuccess, error } = useQuery({
-        queryKey: ["dataCenter"],
-        queryFn: getDataCenters,
+        queryKey: ["subnet"],
+        queryFn: getSubnets,
     })
 
     return {

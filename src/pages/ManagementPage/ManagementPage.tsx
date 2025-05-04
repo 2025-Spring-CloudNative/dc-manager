@@ -4,15 +4,15 @@ import { Input } from "@/components/shared/Input/Input"
 import DataCenterComponentSection from "@/components/ManagementPage/FavoriteRackMap"
 import RackSummaryTable from "@/components/ManagementPage/RackSummaryTable"
 import FilterButton from "@/components/ManagementPage/FilterButton/FilterButton"
-import NvBar from "@/components/shared/nvbar/NvBar" // 這邊注意路徑，對應新位置
+import NvBar from "@/components/shared/NvBar" // directly import from index.ts
 import styles from "./ManagementPage.module.scss"
 import searchicon from "@/assets/search.png"
 
-import { useDataCenterQuery } from "@features/dataCenter/hooks/useDataCenter"
+import { useGetDataCentersQuery } from "@features/dataCenter/hooks/useDataCenter"
 
 const ManagementPage = () => {
     const [inputValue, setInputValue] = useState("")
-    const { data, isLoading, isError, isSuccess, error } = useDataCenterQuery()
+    const { data, isSuccess } = useGetDataCentersQuery()
 
     if (isSuccess) {
         console.log(data)
@@ -37,10 +37,7 @@ const ManagementPage = () => {
                             onChange={(e) => setInputValue(e.target.value)}
                             placeholder="搜尋機櫃..."
                         />
-                        <button
-                            className={styles.clearButton}
-                            onClick={() => setInputValue("")}
-                        >
+                        <button className={styles.clearButton} onClick={() => setInputValue("")}>
                             <XIcon className="w-5 h-[22px] text-gray-500" />
                         </button>
                     </div>
