@@ -1,9 +1,12 @@
 {
     "extends": "./tsconfig.json",
     "compilerOptions": {
+        /* For path alias, we neet to set these along with vite.config.ts */
         "baseUrl": ".",
         "paths": {
-            "@/*": ["src/*"]
+            "@/*": ["src/*"],
+            "@pages/*": ["src/pages/*"],
+            "@features/*": ["src/features/*"]
         },
         "target": "ES2020",
         "useDefineForClassFields": true,

@@ -12,8 +12,7 @@ import { useGetDataCentersQuery } from "@features/dataCenter/hooks/useDataCenter
 
 const ManagementPage = () => {
     const [inputValue, setInputValue] = useState("")
-    const { data, isLoading, isError, isSuccess, error } =
-        useGetDataCentersQuery()
+    const { data, isSuccess } = useGetDataCentersQuery()
 
     if (isSuccess) {
         console.log(data)
@@ -38,10 +37,7 @@ const ManagementPage = () => {
                             onChange={(e) => setInputValue(e.target.value)}
                             placeholder="搜尋機櫃..."
                         />
-                        <button
-                            className={styles.clearButton}
-                            onClick={() => setInputValue("")}
-                        >
+                        <button className={styles.clearButton} onClick={() => setInputValue("")}>
                             <XIcon className="w-5 h-[22px] text-gray-500" />
                         </button>
                     </div>
