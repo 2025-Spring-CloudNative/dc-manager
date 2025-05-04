@@ -1,14 +1,15 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { Card, CardContent } from "@/components/mainpage/Card/Card"
+import { Card, CardContent } from "@/components/Mainpage/Card/Card"
 import mainpageTitleImg from "@/assets/mainpage-title.png"
 import styles from "./MainPage.module.scss"
 import NvBar from "@/components/shared/NvBar"
 
 const MainPage = () => {
     const cardItems = [
-        { text: "編輯機器", href: "/ManagementPage" },
-        { text: "編輯機櫃", href: "/cabinet" },
+        { text: "資料中心", href: "/data-center" },
+        { text: "網路設定", href: "/network" },
+        { text: "服務管理", href: "/service" },
     ]
 
     const [hoveredCardIndex, setHoveredCardIndex] = useState<number | null>(null)
