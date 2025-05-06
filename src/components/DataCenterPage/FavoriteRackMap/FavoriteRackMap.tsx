@@ -1,7 +1,7 @@
 import { XIcon } from "lucide-react";
 import { useState } from "react";
 import Button from "@/components/shared/Button";
-import Card from "@/components/ManagementPage/Card";
+import Card from "@/components/DataCenterPage/Card";
 import Separator from "@/components/shared/Separator";
 import {
     Table,
@@ -13,7 +13,7 @@ import {
 } from "@/components/shared/Table";
 
 import styles from "./FavoriteRackMap.module.scss";
-import RackManagementModal from "@/components/ManagementPage/RackManagementModal";
+import RackManagementModal from "@/components/DataCenterPage/RackManagementModal";
 import { DataCenter } from "@/components/data/rackData";
 
 interface DataCenterComponentSectionProps {
@@ -22,7 +22,7 @@ interface DataCenterComponentSectionProps {
 }
 
 const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({ leftDataCenters, rightDataCenters }) => {
-    const units = ["Unit", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    const units = ["Unit", "1", "2", "3", "4", "5", "6", "7", "8", "9",];
     const [clickedCells, setClickedCells] = useState<{ left: Set<string>; right: Set<string> }>({
         left: new Set(),
         right: new Set(),
@@ -63,7 +63,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
             <div className={styles.titleArea}>
                 <div className={styles.titleWrapper}>
                     <Separator className={styles.leftSeparator} />
-                    <h2 className={styles.title}>常用機櫃</h2>
+                    <h2 className={styles.title}>常用資料中心</h2>
                     <Separator className={styles.rightSeparator} />
                 </div>
             </div>

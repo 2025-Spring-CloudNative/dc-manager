@@ -16,7 +16,7 @@ export const DataCenters: DataCenter[] = [
     unitCount: 12, // Assuming 4 units per rack
     hosts: ["A-1", "A-2", "A-1"],
     rooms: [
-      { name: "Room Alpha", racks: ["Rack 1A", "Rack 1B", "Rack 1C"] },
+      { name: "Room Alpha", racks: ["Rack 1A", "Rack 1B", "Rack 1C", "Rack 1B", "Rack 1C", "Rack 1B", "Rack 1C", "Rack 1B", "Rack 1C", "Rack 1B", "Rack 1C", "Rack 1B", "Rack 1C", "Rack 1B", "Rack 1C"] },
       { name: "Room Beta", racks: ["Rack 2A", "Rack 2B"] },
     ],
   },

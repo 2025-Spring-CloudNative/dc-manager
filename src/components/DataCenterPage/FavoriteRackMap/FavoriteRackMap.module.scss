@@ -53,8 +53,8 @@
   .leftSeparator,
   .rightSeparator {
     position: absolute;
-    top: 30px;
-    width: 261px;
+    top: 40px;
+    width: 240px;
     height: 5px;
     background-color: #a2e1e4;
   }
@@ -89,7 +89,8 @@
   
   .tableContainer {
     border: 1px solid #c1d5d7;
-    overflow-x: auto;
+    
+    overflow-x: scroll;
   }
   
   /* Table Header DC-B */
@@ -118,7 +119,7 @@
   }
   
   .unitHeader {
-    width: 59px;
+    width: 80px;
     background-color: #effdff;
     height: 2.5rem;
     border: 1px solid #c1d5d7;
@@ -139,7 +140,7 @@
   }
   
   .rackHeader {
-    width: 10rem;
+    // width: 10rem;
     background-color: #effdff;
     height: 2.5rem;
     border: 1px solid #c1d5d7;
@@ -154,7 +155,7 @@
   }
   
   .unitCell {
-    width: 10rem;
+    min-width: 10rem;
     background-color: var(--layout-100);
     height: 2.5rem;
     border: 1px solid #c1d5d7;

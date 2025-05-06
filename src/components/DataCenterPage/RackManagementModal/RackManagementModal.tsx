@@ -224,7 +224,7 @@ const RackManagementModal: React.FC<RackManagementModalProps> = ({ isOpen, onClo
                                                         <TableCell
                                                             key={cellKey}
                                                             onClick={() => handleCellSelect(cellKey)}
-                                                            className={`${styles.dataCell} ${isSelected ? styles.clickedCell : ""}`}
+                                                            className={`${styles.unitCell} ${isSelected ? styles.clickedCell : ""}`}
                                                         />
                                                     );
                                                 })

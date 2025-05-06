@@ -3,7 +3,7 @@ import { createBrowserRouter } from "react-router-dom"
 
 import AppLayout from "@/app/AppLayout"
 import MainPage from "@pages/MainPage"
-import ManagementPage from "@pages/ManagementPage"
+import DataCenterPage from "@/pages/DataCenterPage"
 import NotFound from "@components/shared/NotFound"
 
 /**
@@ -17,7 +17,7 @@ const routes: RouteObject[] = [
         element: <AppLayout />,
         children: [
             { index: true, element: <MainPage /> },
-            { path: "management", element: <ManagementPage /> },
+            { path: "DataCenterPage", element: <DataCenterPage /> },
 
             // any unmatched child goes to 404
             { path: "*", element: <NotFound /> },

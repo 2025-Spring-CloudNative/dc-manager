@@ -2,17 +2,16 @@
 import { XIcon } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/shared/Input/Input";
-import DataCenterComponentSection from "@/components/ManagementPage/FavoriteRackMap";
-import RackSummaryTable from "@/components/ManagementPage/RackSummaryTable";
-import FilterButton from "@/components/ManagementPage/FilterButton/FilterButton";
-import NvBar from "@/components/shared/NvBar";
-import styles from "./ManagementPage.module.scss";
+import DataCenterComponentSection from "@/components/DataCenterPage/FavoriteRackMap";
+import RackSummaryTable from "@/components/DataCenterPage/RackSummaryTable";
+import FilterButton from "@/components/DataCenterPage/FilterButton/FilterButton";
+import styles from "./DataCenterPage.module.scss";
 import searchicon from "@/assets/search.png";
 
 import { useGetDataCentersQuery } from "@features/dataCenter/hooks/useDataCenter";
 import { DataCenter } from "@/components/data/rackData"; // Import DataCenter interface
 
-const ManagementPage = () => {
+const data_center = () => {
     const [inputValue, setInputValue] = useState("");
     const { data, isSuccess } = useGetDataCentersQuery();
     const [selectedLeftDC, setSelectedLeftDC] = useState<DataCenter | null>(null);
@@ -33,7 +32,7 @@ const ManagementPage = () => {
     return (
         <div className={styles.pageContainer}>
             <div className={styles.heroSection}>
-                <NvBar />
+                {/* <NvBar /> */}
             </div>
 
             <div className={styles.innerContainer}>
@@ -62,7 +61,7 @@ const ManagementPage = () => {
 
                 {/* Combined Favorite Tables */}
                 <div className={styles.favoriteTablesContainer}>
-                    <h3>常用的機櫃</h3>
+                    <h3>常用資料中心</h3>
                     <DataCenterComponentSection
                         leftDataCenters={selectedLeftDC ? [selectedLeftDC] : []}
                         rightDataCenters={selectedRightDC ? [selectedRightDC] : []}
@@ -73,4 +72,4 @@ const ManagementPage = () => {
     );
 };
 
-export default ManagementPage;
+export default data_center;
