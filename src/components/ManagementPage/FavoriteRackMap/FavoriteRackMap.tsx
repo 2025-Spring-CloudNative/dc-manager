@@ -1,7 +1,8 @@
-import { useState } from "react"
-import Button from "@/components/shared/Button"
-import Card from "@/components/ManagementPage/Card"
-import Separator from "@/components/shared/Separator"
+import { XIcon } from "lucide-react";
+import { useState } from "react";
+import Button from "@/components/shared/Button";
+import Card from "@/components/ManagementPage/Card";
+import Separator from "@/components/shared/Separator";
 import {
     Table,
     TableBody,
@@ -9,65 +10,54 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/shared/Table"
+} from "@/components/shared/Table";
 
-import styles from "./FavoriteRackMap.module.scss"
+import styles from "./FavoriteRackMap.module.scss";
+import RackManagementModal from "@/components/ManagementPage/RackManagementModal";
+import { DataCenter } from "@/components/data/rackData";
 
-const DataCenterComponentSection = () => {
-    const leftDataCenters = [
-        {
-            id: "DC-B-Left",
-            rooms: [
-                { name: "Room A", racks: ["Rack 1", "Rack 1", "Rack 1"] },
-                { name: "Room B", racks: ["Rack 1"] },
-            ],
-        },
-    ]
+interface DataCenterComponentSectionProps {
+    leftDataCenters: DataCenter[];
+    rightDataCenters: DataCenter[];
+}
 
-    const rightDataCenters = [
-        {
-            id: "DC-B-Right",
-            rooms: [
-                { name: "Room C", racks: ["Rack 2", "Rack 2"] },
-                { name: "Room D", racks: ["Rack 3"] },
-            ],
-        },
-    ]
+const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({ leftDataCenters, rightDataCenters }) => {
+    const units = ["Unit", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    const [clickedCells, setClickedCells] = useState<{ left: Set<string>; right: Set<string> }>({
+        left: new Set(),
+        right: new Set(),
+    });
+    const [isRackModalOpenLeft, setRackModalOpenLeft] = useState(false);
+    const [isRackModalOpenRight, setRackModalOpenRight] = useState(false);
 
-    const units = ["Unit", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-
-    // 左右表格分開管理 clickedCells
-    const [clickedCellsLeft, setClickedCellsLeft] = useState<Set<string>>(new Set())
-    const [clickedCellsRight, setClickedCellsRight] = useState<Set<string>>(new Set())
-
-    const handleCellClick = (side: "left" | "right", cellKey: string) => {
-        if (side === "left") {
-            setClickedCellsLeft((prev) => {
-                const newSet = new Set(prev)
-                if (newSet.has(cellKey)) {
-                    newSet.delete(cellKey)
-                } else {
-                    newSet.add(cellKey)
-                }
-                return newSet
-            })
-        } else {
-            setClickedCellsRight((prev) => {
-                const newSet = new Set(prev)
-                if (newSet.has(cellKey)) {
-                    newSet.delete(cellKey)
-                } else {
-                    newSet.add(cellKey)
-                }
-                return newSet
-            })
-        }
-    }
+    const handleCellClick = (localSide: "left" | "right", cellKey: string) => {
+        setClickedCells((prev) => {
+            const newSet = new Set(prev[localSide]);
+            newSet.has(cellKey) ? newSet.delete(cellKey) : newSet.add(cellKey);
+            return { ...prev, [localSide]: newSet };
+        });
+    };
 
     return (
-        <Card className={styles.componentCard}>
+        <Card className={styles.combinedComponentCard}>
+
             <div className={styles.headerButtonArea}>
-                <Button className={styles.editCabinetButton}>編輯機櫃</Button>
+                <Button className={styles.editCabinetButton} onClick={() => setRackModalOpenLeft(true)}>編輯機櫃-Left</Button>
+                <RackManagementModal
+                    isOpen={isRackModalOpenLeft}
+                    onClose={() => setRackModalOpenLeft(false)}
+                    side="left"
+                    dataCenters={leftDataCenters} // Pass leftDataCenters for the left modal
+                    // onSave prop implementation if needed
+                />
+                <Button className={styles.editCabinetButton} onClick={() => setRackModalOpenRight(true)}>編輯機櫃-Right</Button>
+                <RackManagementModal
+                    isOpen={isRackModalOpenRight}
+                    onClose={() => setRackModalOpenRight(false)}
+                    side="right"
+                    dataCenters={rightDataCenters} // Pass rightDataCenters for the right modal
+                    // onSave prop implementation if needed
+                />
             </div>
 
             <div className={styles.titleArea}>
@@ -79,162 +69,154 @@ const DataCenterComponentSection = () => {
             </div>
 
             <div className={styles.tablesWrapper}>
-                {/* 左邊的 Table */}
-                {leftDataCenters.map((center, centerIndex) => (
-                    <div key={`left-table-${centerIndex}`} className={styles.tableContainer}>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead
-                                        colSpan={
-                                            1 +
-                                            center.rooms.reduce(
-                                                (sum, room) => sum + room.racks.length,
-                                                0
-                                            )
-                                        }
-                                        className={styles.dcHeader}
-                                    >
-                                        <span className={styles.dcTitle}>{center.id}</span>
-                                    </TableHead>
-                                </TableRow>
-                                <TableRow>
-                                    <TableHead className={styles.unitHeader}></TableHead>
-                                    {center.rooms.map((room, roomIndex) => (
+                {/* Left Table */}
+                    {leftDataCenters.map((center) => (
+                        <div key={`favorite-table-left-${center.id}`} className={styles.tableContainer}>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
                                         <TableHead
-                                            key={roomIndex}
-                                            colSpan={room.racks.length}
-                                            className={styles.roomHeader}
-                                        >
-                                            <span className={styles.roomTitle}>{room.name}</span>
-                                        </TableHead>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableHead className={styles.unitHeader}>
-                                        <span className={styles.unitTitle}>Unit</span>
-                                    </TableHead>
-                                    {center.rooms.flatMap((room) =>
-                                        room.racks.map((rack, rackIndex) => (
-                                            <TableHead
-                                                key={`${room.name}-${rackIndex}`}
-                                                className={styles.rackHeader}
-                                            >
-                                                <span className={styles.rackTitle}>{rack}</span>
-                                            </TableHead>
-                                        ))
-                                    )}
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {units.slice(1).map((unit) => (
-                                    <TableRow key={unit}>
-                                        <TableCell className={styles.unitHeader}>
-                                            <span className={styles.unitTitle}>{unit}</span>
-                                        </TableCell>
-                                        {center.rooms.flatMap((room) =>
-                                            room.racks.map((_, rackIndex) => {
-                                                const cellKey = `${center.id}-${unit}-${room.name}-${rackIndex}`
-                                                const isClicked = clickedCellsLeft.has(cellKey)
-                                                return (
-                                                    <TableCell
-                                                        key={cellKey}
-                                                        onClick={() =>
-                                                            handleCellClick("left", cellKey)
-                                                        }
-                                                        className={`${styles.unitCell} ${
-                                                            isClicked ? styles.clickedCell : ""
-                                                        }`}
-                                                    />
+                                            colSpan={
+                                                1 +
+                                                center.rooms.reduce(
+                                                    (sum, room) => sum + room.racks.length,
+                                                    0
                                                 )
-                                            })
+                                            }
+                                            className={styles.dcHeader}
+                                        >
+                                            <span className={styles.dcTitle}>{center.id} (Left)</span>
+                                        </TableHead>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableHead className={styles.unitHeader}></TableHead>
+                                        {center.rooms.map((room, roomIndex) => (
+                                            <TableHead
+                                                key={roomIndex}
+                                                colSpan={room.racks.length}
+                                                className={styles.roomHeader}
+                                            >
+                                                <span className={styles.roomTitle}>{room.name}</span>
+                                            </TableHead>
+                                        ))}
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableHead className={styles.unitHeader}>
+                                            <span className={styles.unitTitle}>Unit</span>
+                                        </TableHead>
+                                        {center.rooms.flatMap((room) =>
+                                            room.racks.map((rack) => (
+                                                <TableHead
+                                                    key={`${room.name}-${rack}`}
+                                                    className={styles.rackHeader}
+                                                >
+                                                    <span className={styles.rackTitle}>{rack}</span>
+                                                </TableHead>
+                                            ))
                                         )}
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
-                ))}
+                                </TableHeader>
+                                <TableBody>
+                                    {units.slice(1).map((unit) => (
+                                        <TableRow key={unit}>
+                                            <TableCell className={styles.unitHeader}>
+                                                <span className={styles.unitTitle}>{unit}</span>
+                                            </TableCell>
+                                            {center.rooms.flatMap((room) =>
+                                                room.racks.map((rack) => {
+                                                    const cellKey = `${center.id}-${unit}-${room.name}-${rack}-left`;
+                                                    const isClicked = clickedCells.left.has(cellKey);
+                                                    return (
+                                                        <TableCell
+                                                            key={cellKey}
+                                                            onClick={() => handleCellClick("left", cellKey)}
+                                                            className={`${styles.unitCell} ${isClicked ? styles.clickedCell : ""}`}
+                                                        />
+                                                    );
+                                                })
+                                            )}
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    ))}
 
-                {/* 右邊的 Table */}
-                {rightDataCenters.map((center, centerIndex) => (
-                    <div key={`right-table-${centerIndex}`} className={styles.tableContainer}>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead
-                                        colSpan={
-                                            1 +
-                                            center.rooms.reduce(
-                                                (sum, room) => sum + room.racks.length,
-                                                0
-                                            )
-                                        }
-                                        className={styles.dcHeader}
-                                    >
-                                        <span className={styles.dcTitle}>{center.id}</span>
-                                    </TableHead>
-                                </TableRow>
-                                <TableRow>
-                                    <TableHead className={styles.unitHeader}></TableHead>
-                                    {center.rooms.map((room, roomIndex) => (
+                {/* Right Table */}
+                    {rightDataCenters.map((center) => (
+                        <div key={`favorite-table-right-${center.id}`} className={styles.tableContainer}>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
                                         <TableHead
-                                            key={roomIndex}
-                                            colSpan={room.racks.length}
-                                            className={styles.roomHeader}
-                                        >
-                                            <span className={styles.roomTitle}>{room.name}</span>
-                                        </TableHead>
-                                    ))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableHead className={styles.unitHeader}>
-                                        <span className={styles.unitTitle}>Unit</span>
-                                    </TableHead>
-                                    {center.rooms.flatMap((room) =>
-                                        room.racks.map((rack, rackIndex) => (
-                                            <TableHead
-                                                key={`${room.name}-${rackIndex}`}
-                                                className={styles.rackHeader}
-                                            >
-                                                <span className={styles.rackTitle}>{rack}</span>
-                                            </TableHead>
-                                        ))
-                                    )}
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {units.slice(1).map((unit) => (
-                                    <TableRow key={unit}>
-                                        <TableCell className={styles.unitHeader}>
-                                            <span className={styles.unitTitle}>{unit}</span>
-                                        </TableCell>
-                                        {center.rooms.flatMap((room) =>
-                                            room.racks.map((_, rackIndex) => {
-                                                const cellKey = `${center.id}-${unit}-${room.name}-${rackIndex}`
-                                                const isClicked = clickedCellsRight.has(cellKey)
-                                                return (
-                                                    <TableCell
-                                                        key={cellKey}
-                                                        onClick={() =>
-                                                            handleCellClick("right", cellKey)
-                                                        }
-                                                        className={`${styles.unitCell} ${
-                                                            isClicked ? styles.clickedCell : ""
-                                                        }`}
-                                                    />
+                                            colSpan={
+                                                1 +
+                                                center.rooms.reduce(
+                                                    (sum, room) => sum + room.racks.length,
+                                                    0
                                                 )
-                                            })
+                                            }
+                                            className={styles.dcHeader}
+                                        >
+                                            <span className={styles.dcTitle}>{center.id} (Right)</span>
+                                        </TableHead>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableHead className={styles.unitHeader}></TableHead>
+                                        {center.rooms.map((room, roomIndex) => (
+                                            <TableHead
+                                                key={roomIndex}
+                                                colSpan={room.racks.length}
+                                                className={styles.roomHeader}
+                                            >
+                                                <span className={styles.roomTitle}>{room.name}</span>
+                                            </TableHead>
+                                        ))}
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableHead className={styles.unitHeader}>
+                                            <span className={styles.unitTitle}>Unit</span>
+                                        </TableHead>
+                                        {center.rooms.flatMap((room) =>
+                                            room.racks.map((rack) => (
+                                                <TableHead
+                                                    key={`${room.name}-${rack}`}
+                                                    className={styles.rackHeader}
+                                                >
+                                                    <span className={styles.rackTitle}>{rack}</span>
+                                                </TableHead>
+                                            ))
                                         )}
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
-                ))}
-            </div>
+                                </TableHeader>
+                                <TableBody>
+                                    {units.slice(1).map((unit) => (
+                                        <TableRow key={unit}>
+                                            <TableCell className={styles.unitHeader}>
+                                                <span className={styles.unitTitle}>{unit}</span>
+                                            </TableCell>
+                                            {center.rooms.flatMap((room) =>
+                                                room.racks.map((rack) => {
+                                                    const cellKey = `${center.id}-${unit}-${room.name}-${rack}-right`;
+                                                    const isClicked = clickedCells.right.has(cellKey);
+                                                    return (
+                                                        <TableCell
+                                                            key={cellKey}
+                                                            onClick={() => handleCellClick("right", cellKey)}
+                                                            className={`${styles.unitCell} ${isClicked ? styles.clickedCell : ""}`}
+                                                        />
+                                                    );
+                                                })
+                                            )}
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                    ))}
+                </div>
         </Card>
-    )
-}
+    );
+};
 
-export default DataCenterComponentSection
+export default DataCenterComponentSection;
