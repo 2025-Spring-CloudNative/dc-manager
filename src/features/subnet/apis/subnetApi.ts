@@ -1,15 +1,8 @@
-import axios from "axios"
-
-const apiInstance = axios.create({
-    baseURL: "http://localhost:4000/subnet",
-    headers: {
-        "Content-Type": "application/json",
-    },
-})
+import api from "@lib/axios"
 
 export async function getSubnets() {
     try {
-        const response = await apiInstance.get("/")
+        const response = await api.get("/subnet")
         return response.data
     } catch (error) {
         console.error("Error fetching subnet data:", error)
