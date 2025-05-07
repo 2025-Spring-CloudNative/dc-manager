@@ -70,7 +70,7 @@ const [hoveredCardIndex, setHoveredCardIndex] = useState<number | null>(null);
               key={index}
               className={
                 hoveredCardIndex === index
-                  ? "w-[15vw] h-[20vh] rounded-[3vw] border bg-[#6dccd580] border-[5px] border-solid border-[#cde9ec] backdrop-blur-[1vh] backdrop-brightness-[100%]"
+                  ? "w-[15vw] h-[20vh] rounded-[3vw] bg-[#6dccd580] border-[5px] border-solid border-[#cde9ec] backdrop-blur-[1vh] backdrop-brightness-[100%]"
                   : "w-[15vw] h-[20vh] rounded-[3vw] border bg-[#6dccd54c]  border-solid border-[#6dccd503] backdrop-blur-[1vh] backdrop-brightness-[100%]"
               }
               onMouseEnter={() => setHoveredCardIndex(index)}
