@@ -1,7 +1,7 @@
 // RackSummaryTable.tsx
 
 import Button from "@/components/shared/Button";
-import Card from "@/components/ManagementPage/Card";
+import Card from "@/components/DataCenterPage/Card";
 import {
   Table,
   TableBody,
@@ -26,11 +26,11 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>機櫃名稱</TableHead>
+              <TableHead>資料中心</TableHead>
+              <TableHead>Room 數量</TableHead>
               <TableHead>Rack 數量</TableHead>
-              <TableHead>Unit 數量</TableHead>
-              <TableHead>現有機器</TableHead>
-              <TableHead>加到常用</TableHead>
+              {/* <TableHead>現有機器</TableHead> */}
+              <TableHead>釘選/加到常用</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -39,7 +39,7 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
                 <TableCell>{dc.id}</TableCell>
                 <TableCell>{dc.rackCount}</TableCell>
                 <TableCell>{dc.unitCount}</TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <div className={styles.ButtonGroup}>
                     {dc.hosts.map((host, hostIndex) => (
                       <Button key={hostIndex} className={styles.infoButton}>
@@ -50,7 +50,7 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
                       <Button className={styles.infoButton}>...</Button>
                     )}
                   </div>
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                   <div className={styles.favoriteGroup}>
                     <Button

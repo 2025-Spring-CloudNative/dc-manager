@@ -10,7 +10,7 @@
 src/
 ├── assets/                # 圖片與靜態資源
 ├── components/            # 元件模組（含 mainpage / ManagementPage / shared）
-├── pages/                 # mainpage與ManagementPage
+├── pages/                 # mainpage與DataCenterPage
 ├── lib/                   # 公用function(ex: cn()）
 ├── router.tsx             # React Router 設定
 └── main.tsx               # 應用主進入點
@@ -46,7 +46,7 @@ npm run dev
 
 ###  `ManagementPage`
 
--  `/ManagementPage` router
+-  `/DataCenterPage` router
 - 功能包含：
   - 搜尋欄與清除按鈕
   - 篩選按鈕（FilterButton）
