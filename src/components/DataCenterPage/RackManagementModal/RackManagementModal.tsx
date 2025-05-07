@@ -10,13 +10,14 @@ import {
 } from "@/components/shared/Table";
 import Input from "@/components/shared/Input/Input";
 import Button from "@/components/shared/Button";
-import { DataCenter } from "@/components/data/rackData";
+// import { DataCenter } from "@/components/data/rackData";
+import { DataCenter } from "@/components/data/datacenter";
 
 interface RackManagementModalProps {
     isOpen: boolean;
     onClose: () => void;
     side: "left" | "right";
-    dataCenters: DataCenter[];
+    dataCenters: DataCenter;
     onSave?: (saveData: {
         rackName: string;
         rackHeight: string;
