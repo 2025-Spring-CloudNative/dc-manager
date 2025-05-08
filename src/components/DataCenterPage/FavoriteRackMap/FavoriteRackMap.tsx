@@ -23,18 +23,22 @@ import { Room } from "@/components/data/room";
 import { Rack } from "@/components/data/rack";
 
 interface DataCenterComponentSectionProps {
-    leftDataCenters: DataCenter[];
-    rightDataCenters: DataCenter[];
+    dataCenters: {
+        left: DataCenter[];
+        right: DataCenter[];
+    };
 }
 
-const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({ leftDataCenters, rightDataCenters }) => {
-    const units = ["Unit", "1", "2", "3", "4", "5", "6", "7", "8", "9",];
-    const [clickedCells, setClickedCells] = useState<{ left: Set<string>; right: Set<string> }>({
+const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({ dataCenters }) => {
+    const units = ["Unit", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    const [clickedCells, setClickedCells] = useState<{ [side: string]: Set<string> }>({
         left: new Set(),
         right: new Set(),
     });
-    const [isRackModalOpenLeft, setRackModalOpenLeft] = useState(false);
-    const [isRackModalOpenRight, setRackModalOpenRight] = useState(false);
+    const [isRackModalOpen, setRackModalOpen] = useState<{ [side: string]: boolean }>({
+        left: false,
+        right: false,
+    });
 
     // ✅ 在元件頂層呼叫 useQuery 來獲取房間和機櫃資料
     const { data: roomsData, isLoading: isLoadingRooms, isError: isErrorRooms } = useGetRoomQuery();
@@ -60,32 +64,92 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         const rackData = racksData ? racksData.filter((rack: Rack) => rooms.id === rack.roomId) : [];
         const rackCount = rackData.length;
 
-        return <TableHead key={rooms.id} colSpan={rackCount} className={styles.roomHeader}>
-            <span className={styles.roomTitle}>{rooms.name}</span>
-        </TableHead>;
+        return (
+            <TableHead key={rooms.id} colSpan={rackCount} className={styles.roomHeader}>
+                <span className={styles.roomTitle}>{rooms.name}</span>
+            </TableHead>
+        );
     };
 
     // ✅ 修改 countTotalRooms 函式來計算 Rack 的總數
     const countTotalRacksInDC = (dcId: number | undefined): number => {
         if (!roomsData || !racksData || dcId === undefined) {
-            return 0;
+            return 1; // Include the Unit column
         }
         const roomsInDC = filterRoomsByDataCenterId(dcId);
         let totalRacks = 0;
         roomsInDC.forEach((room) => {
             totalRacks += filterRacksByRoomId(room.id).length;
         });
-        return totalRacks+1;
+        return totalRacks + 1; // Plus one for the Unit column
     };
 
-    console.log('Left Rooms for DC:', leftDataCenters.length > 0 ? leftDataCenters[0]?.id : null, filterRoomsByDataCenterId(leftDataCenters[0]?.id));
-    console.log('Right Rooms for DC:', rightDataCenters.length > 0 ? rightDataCenters[0]?.id : null, filterRoomsByDataCenterId(rightDataCenters[0]?.id));
+    const renderDataTable = (dataCentersList: DataCenter[], side: "left" | "right") => (
+        dataCentersList.map((dc) => (
+            <div key={`favorite-table-${side}-${dc.id}`} className={styles.tableContainer}>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead
+                                colSpan={countTotalRacksInDC(dc.id)} // ✅ 使用新的函式計算 colSpan
+                                className={styles.dcHeader}
+                            >
+                                <span className={styles.dcTitle}>{`${dc.name}`}</span>
+                            </TableHead>
+                        </TableRow>
+                        <TableRow>
+                            <TableHead className={styles.unitHeader}></TableHead>
+                            {filterRoomsByDataCenterId(dc.id).map((room) => renderRoomHeaders(room))}
+                        </TableRow>
+                        <TableRow>
+                            <TableHead className={styles.unitHeader}>
+                                <span className={styles.unitTitle}>Unit</span>
+                            </TableHead>
+                            {filterRoomsByDataCenterId(dc.id).flatMap((room) =>
+                                filterRacksByRoomId(room.id).map((rack) => (
+                                    <TableHead key={`${room.name}-${rack.name}`} className={styles.rackHeader}>
+                                        <span className={styles.rackTitle}>{rack.name}</span>
+                                    </TableHead>
+                                ))
+                            )}
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {units.slice(1).map((unit) => (
+                            <TableRow key={unit}>
+                                <TableCell className={styles.unitHeader}>
+                                    <span className={styles.unitTitle}>{unit}</span>
+                                </TableCell>
+                                {filterRoomsByDataCenterId(dc.id).flatMap((room) =>
+                                    filterRacksByRoomId(room.id).map((rack) => {
+                                        const cellKey = `${dc.id}-${unit}-${room.name}-${rack.name}-${side}`;
+                                        const isClicked = clickedCells[side]?.has(cellKey);
+                                        return (
+                                            <TableCell
+                                                key={cellKey}
+                                                onClick={() => handleCellClick(side, cellKey)}
+                                                className={`${styles.unitCell} ${isClicked ? styles.clickedCell : ""}`}
+                                            />
+                                        );
+                                    })
+                                )}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </div>
+        ))
+    );
 
     return (
         <Card className={styles.combinedComponentCard}>
             <div className={styles.headerButtonArea}>
-                <Button className={styles.editCabinetButton} onClick={() => setRackModalOpenLeft(true)}>編輯機櫃-Left</Button>
-                <Button className={styles.editCabinetButton} onClick={() => setRackModalOpenRight(true)}>編輯機櫃-Right</Button>
+                <Button className={styles.editCabinetButton} onClick={() => setRackModalOpen((prev) => ({ ...prev, left: true }))}>
+                    編輯機櫃-Left
+                </Button>
+                <Button className={styles.editCabinetButton} onClick={() => setRackModalOpen((prev) => ({ ...prev, right: true }))}>
+                    編輯機櫃-Right
+                </Button>
             </div>
             <div className={styles.titleArea}>
                 <div className={styles.titleWrapper}>
@@ -95,122 +159,39 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                 </div>
             </div>
             <div className={styles.tablesWrapper}>
-                {leftDataCenters.map((dc) => (
-                    <div key={`favorite-table-left-${dc.id}`} className={styles.tableContainer}>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead
-                                        colSpan={countTotalRacksInDC(dc.id)} // ✅ 使用新的函式計算 colSpan
-                                        className={styles.dcHeader}
-                                    >
-                                        <span className={styles.dcTitle}>{dc.id} (Left)</span>
-                                    </TableHead>
-                                </TableRow>
-                                <TableRow>
-                                    <TableHead className={styles.unitHeader}></TableHead>
-                                    {filterRoomsByDataCenterId(dc.id).map((room) => renderRoomHeaders(room))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableHead className={styles.unitHeader}>
-                                        <span className={styles.unitTitle}>Unit</span>
-                                    </TableHead>
-                                    {filterRoomsByDataCenterId(dc.id).flatMap((room) =>
-                                        filterRacksByRoomId(room.id).map((rack) => (
-                                            <TableHead
-                                                key={`${room.name}-${rack.name}`}
-                                                className={styles.rackHeader}
-                                            >
-                                                <span className={styles.rackTitle}>{rack.name}</span>
-                                            </TableHead>
-                                        ))
-                                    )}
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {units.slice(1).map((unit) => (
-                                    <TableRow key={unit}>
-                                        <TableCell className={styles.unitHeader}>
-                                            <span className={styles.unitTitle}>{unit}</span>
-                                        </TableCell>
-                                        {filterRoomsByDataCenterId(dc.id).flatMap((room) =>
-                                            filterRacksByRoomId(room.id).map((rack) => {
-                                                const cellKey = `${dc.id}-${unit}-${room.name}-${rack.name}-left`;
-                                                const isClicked = clickedCells.left.has(cellKey);
-                                                return (
-                                                    <TableCell
-                                                        key={cellKey}
-                                                        onClick={() => handleCellClick("left", cellKey)}
-                                                        className={`${styles.unitCell} ${isClicked ? styles.clickedCell : ""}`}
-                                                    />
-                                                );
-                                            })
-                                        )}
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
-                ))}
-
-                {rightDataCenters.map((dc) => (
-                    <div key={`favorite-table-right-${dc.id}`} className={styles.tableContainer}>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead
-                                        colSpan={countTotalRacksInDC(dc.id)} // ✅ 使用新的函式計算 colSpan
-                                        className={styles.dcHeader}
-                                    >
-                                        <span className={styles.dcTitle}>{dc.id} (Right)</span>
-                                    </TableHead>
-                                </TableRow>
-                                <TableRow>
-                                    <TableHead className={styles.unitHeader}></TableHead>
-                                    {filterRoomsByDataCenterId(dc.id).map((room) => renderRoomHeaders(room))}
-                                </TableRow>
-                                <TableRow>
-                                    <TableHead className={styles.unitHeader}>
-                                        <span className={styles.unitTitle}>Unit</span>
-                                    </TableHead>
-                                    {filterRoomsByDataCenterId(dc.id).flatMap((room) =>
-                                        filterRacksByRoomId(room.id).map((rack) => (
-                                            <TableHead
-                                                key={`${room.name}-${rack.name}`}
-                                                className={styles.rackHeader}
-                                            >
-                                                <span className={styles.rackTitle}>{rack.name}</span>
-                                            </TableHead>
-                                        ))
-                                    )}
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {units.slice(1).map((unit) => (
-                                    <TableRow key={unit}>
-                                        <TableCell className={styles.unitHeader}>
-                                            <span className={styles.unitTitle}>{unit}</span>
-                                        </TableCell>
-                                        {filterRoomsByDataCenterId(dc.id).flatMap((room) =>
-                                            filterRacksByRoomId(room.id).map((rack) => {
-                                                const cellKey = `${dc.id}-${unit}-${room.name}-${rack}-right`;
-                                                const isClicked = clickedCells.right.has(cellKey);
-                                                return (
-                                                    <TableCell
-                                                        key={cellKey}
-                                                        onClick={() => handleCellClick("right", cellKey)}
-                                                        className={`${styles.unitCell} ${isClicked ? styles.clickedCell : ""}`}
-                                                    />
-                                                );
-                                            })
-                                        )}
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
-                ))}
+                {renderDataTable(dataCenters.left, "left")}
+                {renderDataTable(dataCenters.right, "right")}
             </div>
+
+
+            {isRackModalOpen.left && dataCenters.left[0] && (
+                <RackManagementModal
+                    isOpen={isRackModalOpen.left}
+                    onClose={() => setRackModalOpen((prev) => ({ ...prev, left: false }))}
+                    side="left"
+                    currentDataCenter={dataCenters.left[0]}
+                    rooms={roomsData} // Pass the fetched rooms data
+                    racks={racksData} // Pass the fetched racks data
+                    clickedCells={clickedCells}
+                    handleCellClick={handleCellClick}
+                    // onSave={} // Your save function
+                />
+            )}
+            {isRackModalOpen.right && dataCenters.right[0] && (
+                <RackManagementModal
+                    isOpen={isRackModalOpen.right}
+                    onClose={() => setRackModalOpen((prev) => ({ ...prev, right: false }))}
+                    side="right"
+                    currentDataCenter={dataCenters.right[0]}
+                    rooms={roomsData} // Pass the fetched rooms data
+                    racks={racksData} // Pass the fetched racks data
+                    clickedCells={clickedCells}
+                    handleCellClick={handleCellClick}
+                    // onSave={} // Your save function
+                />
+            )}
+
+
         </Card>
     );
 };

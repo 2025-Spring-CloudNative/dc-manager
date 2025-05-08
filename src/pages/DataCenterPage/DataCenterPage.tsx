@@ -9,7 +9,7 @@ import styles from "./DataCenterPage.module.scss";
 import searchicon from "@/assets/search.png";
 
 import { useGetDataCentersQuery } from "@features/dataCenter/hooks/useDataCenter";
-import { DataCenter } from "@/components/data/rackData"; // Import DataCenter interface
+import { DataCenter } from "@/components/data/datacenter"; // Import DataCenter interface with correct path
 
 const data_center = () => {
     const [inputValue, setInputValue] = useState("");
@@ -63,8 +63,10 @@ const data_center = () => {
                 <div className={styles.favoriteTablesContainer}>
                     <h3>常用資料中心</h3>
                     <DataCenterComponentSection
-                        leftDataCenters={selectedLeftDC ? [selectedLeftDC] : []}
-                        rightDataCenters={selectedRightDC ? [selectedRightDC] : []}
+                        dataCenters={{
+                            left: selectedLeftDC ? [selectedLeftDC] : [],
+                            right: selectedRightDC ? [selectedRightDC] : [],
+                        }}
                     />
                 </div>
             </div>
