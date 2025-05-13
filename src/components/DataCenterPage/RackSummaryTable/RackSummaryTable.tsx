@@ -15,6 +15,8 @@ import { useGetDataCentersQuery, useDeleteDataCenterMutation } from "@/features/
 import CreateDCmodal from "@/components/DataCenterPage/DCmodal";
 import { useGetRoomQuery } from "@/features/Rooms/hooks/useRoom"; 
 import { useGetRackQuery } from "@/features/Racks/hooks/useRack";
+import { useGetSubnetByIdQuery } from "@/features/subnet/hooks/useSubnet";
+
 import { AxiosError } from 'axios';
 import { DataCenter } from "@/components/data/datacenter";
 import { Room } from "@/components/data/room";
@@ -92,6 +94,8 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
           <TableHeader>
             <TableRow>
               <TableHead>資料中心</TableHead>
+              <TableHead>DC location</TableHead>
+              <TableHead>DC Subnet CIDR</TableHead>
               <TableHead>Room 數量</TableHead>
               <TableHead>Rack 數量</TableHead>
               <TableHead>釘選/加到常用</TableHead>
@@ -101,7 +105,7 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell colSpan={5}>Loading...</TableCell>
+                <TableCell colSpan={7}>Loading...</TableCell>
               </TableRow>
             )}
             {isError && (() => {
@@ -117,7 +121,18 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
             {dataCenters && dataCenters.map((dc, index) => (
               <TableRow key={index}>
                 <TableCell>{dc.name}</TableCell>
+                <TableCell>{dc.location}</TableCell>
+                {(() => {
+                  const { data: subnet, isLoading: isSubnetLoading, isError: isSubnetError } = useGetSubnetByIdQuery(dc.subnetId?.toString() || "");
+
+                  if (!dc.subnetId) return <TableCell>-</TableCell>;
+                  if (isSubnetLoading) return <TableCell>Loading...</TableCell>;
+                  if (isSubnetError) return <TableCell>Error</TableCell>;
+
+                  return <TableCell>{subnet?.cidr || "-"}</TableCell>;
+                })()}
                 <RoomCountCell dcId={dc.id} />
+
                 <TableCell>
                   <div className={styles.favoriteGroup}>
                     <Button
