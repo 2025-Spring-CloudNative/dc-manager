@@ -1,7 +1,7 @@
 import axios from "axios"
 
 const apiInstance = axios.create({
-    baseURL: "http://localhost:4000/subnet",
+    baseURL: "http://140.112.90.37:4000/subnet",
     headers: {
         "Content-Type": "application/json",
     },
