@@ -14,6 +14,8 @@ import {
 
 import styles from "./FavoriteRackMap.module.scss";
 import RackManagementModal from "@/components/DataCenterPage/RackManagementModal";
+import IpSelectModal from "@/components/DataCenterPage/IpSelectModal";
+import CreateDCmodal from "@/components/DataCenterPage/DCmodal";
 // import { DataCenter } from "@/components/data/rackData";
 import { useGetDataCentersQuery } from "@/features/dataCenter/hooks/useDataCenter";
 import { useGetRoomQuery } from "@/features/Rooms/hooks/useRoom";
@@ -51,6 +53,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
             return { ...prev, [localSide]: newSet };
         });
     };
+    console.log('isRackModalOpen:', isRackModalOpen);
 
     const filterRoomsByDataCenterId = (dcId: number | undefined): Room[] => {
         return roomsData ? roomsData.filter((room: Room) => room.dataCenterId === dcId) : [];
@@ -142,11 +145,13 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     );
 
     return (
+        <>
         <Card className={styles.combinedComponentCard}>
             <div className={styles.headerButtonArea}>
                 <Button className={styles.editCabinetButton} onClick={() => setRackModalOpen((prev) => ({ ...prev, left: true }))}>
                     編輯機櫃-Left
                 </Button>
+                
                 <Button className={styles.editCabinetButton} onClick={() => setRackModalOpen((prev) => ({ ...prev, right: true }))}>
                     編輯機櫃-Right
                 </Button>
@@ -164,7 +169,11 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
             </div>
 
 
-            {isRackModalOpen.left && dataCenters.left[0] && (
+
+
+
+        </Card>
+                    {isRackModalOpen.left && dataCenters.left[0] && (
                 <RackManagementModal
                     isOpen={isRackModalOpen.left}
                     onClose={() => setRackModalOpen((prev) => ({ ...prev, left: false }))}
@@ -190,9 +199,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                     // onSave={} // Your save function
                 />
             )}
-
-
-        </Card>
+            </>
     );
 };
 

@@ -27,10 +27,46 @@
   font-weight: 500;
   color: var(--layout-800);
   backdrop-filter: blur(6.6px) brightness(100%);
-  -webkit-backdrop-filter: blur(6.6px) brightness(100%);
+  // -webkit-backdrop-filter: blur(6.6px) brightness(100%);
 }
 
 /* 針對常用按鈕給淺藍底色 */
 .favoriteButton {
   background-color: #d0f7f8;
+}
+
+.editButton {
+  border: 0px;
+  background-color: #a2e1e4;
+}
+.deleteButton {
+  border: 0px;
+  background-color: #f8d0d0;
+}
+
+.addDCButton {
+  width: auto;
+  margin-left: auto;
+  background-color: #6ddbd2; // 接近圖片中的藍綠色
+  color: #000000; // 黑色文字
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-bottom: 1rem;
+  &:hover {
+    background-color: #5ccac1; // hover 淡一點
+  }
+
+  &:active {
+    background-color: #4bb1a9; // 點擊時再深一點
+  }
+}
+.buttonWrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
 }
