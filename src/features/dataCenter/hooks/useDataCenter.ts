@@ -24,7 +24,7 @@ export function useGetDataCentersQuery() {
 }
 
 // Get by ID
-export function useGetDataCenterByIdQuery(id: string) {
+export function useGetDataCenterByIdQuery(id: number) {
   return useQuery({
     queryKey: ["dataCenter", id],
     queryFn: () => getDataCenterById(id),

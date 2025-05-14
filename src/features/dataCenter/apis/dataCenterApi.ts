@@ -17,7 +17,7 @@ export async function getDataCenters() {
   }
 }
 
-export async function getDataCenterById(id: string) {
+export async function getDataCenterById(id: number) {
   try {
     const response = await apiInstance.get(`/${id}`);
     return response.data;
