@@ -8,16 +8,27 @@ const apiInstance = axios.create({
 });
 
 // GET all subnets
-export async function getSubnets(): Promise<Subnet[]> {
-  const response = await apiInstance.get("/");
-  return response.data;
+export async function getSubnets() {
+    try {
+        const response = await apiInstance.get("/")
+        return response.data
+    } catch (error) {
+        console.error("Error fetching subnet data:", error)
+        throw error
+    }
 }
 
 // GET a single subnet by ID
-export async function getSubnetById(id: string): Promise<Subnet> {
-  const response = await apiInstance.get(`/${id}`);
-  return response.data;
+export async function getSubnetById(id: number) {
+  try {
+    const response = await apiInstance.get(`/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching subnet by ID:", error);
+    throw error;
+  }
 }
+
 
 // CREATE a subnet
 export async function createSubnet(data: Subnet): Promise<Subnet> {

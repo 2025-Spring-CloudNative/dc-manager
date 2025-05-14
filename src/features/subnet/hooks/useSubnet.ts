@@ -10,18 +10,26 @@ import { Subnet } from "@/features/subnet/types";
 
 // All
 export function useGetSubnetsQuery() {
-  return useQuery({
-    queryKey: ["subnet"],
-    queryFn: getSubnets,
-  });
+    const { data, isLoading, isError, isSuccess, error } = useQuery({
+        queryKey: ["subnet"],
+        queryFn: getSubnets,
+    })
+
+    return {
+        data,
+        isLoading,
+        isError,
+        isSuccess,
+        error,
+    }
 }
 
 // Single
-export function useGetSubnetByIdQuery(id: string) {
+export function useGetSubnetByIdQuery(id: number) {
   return useQuery({
     queryKey: ["subnet", id],
     queryFn: () => getSubnetById(id),
-    enabled: !!id,
+    enabled: Number.isInteger(id),
   });
 }
 
@@ -31,7 +39,7 @@ export function useCreateSubnetMutation() {
   return useMutation({
     mutationFn: createSubnet,
     onSuccess: () => {
-      queryClient.invalidateQueries(["subnet"]);
+      queryClient.invalidateQueries({ queryKey: ["subnet"] });
     },
   });
 }
@@ -42,7 +50,7 @@ export function useUpdateSubnetMutation() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Subnet }) => updateSubnet(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries(["subnet"]);
+      queryClient.invalidateQueries({ queryKey: ["subnet"] });
     },
   });
 }
@@ -53,7 +61,7 @@ export function useDeleteSubnetMutation() {
   return useMutation({
     mutationFn: deleteSubnet,
     onSuccess: () => {
-      queryClient.invalidateQueries(["subnet"]);
+      queryClient.invalidateQueries({ queryKey: ["subnet"] });
     },
   });
 }

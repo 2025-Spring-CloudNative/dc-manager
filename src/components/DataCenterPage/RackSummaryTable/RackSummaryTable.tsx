@@ -15,7 +15,7 @@ import { useGetDataCentersQuery, useDeleteDataCenterMutation } from "@/features/
 import CreateDCmodal from "@/components/DataCenterPage/DCmodal";
 import { useGetRoomQuery } from "@/features/Rooms/hooks/useRoom"; 
 import { useGetRackQuery } from "@/features/Racks/hooks/useRack";
-import { useGetSubnetByIdQuery } from "@/features/subnet/hooks/useSubnet";
+import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet";
 
 import { AxiosError } from 'axios';
 import { DataCenter } from "@/components/data/datacenter";
@@ -59,10 +59,13 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
     isError,
     error,
   } = useGetDataCentersQuery();
-  
+    const {data:subnets} = useGetSubnetsQuery()
 
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
   const [selectedDC, setSelectedDC] = useState<DataCenter | null>(null); // optional, for editing
+
+
+
   //create
   const handleOpenCreateModal = () => {
     setSelectedDC(null); // reset for "create"
@@ -89,6 +92,7 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
           <Button className={styles.addDCButton} onClick={handleOpenCreateModal}>
               [+]dataCenter
           </Button>
+
         </div>
         <Table>
           <TableHeader>
@@ -118,59 +122,56 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
                 </TableRow>
               );
             })()}
-            {dataCenters && dataCenters.map((dc, index) => (
-              <TableRow key={index}>
-                <TableCell>{dc.name}</TableCell>
-                <TableCell>{dc.location}</TableCell>
-                {(() => {
-                  const { data: subnet, isLoading: isSubnetLoading, isError: isSubnetError } = useGetSubnetByIdQuery(dc.subnetId?.toString() || "");
+            {dataCenters && dataCenters.map((dc, index) => 
+              {
+                const subnet = subnets?.find((s) => s.id === dc.subnetId)
+                return(
+                    <TableRow key={index}>
+                      <TableCell>{dc.name}</TableCell>
+                      <TableCell>{dc.location}</TableCell>
+                      <TableCell>{subnet.cidr}</TableCell>
+                      <RoomCountCell dcId={dc.id} />
 
-                  if (!dc.subnetId) return <TableCell>-</TableCell>;
-                  if (isSubnetLoading) return <TableCell>Loading...</TableCell>;
-                  if (isSubnetError) return <TableCell>Error</TableCell>;
-
-                  return <TableCell>{subnet?.cidr || "-"}</TableCell>;
-                })()}
-                <RoomCountCell dcId={dc.id} />
-
-                <TableCell>
-                  <div className={styles.favoriteGroup}>
-                    <Button
-                      className={`${styles.infoButton} ${styles.favoriteButton}`}
-                      onClick={() => onAddToLeft(dc)}
-                    >
-                      加到left
-                    </Button>
-                    <Button
-                      className={`${styles.infoButton} ${styles.favoriteButton}`}
-                      onClick={() => onAddToRight(dc)}
-                    >
-                      加到right
-                    </Button>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className={styles.favoriteGroup}>
-                    <Button
-                      className={`${styles.infoButton} ${styles.editButton}`}
-                      onClick={() => {
-                        setSelectedDC(dc);       // 設定要編輯的資料中心
-                        setCreateModalOpen(true); // 開啟 modal
-                      }}
-                    >
-                      編輯
-                    </Button>
-                    <Button
-                      className={`${styles.infoButton} ${styles.deleteButton}`}
-                      onClick={() => handleDelete(dc.id.toString())}
-                      disabled={isDeleting}
-                    >
-                      刪除
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                      <TableCell>
+                        <div className={styles.favoriteGroup}>
+                          <Button
+                            className={`${styles.infoButton} ${styles.favoriteButton}`}
+                            onClick={() => onAddToLeft(dc)}
+                          >
+                            加到left
+                          </Button>
+                          <Button
+                            className={`${styles.infoButton} ${styles.favoriteButton}`}
+                            onClick={() => onAddToRight(dc)}
+                          >
+                            加到right
+                          </Button>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className={styles.favoriteGroup}>
+                          <Button
+                            className={`${styles.infoButton} ${styles.editButton}`}
+                            onClick={() => {
+                              setSelectedDC(dc);       // 設定要編輯的資料中心
+                              setCreateModalOpen(true); // 開啟 modal
+                            }}
+                          >
+                            編輯
+                          </Button>
+                          <Button
+                            className={`${styles.infoButton} ${styles.deleteButton}`}
+                            onClick={() => handleDelete(dc.id.toString())}
+                            disabled={isDeleting}
+                          >
+                            刪除
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                )
+              })
+            }
           </TableBody>
         </Table>
       </div>
