@@ -67,3 +67,13 @@ export const useRegisterMutation = () => {
         },
     })
 }
+
+// Update user info
+export const useUpdateUserInfoMutation = () => {
+    // TODO
+}
+
+// Reset user password
+export const useResetUserPasswordMutation = () => {
+    // TODO
+}

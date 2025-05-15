@@ -105,7 +105,7 @@ function AuthProvider({ children }: PropsWithChildren) {
                     error.config as InternalAxiosRequestConfigWithRetry
 
                 if (
-                    error.response.status === 403 &&
+                    error.response.status === 401 &&
                     error.response.data.message === "Unauthorized" &&
                     !originalRequest._retry // only retry once
                 ) {

@@ -5,6 +5,7 @@ import AppLayout from "@app/AppLayout"
 import MainPage from "@pages/MainPage"
 import DataCenterPage from "@pages/DataCenterPage"
 import LoginPage from "@pages/LoginPage"
+import UserProfilePage from "@pages/UserProfilePage"
 import NotFound from "@components/shared/NotFound"
 
 /**
@@ -20,6 +21,7 @@ const routes: RouteObject[] = [
             { index: true, element: <MainPage /> },
             { path: "DataCenterPage", element: <DataCenterPage /> },
             { path: "login", element: <LoginPage /> },
+            { path: "user", element: <UserProfilePage /> },
 
             // any unmatched child goes to 404
             { path: "*", element: <NotFound /> },
