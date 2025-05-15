@@ -22,7 +22,7 @@ export const useSession = () => {
 For both login and register, we will obtain the access token and user data in response data. (in memory)
 While refresh token will be stored in cookie.
     * Http-only: true
-    * Secure: true
+    * Secure: true (false when using http)
     * SameSite: "None" (backend is on a different domain, cross-origin) 
 */
 

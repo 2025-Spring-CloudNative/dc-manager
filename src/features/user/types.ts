@@ -1,11 +1,13 @@
-export type UserRole = "admin" | "user" | "guest"
+export type UserRole = "admin" | "user"
 
 export type User = {
     id?: string
     name: string
     email: string
-    // password?: string
+    // passwordHash?: string
     role: UserRole
+    createdAt?: Date
+    updatedAt?: Date
 }
 
 export type UserWithPassword = User & {
