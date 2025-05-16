@@ -50,3 +50,42 @@ export async function userRegister(
         throw error
     }
 }
+
+type UpdateUserInfoVariables = {
+    userId: number
+    userData: Partial<User>
+}
+
+export async function updateUserInfo({
+    userId,
+    userData,
+}: UpdateUserInfoVariables): Promise<User> {
+    try {
+        const response = await api.patch(`/auth/${userId}`, userData)
+        return response.data
+    } catch (error) {
+        console.error("Error updating user info:", error)
+        throw error
+    }
+}
+
+type updateUserPasswordVariables = {
+    userId: number
+    passwordData: { oldPassword: string; newPassword: string }
+}
+
+export async function updateUserPassword({
+    userId,
+    passwordData,
+}: updateUserPasswordVariables) {
+    try {
+        const response = await api.patch(
+            `/auth/reset-password/${userId}`,
+            passwordData
+        )
+        return response.data
+    } catch (error) {
+        console.error("Error updating user password:", error)
+        throw error
+    }
+}

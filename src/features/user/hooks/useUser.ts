@@ -6,6 +6,8 @@ import {
     userLogin,
     userLogout,
     userRegister,
+    updateUserInfo,
+    updateUserPassword,
 } from "../apis/userApi"
 
 // session
@@ -70,10 +72,24 @@ export const useRegisterMutation = () => {
 
 // Update user info
 export const useUpdateUserInfoMutation = () => {
-    // TODO
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: updateUserInfo,
+        onSuccess: (user) => {
+            queryClient.setQueryData(["session"], user)
+        },
+    })
 }
 
 // Reset user password
 export const useResetUserPasswordMutation = () => {
-    // TODO
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: updateUserPassword,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["session"] }) // refresh session data
+        },
+    })
 }
