@@ -41,6 +41,8 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         left: false,
         right: false,
     });
+    const [clickedRoomId, setClickedRoomId] = useState<number | null>(null);
+    const [isHovered, setIsHovered] = useState(false);
 
     // ✅ 在元件頂層呼叫 useQuery 來獲取房間和機櫃資料
     const { data: roomsData, isLoading: isLoadingRooms, isError: isErrorRooms } = useGetRoomQuery();
@@ -66,10 +68,40 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     const renderRoomHeaders = (rooms: Room) => {
         const rackData = racksData ? racksData.filter((rack: Rack) => rooms.id === rack.roomId) : [];
         const rackCount = rackData.length;
+        const isClicked = clickedRoomId === rooms.id;
+        const [isHovered, setIsHovered] = useState(false);
+        const handleClick = (e: React.MouseEvent) => {
+            e.stopPropagation();
+            setClickedRoomId((prev) => (prev === rooms.id ? null : rooms.id));
+        };
+        const handleSubButtonClick = (e: React.MouseEvent, action: string) => {
+            e.stopPropagation();
+            if (action === "delete") {
+                console.log(`刪除Room: ${rooms.name}`);
+            } else if (action === "add") {
+                console.log(`新增Rack到Room: ${rooms.name}`);
+            }
+        };
 
         return (
-            <TableHead key={rooms.id} colSpan={rackCount} className={styles.roomHeader}>
-                <span className={styles.roomTitle}>{rooms.name}</span>
+            <TableHead key={rooms.id} colSpan={rackCount} className={`${styles.roomHeader} ${isClicked ? styles.clicked : ""}`} onClick={handleClick}
+            onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+                <div className={styles.roomContent}>
+                    <span className={styles.roomTitle}> 
+                         {isClicked ? "" : isHovered ? "編輯Room" : rooms.name}
+                    </span>
+                    {isClicked && (
+                        <>
+                            <button className={styles.subButtonDelRoom} onClick={(e) => handleSubButtonClick(e, "delete")}>
+                                <span className={styles.subButtonTitle}>刪除Room</span>
+                            </button>
+                            <button className={styles.subButtonAddRack} onClick={(e) => handleSubButtonClick(e, "add")}>
+                                <span className={styles.subButtonTitle}>[+]Rack</span>
+                            </button>
+                        </>
+                    )}
+                </div>
+
             </TableHead>
         );
     };
