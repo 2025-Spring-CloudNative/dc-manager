@@ -2,10 +2,7 @@ import { useEffect, useState } from "react"
 import Modal from "@components/shared/Modal/"
 import styles from "./UpdateUserInfoModal.module.scss"
 
-import {
-    useSession,
-    useUpdateUserInfoMutation,
-} from "@features/user/hooks/useUser"
+import { useSession, useUpdateUserInfoMutation } from "@features/user/hooks/useUser"
 
 interface UpdateUserInfoModalProps {
     isOpen: boolean
@@ -42,7 +39,7 @@ function UpdateUserInfoModal({ isOpen, onClose }: UpdateUserInfoModalProps) {
 
     return (
         <Modal isOpen={isOpen} onClose={onClose}>
-            <h2 className={styles.modalTitle}>Edit profile</h2>
+            <h1 className={styles.modalTitle}>修改帳號資訊</h1>
             <form className={styles.form} onSubmit={handleEditSave}>
                 <label>
                     Name

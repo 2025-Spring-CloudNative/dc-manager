@@ -32,16 +32,14 @@ export async function userLogin(creds: {
 
 export async function userLogout(): Promise<void> {
     try {
-        await api.post("/auth/logout", null)
+        await api.delete("/auth/logout")
     } catch (error) {
         console.error("Error logging out:", error)
         throw error
     }
 }
 
-export async function userRegister(
-    creds: UserWithPassword
-): Promise<LoginResponse> {
+export async function userRegister(creds: UserWithPassword): Promise<LoginResponse> {
     try {
         const response = await api.post("/auth/register", creds)
         return response.data
@@ -56,10 +54,7 @@ type UpdateUserInfoVariables = {
     userData: Partial<User>
 }
 
-export async function updateUserInfo({
-    userId,
-    userData,
-}: UpdateUserInfoVariables): Promise<User> {
+export async function updateUserInfo({ userId, userData }: UpdateUserInfoVariables): Promise<User> {
     try {
         const response = await api.patch(`/auth/${userId}`, userData)
         return response.data
@@ -74,15 +69,9 @@ type updateUserPasswordVariables = {
     passwordData: { oldPassword: string; newPassword: string }
 }
 
-export async function updateUserPassword({
-    userId,
-    passwordData,
-}: updateUserPasswordVariables) {
+export async function updateUserPassword({ userId, passwordData }: updateUserPasswordVariables) {
     try {
-        const response = await api.patch(
-            `/auth/reset-password/${userId}`,
-            passwordData
-        )
+        const response = await api.patch(`/auth/reset-password/${userId}`, passwordData)
         return response.data
     } catch (error) {
         console.error("Error updating user password:", error)

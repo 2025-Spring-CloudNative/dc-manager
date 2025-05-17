@@ -1,12 +1,14 @@
+import { useState } from "react"
 import styles from "./UserProfilePage.module.scss"
 import { useSession } from "@features/user/hooks/useUser"
 
+import UpdateUserInfoModal from "@components/UserProfilePage/UpdateUserInfoModal"
+import ResetUserPasswordModal from "@components/UserProfilePage/ResetUserPasswordModal"
+
 export default function UserProfilePage() {
     const { data: user } = useSession()
-
-    function onEditInfo() {}
-
-    function onResetPassword() {}
+    const [editOpen, setEditOpen] = useState(false)
+    const [resetOpen, setResetOpen] = useState(false)
 
     return (
         <section className={styles.container}>
@@ -20,13 +22,15 @@ export default function UserProfilePage() {
 
             {/* TODO */}
             <div className={styles.actions}>
-                <button className={styles.button} onClick={onEditInfo}>
+                <button className={styles.button} onClick={() => setEditOpen(true)}>
                     Edit Info
                 </button>
-                <button className={styles.button} onClick={onResetPassword}>
+                <button className={styles.button} onClick={() => setResetOpen(true)}>
                     Reset Password
                 </button>
             </div>
+            <UpdateUserInfoModal isOpen={editOpen} onClose={() => setEditOpen(false)} />
+            <ResetUserPasswordModal isOpen={resetOpen} onClose={() => setResetOpen(false)} />
         </section>
     )
 }

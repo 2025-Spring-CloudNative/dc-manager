@@ -10,7 +10,6 @@ import type { InternalAxiosRequestConfig } from "axios"
 import { useQueryClient } from "@tanstack/react-query"
 
 import api from "@lib/axios"
-// import { queryClient } from "@lib/queryClient"
 import type { User } from "@features/user/types"
 
 type InternalAxiosRequestConfigWithRetry = InternalAxiosRequestConfig & {
@@ -27,8 +26,6 @@ type TAuthContext = {
     accessToken?: string | null
     currentUser?: User | null
     setAccessToken: (value: string | null) => void
-    // handleLogin: () => Promise<void>
-    // handleLogout: () => Promise<void>
 }
 
 const AuthContext = createContext<TAuthContext | undefined>(undefined)
@@ -50,21 +47,9 @@ function AuthProvider({ children }: PropsWithChildren) {
 
     // bootstrap: fetch access token using cookie's refresh token
     useEffect(() => {
-        // async function fetchToken() {
-        //     try {
-        //         const response = await api.get("/auth/session")
-        //         const { accessToken } = response.data
-        //         setToken(accessToken)
-        //     } catch (error) {
-        //         console.log("Error fetching token: ", error)
-        //         setToken(null)
-        //     }
-        // }
         async function fetchToken() {
             try {
-                const response = await api.post("/auth/refresh-token", null, {
-                    withCredentials: true,
-                })
+                const response = await api.get("/auth/refresh")
 
                 const { accessToken, user } = response.data
 
@@ -85,8 +70,7 @@ function AuthProvider({ children }: PropsWithChildren) {
     useLayoutEffect(() => {
         const authInterceptor = api.interceptors.request.use((config) => {
             const cfg = config as InternalAxiosRequestConfigWithRetry
-            if (!cfg._retry && token)
-                config.headers.Authorization = `Bearer ${token}`
+            if (!cfg._retry && token) config.headers.Authorization = `Bearer ${token}`
 
             return config
         })
@@ -101,8 +85,7 @@ function AuthProvider({ children }: PropsWithChildren) {
         const refreshInterceptor = api.interceptors.response.use(
             (response) => response,
             async (error) => {
-                const originalRequest =
-                    error.config as InternalAxiosRequestConfigWithRetry
+                const originalRequest = error.config as InternalAxiosRequestConfigWithRetry
 
                 if (
                     error.response.status === 401 &&
@@ -110,7 +93,7 @@ function AuthProvider({ children }: PropsWithChildren) {
                     !originalRequest._retry // only retry once
                 ) {
                     try {
-                        const response = await api.post("/auth/refresh-token")
+                        const response = await api.get("/auth/refresh")
                         const { accessToken } = response.data
 
                         setToken(accessToken)
