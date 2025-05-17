@@ -85,7 +85,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
 
         return (
             <TableHead key={rooms.id} colSpan={rackCount} className={`${styles.roomHeader} ${isClicked ? styles.clicked : ""}`} onClick={handleClick}
-            onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+                onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
                 <div className={styles.roomContent}>
                     <span className={styles.roomTitle}> 
                          {isClicked ? "" : isHovered ? "編輯Room" : rooms.name}
