@@ -137,55 +137,54 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         // const [isCreateModalOpen, setCreateModalOpen] = useState(false);
         
         dataCentersList.map((dc) => (
+            
             <div key={`favorite-table-${side}-${dc.id}`} className={styles.tableContainer}>
+    
+                {/* ✅ Custom header placed ABOVE the table */}
+                <div
+                className={cn(
+                    styles.dcHeader,
+                    hoveredbuttonId === dc.id && styles.dcHeaderHovered
+                )}
+                onMouseEnter={() => setHoveredbuttonId(dc.id)}
+                onMouseLeave={() => {
+                    setHoveredbuttonId(null);
+                    setClickedId(null);
+                }}
+                onClick={() => {
+                    if (hoveredbuttonId === dc.id) setClickedId(dc.id);
+                }}
+                >
+                <div className={styles.dcHeaderContent}>
+                    {clickedId === dc.id && (
+                    <div className={styles.actionButtons}>
+                        <Button
+                        className={styles.deletedc}
+                        onClick={() => handleDelete(dc.id)}
+                        disabled={isDeleting}
+                        >
+                        刪除DC
+                        </Button>
+                        <Button
+                        className={styles.create_room}
+                        onClick={() => {
+                            setSelectedDC(dc);
+                            setCreateModalOpen(true);
+                        }}
+                        disabled={isAddingRoom}
+                        >
+                        [+]Room
+                        </Button>
+                    </div>
+                    )}
+                    <span className={styles.dcTitle}>
+                    {hoveredbuttonId === dc.id ? "編輯DC" : dc.name}
+                    </span>
+                </div>
+                </div>
                 <Table>
                     <TableHeader>
-                        <TableRow>
-                            <TableHead
-                                colSpan={countTotalRoomsInDC(dc.id)}
-                                // colSpan={countTotalRacksInDC(dc.id)}
-                                className={cn(
-                                    styles.dcHeader,
-                                    hoveredbuttonId === dc.id && styles.dcHeaderHovered
-                                )}
-                                onMouseEnter={() => setHoveredbuttonId(dc.id)}
-                                onMouseLeave={() => {
-                                    setHoveredbuttonId(null);
-                                    setClickedId(null);   // reset click on leave
-                                }}
-                                onClick={() => {
-                                    if (hoveredbuttonId === dc.id) setClickedId(dc.id);
-                                }}
-                                >
-                                < div>
-                                    {clickedId === dc.id && (
-                                        <div className={styles.actionButtons}>
-                                            <Button
-                                                className={styles.deletedc}
-                                                onClick={() => handleDelete(dc.id)}
-                                                disabled={isDeleting}>
-                                            刪除DC
-                                            </Button>
-                                            <Button
-                                                className={styles.create_room}
-                                                onClick={() => {
-                                                    setSelectedDC(dc);       // 設定要編輯的資料中心
-                                                    setCreateModalOpen(true); // 開啟 modal
-                                                    // handleEdit(dc.id);
-                                                }}
-                                                disabled={isAddingRoom}>
-                                            [+]Room
-                                            </Button>
-                                        </div>
-                                    )}
-                                    <span className={styles.dcTitle}>
-                                    {hoveredbuttonId === dc.id ? "編輯DC" : dc.name}
-                                    </span>
-                                </div>
-                               {/* <span className={styles.dcTitle}>{hoveredCardId === dc.id ? "編輯DC" : dc.name}</span> */}
-                            </TableHead>
-
-                        </TableRow>
+                        
                         <TableRow>
                             <TableHead className={styles.unitHeader}></TableHead>
                             {filterRoomsByDataCenterId(dc.id).map((room) => renderRoomHeaders(room))}
