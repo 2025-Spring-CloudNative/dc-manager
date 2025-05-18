@@ -17,13 +17,18 @@ import RackManagementModal from "@/components/DataCenterPage/RackManagementModal
 import IpSelectModal from "@/components/DataCenterPage/IpSelectModal";
 import CreateDCmodal from "@/components/DataCenterPage/DCmodal";
 // import { DataCenter } from "@/components/data/rackData";
-import { useGetDataCentersQuery } from "@/features/dataCenter/hooks/useDataCenter";
-import { useGetRoomQuery } from "@/features/Rooms/hooks/useRoom";
+import { useGetDataCentersQuery, useDeleteDataCenterMutation} from "@/features/dataCenter/hooks/useDataCenter";
+import { useGetRoomQuery, useAddRoomMutation  } from "@/features/Rooms/hooks/useRoom";
 import { useGetRackQuery } from "@/features/Racks/hooks/useRack";
 import { DataCenter } from "@/components/data/datacenter";
 import { Room } from "@/components/data/room";
 import { Rack } from "@/components/data/rack";
 
+// import for hover data center
+import { cn } from "@/lib/utils";
+
+// enable create room with room modal
+import RoomModal from "@/components/DataCenterPage/Roommodal";
 interface DataCenterComponentSectionProps {
     dataCenters: {
         left: DataCenter[];
@@ -87,18 +92,108 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         return totalRacks + 1; // Plus one for the Unit column
     };
 
+    const countTotalRoomsInDC = (dcId: number | undefined): number => {
+        if (!roomsData || dcId === undefined) {
+            return 1; // Include the Unit column
+        }
+        const roomsInDC = filterRoomsByDataCenterId(dcId);
+        return roomsInDC.length + 1; // Plus one for the Unit column
+    };
+
+    const { mutate: deleteDC, isLoading: isDeleting } = useDeleteDataCenterMutation();
+    const handleDelete = (id: number) => {
+    if (window.confirm("確定要刪除這個資料中心？")) {
+        deleteDC(id);
+    }
+    };
+
+    const { mutate: addRoom, isLoading: isAddingRoom } = useAddRoomMutation();
+    const handleEdit = (id: number) => {
+        const roomName = "room_test";
+        const unit = 9;
+        if (roomName && unit) {
+            addRoom({ name: roomName, unit: unit, dataCenterId: id });
+        }
+    }
+
+
+    const [hoveredbuttonId, setHoveredbuttonId] = useState<number | null>(null);
+    const [clickedId, setClickedId] = useState<number | null>(null);
+
+    // handel roommodal
+    const [isRoommodalOpen, setCreateModalOpen] = useState(false);
+    const [ selectedDC, setSelectedDC] = useState<DataCenter | null>(null); // optional, for editing
+
+    const handleOpenRoommodal = () => {
+        setSelectedDC(null); // reset for "create"
+        setCreateModalOpen(true);
+    };
+
+    const handleCloseRoommodal = () => {
+        setCreateModalOpen(false);
+    };
+    
     const renderDataTable = (dataCentersList: DataCenter[], side: "left" | "right") => (
+        // const [isCreateModalOpen, setCreateModalOpen] = useState(false);
+        
         dataCentersList.map((dc) => (
             <div key={`favorite-table-${side}-${dc.id}`} className={styles.tableContainer}>
                 <Table>
                     <TableHeader>
                         <TableRow>
                             <TableHead
-                                colSpan={countTotalRacksInDC(dc.id)} // ✅ 使用新的函式計算 colSpan
-                                className={styles.dcHeader}
-                            >
-                                <span className={styles.dcTitle}>{`${dc.name}`}</span>
+                                colSpan={countTotalRoomsInDC(dc.id)}
+                                // colSpan={countTotalRacksInDC(dc.id)}
+                                className={cn(
+                                    styles.dcHeader,
+                                    hoveredbuttonId === dc.id && styles.dcHeaderHovered
+                                )}
+                                onMouseEnter={() => setHoveredbuttonId(dc.id)}
+                                onMouseLeave={() => {
+                                    setHoveredbuttonId(null);
+                                    setClickedId(null);   // reset click on leave
+                                }}
+                                onClick={() => {
+                                    if (hoveredbuttonId === dc.id) setClickedId(dc.id);
+                                }}
+                                >
+                                < div>
+                                    {clickedId === dc.id && (
+                                        <div className={styles.actionButtons}>
+                                            <Button
+                                                className={styles.deletedc}
+                                                onClick={() => handleDelete(dc.id)}
+                                                disabled={isDeleting}>
+                                            刪除DC
+                                            </Button>
+                                            {/* <Button
+                                                className={`${styles.infoButton} ${styles.editButton}`}
+                                                onClick={() => {
+                                                setSelectedDC(dc);       // 設定要編輯的資料中心
+                                                setCreateModalOpen(true); // 開啟 modal
+                                                }}
+                                            >
+                                                編輯
+                                            </Button> */}
+                                            <Button
+                                                className={styles.create_room}
+                                                onClick={() => {
+                                                    setSelectedDC(dc);       // 設定要編輯的資料中心
+                                                    setCreateModalOpen(true); // 開啟 modal
+                                                    handleEdit(dc.id);
+                                                }}
+                                                disabled={isAddingRoom}>
+                                            [+]Room
+                                            </Button>
+                                        </div>
+                                    )}
+                                    <span className={styles.dcTitle}>
+                                    {hoveredbuttonId === dc.id ? "編輯DC" : dc.name}
+                                    </span>
+                                </div>
+                               {/* <span className={styles.dcTitle}>{hoveredCardId === dc.id ? "編輯DC" : dc.name}</span> */}
                             </TableHead>
+
                         </TableRow>
                         <TableRow>
                             <TableHead className={styles.unitHeader}></TableHead>
@@ -173,7 +268,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
 
 
         </Card>
-                    {isRackModalOpen.left && dataCenters.left[0] && (
+            {isRackModalOpen.left && dataCenters.left[0] && (
                 <RackManagementModal
                     isOpen={isRackModalOpen.left}
                     onClose={() => setRackModalOpen((prev) => ({ ...prev, left: false }))}
@@ -199,7 +294,14 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                     // onSave={} // Your save function
                 />
             )}
-            </>
+        <div>
+            <RoomModal
+                isOpen={isRoommodalOpen}
+                onClose={handleCloseRoommodal}
+                currentDataCenter={selectedDC}
+            />
+        </div>
+        </>
     );
 };
 

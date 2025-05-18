@@ -90,16 +90,29 @@
   .tableContainer {
     border: 1px solid #c1d5d7;
     
-    overflow-x: scroll;
+    overflow-x: auto; // allows horizontal scrolling
   }
   
   /* Table Header DC-B */
   .dcHeader {
+    // position: sticky;
+    // left: 0; 
+    position: relative;
     background-color: #46a4ad;
     border: 1px solid #c1d5d7;
     height: 2.5rem; /* h-10 */
     text-align: center;
   }
+
+  .dcHeaderHovered{
+
+    position: relative;
+    background-color: #2a6368;
+    border: 1px solid #c1d5d7;
+    height: 2.5rem; /* h-10 */
+    text-align: center;
+  }
+
   
   .dcTitle {
     font-weight: bold;
@@ -168,5 +181,46 @@
   .clickedCell {
     background-color: #a2e1e4; /* 被點擊後變藍綠色 */
   }
+
+  /* 被點擊後的文字顏色 */
+  .deletedc {
+    position: absolute;
+    top: 20%;
+    left: 6%;
+    width: 100px;
+    height: 33px;
+    background-color: #f5c9ca;
+    color: black;
+    font-weight: 400;        // font-normal
+    font-size: 1rem;         // text-base
+    font-family: 'Noto_Sans', Helvetica;
+    letter-spacing: 2px;     // tracking-[2.00px]
+    border-radius: 0;        // rounded-none
+    
+    &:hover {
+      background-color: #f5c9ca; // hover:bg-[#f5c9ca]
+    }
+  }
+
+  .create_room {
+    position: absolute;
+    top: 20%;
+    left: 84%;
+    width: 100px;
+    height: 33px;
+    background-color: #cde9ec;
+    color: black;
+    font-weight: 400;              // font-normal
+    font-size: 1rem;               // text-base
+    font-family: 'Noto_Sans', Helvetica;
+    letter-spacing: 2px;           // tracking-[2.00px]
+    border-radius: 0;              // rounded-none
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #cde9ec;   // hover:bg-[#cde9ec]
+    }
+  }
+
   
   

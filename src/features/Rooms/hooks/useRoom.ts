@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query"
-import { getRooms, getRoomById } from "../apis/room"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getRooms, getRoomById, createRoom } from "../apis/room"
 
 export function useGetRoomQuery() {
     const { data, isLoading, isError, isSuccess, error } = useQuery({
@@ -29,4 +29,16 @@ export function useGetRoomByIdQuery(id: string) {
         isSuccess,
         error,
     }
+}
+
+// add room
+export function useAddRoomMutation() {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: (data: { name: string; "unit": number; dataCenterId: number}) => createRoom(data),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["room"] })
+        },
+    })
 }
