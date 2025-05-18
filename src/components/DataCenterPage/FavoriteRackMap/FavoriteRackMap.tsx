@@ -38,6 +38,12 @@ interface DataCenterComponentSectionProps {
 
 const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({ dataCenters }) => {
     const units = ["Unit", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    const max_units = (dcId: number | undefined): string[] => {
+        const rooms = filterRoomsByDataCenterId(dcId);
+        if (!rooms || rooms.length === 0) return ["Unit", "1", "2", "3", "4", "5", "6", "7", "8", "9"]; // Default value if no rooms
+        const maxUnit = Math.max(...rooms.map(room => room.unit));
+        return ["Unit", ...Array.from({length: maxUnit}, (_, i) => (i + 1).toString())];
+    };
     const [clickedCells, setClickedCells] = useState<{ [side: string]: Set<string> }>({
         left: new Set(),
         right: new Set(),
@@ -155,7 +161,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                     if (hoveredbuttonId === dc.id) setClickedId(dc.id);
                 }}
                 >
-                <div className={styles.dcHeaderContent}>
+                
                     {clickedId === dc.id && (
                     <div className={styles.actionButtons}>
                         <Button
@@ -180,7 +186,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                     <span className={styles.dcTitle}>
                     {hoveredbuttonId === dc.id ? "編輯DC" : dc.name}
                     </span>
-                </div>
+                
                 </div>
                 <Table>
                     <TableHeader>
@@ -203,7 +209,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {units.slice(1).map((unit) => (
+                        {max_units(dc.id).slice(1).map((unit) => (
                             <TableRow key={unit}>
                                 <TableCell className={styles.unitHeader}>
                                     <span className={styles.unitTitle}>{unit}</span>
@@ -212,10 +218,17 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                                     filterRacksByRoomId(room.id).map((rack) => {
                                         const cellKey = `${dc.id}-${unit}-${room.name}-${rack.name}-${side}`;
                                         const isClicked = clickedCells[side]?.has(cellKey);
+                                        const isDisabled = room.unit < parseInt(unit);
+                                        
                                         return (
                                             <TableCell
                                                 key={cellKey}
-                                                onClick={() => handleCellClick(side, cellKey)}
+                                                onClick={isDisabled ? undefined : () => handleCellClick(side, cellKey)}
+                                                // className={cn(
+                                                //     styles.unitCell,
+                                                //     isClicked && styles.clickedCell,
+                                                //     isDisabled && styles.disabledCell
+                                                // )}
                                                 className={`${styles.unitCell} ${isClicked ? styles.clickedCell : ""}`}
                                             />
                                         );
