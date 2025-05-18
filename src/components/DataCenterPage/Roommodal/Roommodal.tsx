@@ -9,8 +9,6 @@ import {
   useUpdateDataCenterMutation,
 } from "@/features/dataCenter/hooks/useDataCenter";
 import { useAddRoomMutation } from "@/features/Rooms/hooks/useRoom";
-import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet";
-
 
 interface RoomModalProps {
   isOpen: boolean;
@@ -39,22 +37,28 @@ const RoomModal: React.FC<RoomModalProps> = ({
 
   const createMutation = useAddRoomMutation();
   const updateMutation = useUpdateDataCenterMutation();
-  const { data: subnets, isLoading: isLoadingSubnets } = useGetSubnetsQuery();
+
   // initialization
   useEffect(() => {
-    {setForm({
+    setForm({
       room: {
         name: "",
-        unit: Number(10),
+        unit: 9,
       }
-    })}
+    });
   }, [currentDataCenter, isOpen]);
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]: name === "unit" ? Number(value) : value,
+      room: {
+        ...prev.room,
+        [name]: name === "unit"
+          ? value === "" ? "" : Number(value)
+          : value
+      },
     }));
   };
 
