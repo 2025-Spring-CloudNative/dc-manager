@@ -166,21 +166,12 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                                                 disabled={isDeleting}>
                                             刪除DC
                                             </Button>
-                                            {/* <Button
-                                                className={`${styles.infoButton} ${styles.editButton}`}
-                                                onClick={() => {
-                                                setSelectedDC(dc);       // 設定要編輯的資料中心
-                                                setCreateModalOpen(true); // 開啟 modal
-                                                }}
-                                            >
-                                                編輯
-                                            </Button> */}
                                             <Button
                                                 className={styles.create_room}
                                                 onClick={() => {
                                                     setSelectedDC(dc);       // 設定要編輯的資料中心
                                                     setCreateModalOpen(true); // 開啟 modal
-                                                    handleEdit(dc.id);
+                                                    // handleEdit(dc.id);
                                                 }}
                                                 disabled={isAddingRoom}>
                                             [+]Room

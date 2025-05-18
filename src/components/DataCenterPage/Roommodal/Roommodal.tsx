@@ -31,11 +31,10 @@ const RoomModal: React.FC<RoomModalProps> = ({
   const isEditMode = !!currentDataCenter;
 
   const [form, setForm] = useState({
-    dataCenter: {
+    room: {
       name: "",
-      location: "",
-    },
-    subnetCidr: "",
+      unit: 10,
+    }
   });
 
   const createMutation = useAddRoomMutation();
@@ -43,59 +42,36 @@ const RoomModal: React.FC<RoomModalProps> = ({
   const { data: subnets, isLoading: isLoadingSubnets } = useGetSubnetsQuery();
   // initialization
   useEffect(() => {
-    if (currentDataCenter) {
-      setForm({
-        dataCenter: {
-          name: currentDataCenter.name,
-          location: currentDataCenter.location,
-        },
-        subnetCidr: currentDataCenter.subnetCidr || "",
-      });
-    } else {
-      setForm({
-        dataCenter: {
-          name: "",
-          location: "",
-        },
-        subnetCidr: "",
-      });
-    }
+    {setForm({
+      room: {
+        name: "",
+        unit: Number(10),
+      }
+    })}
   }, [currentDataCenter, isOpen]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === "name" || name === "location") {
-      setForm((prev) => ({
-        ...prev,
-        dataCenter: {
-          ...prev.dataCenter,
-          [name]: value,
-        },
-      }));
-    } else {
-      setForm((prev) => ({ ...prev, [name]: value }));
-    }
+    setForm((prev) => ({
+      ...prev,
+      [name]: name === "unit" ? Number(value) : value,
+    }));
   };
 
   const handleSubmit = async () => {
+    if (!currentDataCenter) return alert("請先選擇資料中心");
+
     try {
-      if (isEditMode && currentDataCenter) {
-        await updateMutation.mutateAsync({
-          id: currentDataCenter.id.toString(),
-          data: {
-            name: form.dataCenter.name,
-            location: form.dataCenter.location,
-          },
-        });
-        alert("資料中心已更新！");
-      } else {
-        await createMutation.mutateAsync(form);
-        alert("資料中心創建成功！");
-      }
+      await createMutation.mutateAsync({
+        name: form.room.name,
+        unit: form.room.unit,
+        dataCenterId: currentDataCenter.id,
+      });
+      alert("房間創建成功！");
       onClose();
     } catch (error) {
-      console.error("儲存失敗", error);
-      alert("儲存失敗，請檢查資料");
+      console.error("創建失敗", error);
+      alert("創建失敗，請檢查資料");
     }
   };
 
@@ -130,17 +106,17 @@ const RoomModal: React.FC<RoomModalProps> = ({
               name="name"
               placeholder="輸入房間名稱"
               className={styles.inputField}
-              value={form.dataCenter.name}
+              value={form.room.name}
               onChange={handleChange}
             />
 
             <label className={styles.inputFont}>房間高度</label>
             <Input
-              type="text"
-              name="location"
+              type="number"
+              name="unit"
               placeholder="輸入DC高度"
               className={styles.inputField}
-              value={form.dataCenter.location}
+              value={form.room.unit.toString()}
               onChange={handleChange}
             />
           </div>
