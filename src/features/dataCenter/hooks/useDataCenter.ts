@@ -24,7 +24,7 @@ export function useGetDataCentersQuery() {
 }
 
 // Get by ID
-export function useGetDataCenterByIdQuery(id: string) {
+export function useGetDataCenterByIdQuery(id: number) {
   return useQuery({
     queryKey: ["dataCenter", id],
     queryFn: () => getDataCenterById(id),
@@ -65,7 +65,7 @@ export function useDeleteDataCenterMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => deleteDataCenter(id),
+    mutationFn: (id: number) => deleteDataCenter(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["dataCenter"] });
     },

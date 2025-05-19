@@ -15,7 +15,7 @@ import { useGetDataCentersQuery, useDeleteDataCenterMutation } from "@/features/
 import CreateDCmodal from "@/components/DataCenterPage/DCmodal";
 import { useGetRoomQuery } from "@/features/Rooms/hooks/useRoom"; 
 import { useGetRackQuery } from "@/features/Racks/hooks/useRack";
-import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet";
+import { useGetSubnetsQuery,useGetSubnetByIdQuery } from "@/features/subnet/hooks/useSubnet";
 
 import { AxiosError } from 'axios';
 import { DataCenter } from "@/components/data/datacenter";
@@ -45,6 +45,24 @@ const RoomCountCell: React.FC<RoomCountCellProps> = ({ dcId }) => {
     </>
   );
 };
+
+interface SubnetCidrCellProps {
+  subnetId?: number;
+}
+
+const SubnetCidrCell: React.FC<SubnetCidrCellProps> = ({ subnetId }) => {
+  if (!subnetId) return <TableCell>-</TableCell>;
+
+  const { data: subnet, isLoading, isError } = useGetSubnetByIdQuery(subnetId);
+
+  if (isLoading) return <TableCell>Loading...</TableCell>;
+  if (isError) return <TableCell>Error</TableCell>;
+
+  return <TableCell>{subnet?.cidr || "-"}</TableCell>;
+};
+
+
+
 
 interface RackSummaryTableProps {
   onAddToLeft: (dataCenter: DataCenter) => void;
@@ -124,14 +142,12 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
             })()}
             {dataCenters && dataCenters.map((dc, index) => 
               {
-                const subnet = subnets?.find((s) => s.id === dc.subnetId)
                 return(
                     <TableRow key={index}>
                       <TableCell>{dc.name}</TableCell>
                       <TableCell>{dc.location}</TableCell>
-                      <TableCell>{subnet.cidr}</TableCell>
+                      <SubnetCidrCell subnetId={dc.subnetId} />
                       <RoomCountCell dcId={dc.id} />
-
                       <TableCell>
                         <div className={styles.favoriteGroup}>
                           <Button

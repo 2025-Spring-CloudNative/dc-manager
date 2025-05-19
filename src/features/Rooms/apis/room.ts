@@ -26,3 +26,13 @@ export async function getRoomById(id: string) {
         throw error
     }
 }
+
+export async function createRoom(data: { name: string; "unit": number; dataCenterId: number }) {
+    try {
+        const response = await apiInstance.post("/", data)
+        return response.data
+    } catch (error) {
+        console.error("Error creating room:", error)
+        throw error
+    }
+}
