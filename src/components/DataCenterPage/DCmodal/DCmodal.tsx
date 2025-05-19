@@ -18,7 +18,7 @@ interface DataCenterModalProps {
     id: number;
     name: string;
     location: string;
-    subnetCidr?: string; // optional for backward compatibility
+    subnetId?: string; // optional for backward compatibility
   } | null;
 }
 
@@ -34,7 +34,7 @@ const DataCenterModal: React.FC<DataCenterModalProps> = ({
       name: "",
       location: "",
     },
-    subnetCidr: "",
+    subnetId: "",
   });
 
   const createMutation = useCreateDataCenterMutation();
@@ -48,7 +48,7 @@ const DataCenterModal: React.FC<DataCenterModalProps> = ({
           name: currentDataCenter.name,
           location: currentDataCenter.location,
         },
-        subnetCidr: currentDataCenter.subnetCidr || "",
+        subnetId: currentDataCenter.subnetId || "",
       });
     } else {
       setForm({
@@ -56,7 +56,7 @@ const DataCenterModal: React.FC<DataCenterModalProps> = ({
           name: "",
           location: "",
         },
-        subnetCidr: "",
+        subnetId: "",
       });
     }
   }, [currentDataCenter, isOpen]);
@@ -146,9 +146,9 @@ const DataCenterModal: React.FC<DataCenterModalProps> = ({
           <label className={styles.inputFont}>DC Subnet CIDR</label>
           <div className={styles.subnetSelectContainer}>
           <select
-            name="subnetCidr"
+            name="subnetId"
             className={styles.subnetSelect}
-            value={form.subnetCidr}
+            value={form.subnetId}
             onChange={handleChange}
             disabled={isLoadingSubnets}
           >
