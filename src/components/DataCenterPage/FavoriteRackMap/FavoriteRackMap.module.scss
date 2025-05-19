@@ -285,3 +285,28 @@
     background-color: #cde9ec; // hover:bg-[#cde9ec]
   }
 }
+.rackHeader {
+  background-color: #effdff;
+  border: 1px solid #c1d5d7;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #2a6368;
+
+    .rackTitle {
+      color: white;
+      font-weight: 600;
+    }
+  }
+
+  &.clicked {
+    background-color: #2a6368;
+
+    .rackTitle {
+      color: white;
+      font-weight: 600;
+    }
+  }
+}
