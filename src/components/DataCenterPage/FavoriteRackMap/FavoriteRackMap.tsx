@@ -17,13 +17,18 @@ import RackManagementModal from "@/components/DataCenterPage/RackManagementModal
 import IpSelectModal from "@/components/DataCenterPage/IpSelectModal";
 import CreateDCmodal from "@/components/DataCenterPage/DCmodal";
 // import { DataCenter } from "@/components/data/rackData";
-import { useGetDataCentersQuery } from "@/features/dataCenter/hooks/useDataCenter";
-import { useGetRoomQuery } from "@/features/Rooms/hooks/useRoom";
+import { useGetDataCentersQuery, useDeleteDataCenterMutation} from "@/features/dataCenter/hooks/useDataCenter";
+import { useGetRoomQuery, useAddRoomMutation  } from "@/features/Rooms/hooks/useRoom";
 import { useGetRackQuery } from "@/features/Racks/hooks/useRack";
 import { DataCenter } from "@/components/data/datacenter";
 import { Room } from "@/components/data/room";
 import { Rack } from "@/components/data/rack";
 
+// import for hover data center
+import { cn } from "@/lib/utils";
+
+// enable create room with room modal
+import RoomModal from "@/components/DataCenterPage/Roommodal";
 interface DataCenterComponentSectionProps {
     dataCenters: {
         left: DataCenter[];
@@ -33,6 +38,12 @@ interface DataCenterComponentSectionProps {
 
 const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({ dataCenters }) => {
     const units = ["Unit", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    const max_units = (dcId: number | undefined): string[] => {
+        const rooms = filterRoomsByDataCenterId(dcId);
+        if (!rooms || rooms.length === 0) return ["Unit", "1", "2", "3", "4", "5", "6", "7", "8", "9"]; // Default value if no rooms
+        const maxUnit = Math.max(...rooms.map(room => room.unit));
+        return ["Unit", ...Array.from({length: maxUnit}, (_, i) => (i + 1).toString())];
+    };
     const [clickedCells, setClickedCells] = useState<{ [side: string]: Set<string> }>({
         left: new Set(),
         right: new Set(),
@@ -87,19 +98,99 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         return totalRacks + 1; // Plus one for the Unit column
     };
 
+    const countTotalRoomsInDC = (dcId: number | undefined): number => {
+        if (!roomsData || dcId === undefined) {
+            return 1; // Include the Unit column
+        }
+        const roomsInDC = filterRoomsByDataCenterId(dcId);
+        return roomsInDC.length + 1; // Plus one for the Unit column
+    };
+
+    const { mutate: deleteDC, isLoading: isDeleting } = useDeleteDataCenterMutation();
+    const handleDelete = (id: number) => {
+    if (window.confirm("確定要刪除這個資料中心？")) {
+        deleteDC(id);
+    }
+    };
+
+    const { mutate: addRoom, isLoading: isAddingRoom } = useAddRoomMutation();
+    const handleEdit = (id: number) => {
+        const roomName = "room_test";
+        const unit = 9;
+        if (roomName && unit) {
+            addRoom({ name: roomName, unit: unit, dataCenterId: id });
+        }
+    }
+
+
+    const [hoveredbuttonId, setHoveredbuttonId] = useState<number | null>(null);
+    const [clickedId, setClickedId] = useState<number | null>(null);
+
+    // handel roommodal
+    const [isRoommodalOpen, setCreateModalOpen] = useState(false);
+    const [ selectedDC, setSelectedDC] = useState<DataCenter | null>(null); // optional, for editing
+
+    const handleOpenRoommodal = () => {
+        setSelectedDC(null); // reset for "create"
+        setCreateModalOpen(true);
+    };
+
+    const handleCloseRoommodal = () => {
+        setCreateModalOpen(false);
+    };
+    
     const renderDataTable = (dataCentersList: DataCenter[], side: "left" | "right") => (
+        // const [isCreateModalOpen, setCreateModalOpen] = useState(false);
+        
         dataCentersList.map((dc) => (
+            
             <div key={`favorite-table-${side}-${dc.id}`} className={styles.tableContainer}>
+    
+                {/* ✅ Custom header placed ABOVE the table */}
+                <div
+                className={cn(
+                    styles.dcHeader,
+                    hoveredbuttonId === dc.id && styles.dcHeaderHovered
+                )}
+                onMouseEnter={() => setHoveredbuttonId(dc.id)}
+                onMouseLeave={() => {
+                    setHoveredbuttonId(null);
+                    setClickedId(null);
+                }}
+                onClick={() => {
+                    if (hoveredbuttonId === dc.id) setClickedId(dc.id);
+                }}
+                >
+                
+                    {clickedId === dc.id && (
+                    <div className={styles.actionButtons}>
+                        <Button
+                        className={styles.deletedc}
+                        onClick={() => handleDelete(dc.id)}
+                        disabled={isDeleting}
+                        >
+                        刪除DC
+                        </Button>
+                        <Button
+                        className={styles.create_room}
+                        onClick={() => {
+                            setSelectedDC(dc);
+                            setCreateModalOpen(true);
+                        }}
+                        disabled={isAddingRoom}
+                        >
+                        [+]Room
+                        </Button>
+                    </div>
+                    )}
+                    <span className={styles.dcTitle}>
+                    {hoveredbuttonId === dc.id ? "編輯DC" : dc.name}
+                    </span>
+                
+                </div>
                 <Table>
                     <TableHeader>
-                        <TableRow>
-                            <TableHead
-                                colSpan={countTotalRacksInDC(dc.id)} // ✅ 使用新的函式計算 colSpan
-                                className={styles.dcHeader}
-                            >
-                                <span className={styles.dcTitle}>{`${dc.name}`}</span>
-                            </TableHead>
-                        </TableRow>
+                        
                         <TableRow>
                             <TableHead className={styles.unitHeader}></TableHead>
                             {filterRoomsByDataCenterId(dc.id).map((room) => renderRoomHeaders(room))}
@@ -118,7 +209,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {units.slice(1).map((unit) => (
+                        {max_units(dc.id).slice(1).map((unit) => (
                             <TableRow key={unit}>
                                 <TableCell className={styles.unitHeader}>
                                     <span className={styles.unitTitle}>{unit}</span>
@@ -127,10 +218,17 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                                     filterRacksByRoomId(room.id).map((rack) => {
                                         const cellKey = `${dc.id}-${unit}-${room.name}-${rack.name}-${side}`;
                                         const isClicked = clickedCells[side]?.has(cellKey);
+                                        const isDisabled = room.unit < parseInt(unit);
+                                        
                                         return (
                                             <TableCell
                                                 key={cellKey}
-                                                onClick={() => handleCellClick(side, cellKey)}
+                                                onClick={isDisabled ? undefined : () => handleCellClick(side, cellKey)}
+                                                // className={cn(
+                                                //     styles.unitCell,
+                                                //     isClicked && styles.clickedCell,
+                                                //     isDisabled && styles.disabledCell
+                                                // )}
                                                 className={`${styles.unitCell} ${isClicked ? styles.clickedCell : ""}`}
                                             />
                                         );
@@ -173,7 +271,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
 
 
         </Card>
-                    {isRackModalOpen.left && dataCenters.left[0] && (
+            {isRackModalOpen.left && dataCenters.left[0] && (
                 <RackManagementModal
                     isOpen={isRackModalOpen.left}
                     onClose={() => setRackModalOpen((prev) => ({ ...prev, left: false }))}
@@ -199,7 +297,14 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                     // onSave={} // Your save function
                 />
             )}
-            </>
+        <div>
+            <RoomModal
+                isOpen={isRoommodalOpen}
+                onClose={handleCloseRoommodal}
+                currentDataCenter={selectedDC}
+            />
+        </div>
+        </>
     );
 };
 

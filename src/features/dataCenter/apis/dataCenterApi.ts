@@ -50,7 +50,7 @@ export async function updateDataCenter(id: string, data: { name: string; locatio
   }
 }
 
-export async function deleteDataCenter(id: string) {
+export async function deleteDataCenter(id: number) {
   try {
     const response = await apiInstance.delete(`/${id}`);
     return response.data;

@@ -65,7 +65,7 @@ export function useDeleteDataCenterMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => deleteDataCenter(id),
+    mutationFn: (id: number) => deleteDataCenter(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["dataCenter"] });
     },
