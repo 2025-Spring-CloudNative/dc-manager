@@ -1,5 +1,5 @@
 import { XIcon } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect} from "react";
 import Button from "@/components/shared/Button";
 import Card from "@/components/DataCenterPage/Card";
 import Separator from "@/components/shared/Separator";
@@ -36,6 +36,10 @@ import { Room } from "@/components/data/room";
 import { Rack } from "@/components/data/rack";
 import CreateModal from "@/components/shared/CreateModal";
 import { useDeleteRoomMutation } from "@/features/Rooms/hooks/useRoom";
+
+import { getMachines } from "@/features/Machine/hooks/useMachine"; // 你自己定義的 api 檔案
+import { Machine } from "@/features/Machine/types"; // machine 型別
+
 
 // import for hover data center
 import { cn } from "@/lib/utils";
@@ -142,6 +146,18 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         pos: { top: number; left: number };
     }>({ roomId: null, pos: { top: 0, left: 0 } });
 
+
+
+    const [machines, setMachines] = useState<Machine[]>([]);
+
+    useEffect(() => {
+      getMachines()
+        .then(setMachines)
+        .catch((err) => {
+          console.error("❌ 無法取得 machines 資料", err);
+        });
+    }, []);
+    
     // ✅ 在元件頂層呼叫 useQuery 來獲取房間和機櫃資料
     const {
         data: roomsData,
@@ -154,8 +170,27 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         isError: isErrorRacks,
     } = useGetRackQuery();
     const { mutate: deleteRoombyID } = useDeleteRoomMutation();
-    const { mutate: deleteRackbyID } = useDeleteRackMutation(); 
+    const { mutate: deleteRackbyID } = useDeleteRackMutation();
 
+    const isMachineInCell = (
+        rackId: number,
+        unit: number // unit number from current row
+      ) => {
+        return machines.some((machine) => {
+          if (machine.rackId !== rackId) return false;
+          const start = machine.startUnit;
+          const end = start + machine.unit - 1;
+          return unit >= start && unit <= end;
+        });
+      };
+      const getMachineInCell = (rackId: number, unit: number): Machine | undefined => {
+        return machines.find((machine) => {
+          const start = machine.startUnit;
+          const end = start + machine.unit - 1;
+          return machine.rackId === rackId && unit >= start && unit <= end;
+        });
+      };
+      
     const handleCellClick = (localSide: "left" | "right", cellKey: string) => {
         setClickedCells((prev) => {
             const newSet = new Set(prev[localSide]);
@@ -236,63 +271,63 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     const renderRackHeaders = (room: Room) => {
         const racks = filterRacksByRoomId(room.id);
         return racks.map((rack) => {
-          const isClicked = clickedRackId === rack.id;
-          const isHovered = hoveredRackId === rack.id;
-      
-          const handleClick = (e: React.MouseEvent) => {
-            e.stopPropagation();
-            const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-            const top = rect.bottom + window.scrollY;
-            const left = rect.left + rect.width / 2 + window.scrollX;
-      
-            const isSame = clickedRackId === rack.id;
-            setClickedRackId(isSame ? null : rack.id);
-            setRackMenuOverlay(
-              isSame
-                ? { rackId: null, pos: { top: 0, left: 0 } }
-                : { rackId: rack.id, pos: { top, left } }
+            const isClicked = clickedRackId === rack.id;
+            const isHovered = hoveredRackId === rack.id;
+
+            const handleClick = (e: React.MouseEvent) => {
+                e.stopPropagation();
+                const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                const top = rect.bottom + window.scrollY;
+                const left = rect.left + rect.width / 2 + window.scrollX;
+
+                const isSame = clickedRackId === rack.id;
+                setClickedRackId(isSame ? null : rack.id);
+                setRackMenuOverlay(
+                    isSame
+                        ? { rackId: null, pos: { top: 0, left: 0 } }
+                        : { rackId: rack.id, pos: { top, left } }
+                );
+            };
+
+            const handleDelete = () => {
+                deleteRackbyID(rack.id.toString());
+            };
+
+            const handleAddHost = () => {
+                console.log("新增Host到Rack", rack.id);
+            };
+
+            const handleCloseMenu = () => {
+                setClickedRackId(null);
+                setRackMenuOverlay({ rackId: null, pos: { top: 0, left: 0 } });
+            };
+
+            return (
+                <TableHead
+                    key={`${room.name}-${rack.name}`}
+                    className={`${styles.rackHeader} ${isClicked ? styles.clicked : ""}`}
+                    onClick={handleClick}
+                    onMouseEnter={() => setHoveredRackId(rack.id)}
+                    onMouseLeave={() => setHoveredRackId(null)}
+                >
+                    <span className={styles.rackTitle}>
+                        {isClicked || isHovered ? "編輯Rack" : rack.name}
+                    </span>
+
+                    {rackMenuOverlay.rackId === rack.id && (
+                        <RackActionMenu
+                            top={rackMenuOverlay.pos.top}
+                            left={rackMenuOverlay.pos.left}
+                            onDelete={handleDelete}
+                            onAddHost={handleAddHost}
+                            onCloseMenu={handleCloseMenu}
+                        />
+                    )}
+                </TableHead>
             );
-          };
-      
-          const handleDelete = () => {
-            deleteRackbyID(rack.id.toString());
-          };
-      
-          const handleAddHost = () => {
-            console.log("新增Host到Rack", rack.id);
-          };
-      
-          const handleCloseMenu = () => {
-            setClickedRackId(null);
-            setRackMenuOverlay({ rackId: null, pos: { top: 0, left: 0 } });
-          };
-      
-          return (
-            <TableHead
-              key={`${room.name}-${rack.name}`}
-              className={`${styles.rackHeader} ${isClicked ? styles.clicked : ""}`}
-              onClick={handleClick}
-              onMouseEnter={() => setHoveredRackId(rack.id)}
-              onMouseLeave={() => setHoveredRackId(null)}
-            >
-              <span className={styles.rackTitle}>
-                {isClicked || isHovered ? "編輯Rack" : rack.name}
-              </span>
-      
-              {rackMenuOverlay.rackId === rack.id && (
-                <RackActionMenu
-                  top={rackMenuOverlay.pos.top}
-                  left={rackMenuOverlay.pos.left}
-                  onDelete={handleDelete}
-                  onAddHost={handleAddHost}
-                  onCloseMenu={handleCloseMenu}
-                />
-              )}
-            </TableHead>
-          );
         });
-      };
-      
+    };
+    // console.log(machines)
     const { mutate: deleteDC, isLoading: isDeleting } =
         useDeleteDataCenterMutation();
     const handleDelete = (id: number) => {
@@ -301,7 +336,6 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         }
     };
 
-    const { mutate: addRoom, isLoading: isAddingRoom } = useAddRoomMutation();
     // const { mutate: addRack, isLoading: isAddingRack } = useAddRackMutation();
 
     const [hoveredbuttonId, setHoveredbuttonId] = useState<number | null>(null);
@@ -360,7 +394,6 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                                     setSelectedDC(dc);
                                     setCreateModalOpen(true);
                                 }}
-                                disabled={isAddingRoom}
                             >
                                 [+]Room
                             </Button>
@@ -387,45 +420,44 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
 
                     </TableHeader>
                     <TableBody>
-                        {max_units(dc.id)
-                            .slice(1)
-                            .map((unit) => (
-                                <TableRow key={unit}>
-                                    <TableCell className={styles.unitHeader}>
-                                        <span className={styles.unitTitle}>{unit}</span>
-                                    </TableCell>
-                                    {filterRoomsByDataCenterId(dc.id).flatMap((room) =>
-                                        filterRacksByRoomId(room.id).map((rack) => {
-                                            const cellKey = `${dc.id}-${unit}-${room.name}-${rack.name}-${side}`;
-                                            const isClicked = clickedCells[side]?.has(cellKey);
-                                            const isDisabled = room.unit < parseInt(unit);
-
-                                            return (
-                                                <TableCell
-                                                    key={cellKey}
-                                                    onClick={
-                                                        isDisabled
-                                                            ? undefined
-                                                            : () => handleCellClick(side, cellKey)
-                                                    }
-                                                    // className={cn(
-                                                    //     styles.unitCell,
-                                                    //     isClicked && styles.clickedCell,
-                                                    //     isDisabled && styles.disabledCell
-                                                    // )}
-                                                    className={`${styles.unitCell} ${isClicked ? styles.clickedCell : ""
-                                                        }`}
-                                                />
-                                            );
-                                        })
-                                    )}
-                                </TableRow>
-                            ))}
+                        {max_units(dc.id).slice(1).map((unit) => (
+                            <TableRow key={unit}>
+                                <TableCell className={styles.unitHeader}>
+                                    <span className={styles.unitTitle}>{unit}</span>
+                                </TableCell>
+                                {filterRoomsByDataCenterId(dc.id).flatMap((room) =>
+                                    filterRacksByRoomId(room.id).map((rack) => {
+                                        const cellKey = `${dc.id}-${unit}-${room.name}-${rack.name}-${side}`;
+                                        const isClicked = clickedCells[side]?.has(cellKey);
+                                        const isDisabled = room.unit < parseInt(unit);
+                                        const unitNum = parseInt(unit); // "3" → 3
+                                        const machineInThisCell = getMachineInCell(rack.id, unitNum);
+                                        const isStartUnit = machineInThisCell?.startUnit === unitNum;
+                                        
+                                        return (
+                                            <TableCell
+                                            key={cellKey}
+                                            onClick={isDisabled ? undefined : () => handleCellClick(side, cellKey)}
+                                            className={cn(
+                                                styles.unitCell,
+                                                isClicked && styles.clickedCell,
+                                                isDisabled && styles.disabledCell,
+                                                machineInThisCell && styles.hasMachine // ✅ 新增
+                                            )}
+                                            >     {isStartUnit && (
+                                                <span className={styles.machineLabel}>
+                                                  {machineInThisCell.name}
+                                                </span>
+                                              )}</TableCell>
+                                        );
+                                    })
+                                )}
+                            </TableRow>
+                        ))}
                     </TableBody>
                 </Table>
             </div>
         ));
-
     return (
         <>
             <Card className={styles.combinedComponentCard}>

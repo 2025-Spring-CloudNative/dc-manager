@@ -310,3 +310,25 @@
     }
   }
 }
+.hasMachine {
+  background-color: #f6d776 !important; // 黃色背景，可自行修改
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border: 2px dashed #b77b00;
+    border-radius: 4px;
+  }
+}
+.machineLabel {
+  font-size: 1.5rem;
+  // font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  max-width: 100%;
+}
