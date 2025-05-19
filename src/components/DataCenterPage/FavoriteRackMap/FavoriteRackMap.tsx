@@ -1,5 +1,5 @@
 import { XIcon } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Button from "@/components/shared/Button";
 import Card from "@/components/DataCenterPage/Card";
 import Separator from "@/components/shared/Separator";
@@ -52,6 +52,13 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         left: false,
         right: false,
     });
+    const [clickedRoomId, setClickedRoomId] = useState<number | null>(null);
+    const [hoveredRoomId, setHoveredRoomId] = useState<number | null>(null);
+    const overlayRef = useRef<HTMLDivElement | null>(null);
+    const [overlayInfo, setOverlayInfo] = useState<{
+        roomId: number | null;
+        pos: { top: number; left: number };
+    }>({ roomId: null, pos: { top: 0, left: 0 } });
 
     // ✅ 在元件頂層呼叫 useQuery 來獲取房間和機櫃資料
     const { data: roomsData, isLoading: isLoadingRooms, isError: isErrorRooms } = useGetRoomQuery();
@@ -77,11 +84,76 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     const renderRoomHeaders = (rooms: Room) => {
         const rackData = racksData ? racksData.filter((rack: Rack) => rooms.id === rack.roomId) : [];
         const rackCount = rackData.length;
+        const isClicked = clickedRoomId === rooms.id;
+        const isHovered = hoveredRoomId === rooms.id;
+        
+        const handleClick = (e: React.MouseEvent) => {
+            e.stopPropagation();
+            const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+            console.log("rect =", rect);
+            setHoveredRoomId(null);
+            setClickedRoomId((prev) => (prev === rooms.id ? null : rooms.id));
+            const top = rect.bottom + window.scrollY;
+            const left = rect.left + rect.width / 2 + window.scrollX;
+            setOverlayInfo(() => ({
+                roomId: clickedRoomId === rooms.id ? null : rooms.id,
+                pos: { top, left },
+            }));
+            console.log(`Room ID: ${rooms.id} ${rooms.name} overlayinfo:`, overlayInfo, window.scrollY);
+            
+        };
+        const handleSubButtonClick = (e: React.MouseEvent, action: string) => {
+            e.stopPropagation();
+            if (action === "delete") {
+                console.log(`刪除Room: ${clickedRoomId}`);
+            } else if (action === "add") {
+                console.log(`新增Rack到Room: ${clickedRoomId}`);
+            }
+        };
 
         return (
-            <TableHead key={rooms.id} colSpan={rackCount} className={styles.roomHeader}>
-                <span className={styles.roomTitle}>{rooms.name}</span>
+            <TableHead key={rooms.id} colSpan={rackCount} className={`${styles.roomHeader} ${isClicked ? styles.clicked : ""}`} onClick={handleClick}
+                onMouseEnter={() => {if (clickedRoomId === null) setHoveredRoomId(rooms.id)}} onMouseLeave={() => {if (clickedRoomId === null) setHoveredRoomId(null)}}>
+                
+                <div className={styles.roomContent}>
+                    <span className={styles.roomTitle}> 
+                         {isClicked ? "編輯Room" : isHovered ? "編輯Room" : rooms.name}
+                    </span>
+                    {overlayInfo.roomId !== null && (
+                        <div
+                        className={styles.roomButtonEdit}
+                        ref={overlayRef}
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                          position: "fixed",
+                          top: overlayInfo.pos.top,
+                          left: overlayInfo.pos.left,
+                          zIndex: 100,
+                        }}
+                      >
+                        <div className={styles.div}>
+                          <button
+                            className={styles.delRoom}
+                            onClick={(e) => handleSubButtonClick(e, "delete")}
+                            style={{ top: "16px" }} 
+                          >
+                            <span className={styles.subButtonTitle}>刪除Room</span>
+                          </button>
+                          <button
+                            className={styles.addRack}
+                            onClick={(e) => handleSubButtonClick(e, "add")}
+                            style={{ top: "55px" }} 
+                          >
+                            <span className={styles.subButtonTitle}>[+]Rack</span>
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                </div>
+
             </TableHead>
+            
+           
         );
     };
 

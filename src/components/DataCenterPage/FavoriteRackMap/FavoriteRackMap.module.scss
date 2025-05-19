@@ -125,6 +125,8 @@
     letter-spacing: 2px;
     padding: 0;
   }
+
+
   
   /* Room Header */
   .roomHeader {
@@ -133,7 +135,76 @@
     height: 2.5rem;
     border: 1px solid #c1d5d7;
     text-align: center;
+    padding: 0;
+
+    &:hover {
+      background-color: #2a6368;
+      .roomTitle {
+        color: #ffffff;
+        font-weight: 600;
+      }
+    }
+
+    &.clicked {
+      background-color: #2a6368;
+      .roomTitle {
+        color: #ffffff;
+        font-weight: 600;
+      }
+    }
+
+    .subButtonTitle {
+      font-weight: 400;
+      font-size: 1rem; /* text-base */
+      text-align: center;
+      color: #000000;
+    }
+
+
+  .roomContent {
+    position: relative; 
+
   }
+
+  .roomButtonEdit{
+    position: fixed;
+    z-index: 100;
+    display: block;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px; 
+    border: 1px solid #2a6368;
+    background-color: #63cacf;
+    border-radius: 0px;
+    width: 103px;
+    height: 102px;
+  }
+  .delRoom{
+      height: 33px;
+      width: 80px;
+      left: 13px;
+      position: absolute;
+      border: none;
+      cursor: pointer;
+      background: none;
+      background-color: #f5caca;
+      border-radius: 0px;
+      
+    }
+  .addRack{
+      height: 33px;
+      width: 80px;
+      left: 13px;
+      position: absolute;
+      border: none;
+      cursor: pointer;
+      background: none;
+      background-color: #cde9ec;
+      border-radius: 0px;
+    }
+      
+    
+  
   
   .unitHeader {
     width: 80px;
