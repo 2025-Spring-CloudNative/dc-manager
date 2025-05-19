@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { DataCenter } from "../types";
 const apiInstance = axios.create({
   baseURL: "http://140.112.90.37:4000/data-center",
   headers: {
@@ -27,10 +27,7 @@ export async function getDataCenterById(id: number) {
   }
 }
 
-export async function createDataCenter(data: {
-  dataCenter: { name: string; location: string };
-  subnetCidr: string;
-}) {
+export async function createDataCenter(data: DataCenter): Promise<DataCenter> {
   try {
     const response = await apiInstance.post("/", data);
     return response.data;

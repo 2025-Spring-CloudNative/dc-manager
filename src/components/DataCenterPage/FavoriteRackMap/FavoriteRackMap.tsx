@@ -219,21 +219,28 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                                         const isDisabled = room.unit < parseInt(unit);
                                         
                                         return (
+                                            <>
                                             <TableCell
                                                 key={cellKey}
                                                 onClick={isDisabled ? undefined : () => handleCellClick(side, cellKey)}
-                                                // className={cn(
-                                                //     styles.unitCell,
-                                                //     isClicked && styles.clickedCell,
-                                                //     isDisabled && styles.disabledCell
-                                                // )}
+                                                className={cn(
+                                                    styles.unitCell,
+                                                    isClicked && styles.clickedCell,
+                                                    isDisabled && styles.disabledCell
+                                                )}
                                                 className={`${styles.unitCell} ${isClicked ? styles.clickedCell : ""}`}
+
                                             />
+                                            
+                                            </>
                                         );
                                     })
                                 )}
+                                {/* <TableCell className={styles.unitHeader}></TableCell> */}
                             </TableRow>
+                            
                         ))}
+                        
                     </TableBody>
                 </Table>
             </div>

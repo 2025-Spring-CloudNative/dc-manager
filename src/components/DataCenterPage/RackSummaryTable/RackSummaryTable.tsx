@@ -58,7 +58,7 @@ const SubnetCidrCell: React.FC<SubnetCidrCellProps> = ({ subnetId }) => {
   if (isLoading) return <TableCell>Loading...</TableCell>;
   if (isError) return <TableCell>Error</TableCell>;
 
-  return <TableCell>{subnet?.cidr || "-"}</TableCell>;
+  return <TableCell>id = {subnet?.id},  cidr = {subnet?.cidr || "-"}</TableCell>;
 };
 
 

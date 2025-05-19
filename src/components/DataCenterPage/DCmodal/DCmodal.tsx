@@ -144,6 +144,7 @@ const DataCenterModal: React.FC<DataCenterModalProps> = ({
             />
 
           <label className={styles.inputFont}>DC Subnet CIDR</label>
+          <div className={styles.subnetSelectContainer}>
           <select
             name="subnetCidr"
             className={styles.subnetSelect}
@@ -154,11 +155,11 @@ const DataCenterModal: React.FC<DataCenterModalProps> = ({
             <option value="">自動分配</option>
             {subnets?.map((subnet) => (
               <option key={subnet.id} value={subnet.cidr}>
-                {subnet.cidr}
+                id = {subnet.id}, cidr = {subnet.cidr}
               </option>
             ))}
           </select>
-
+            </div>
           </div>
         </div>
 
