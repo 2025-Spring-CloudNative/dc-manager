@@ -34,7 +34,7 @@ export function useAddRackMutation() {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: (data: { name: string; unit: number; dataCenterId: number}) => createRack(data),
+        mutationFn: (data: Rack) => createRack(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["rack"] })
         },

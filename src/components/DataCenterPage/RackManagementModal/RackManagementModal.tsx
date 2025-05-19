@@ -59,7 +59,7 @@ const RackManagementModal: React.FC<RackManagementModalProps> = ({
         setSelectedCells((prev) => {
             const nextSet = new Set(prev);
             nextSet.has(key) ? nextSet.delete(key) : nextSet.add(key);
-            console.log(side, key);
+            // console.log(side, key);
             return nextSet;
         });
         handleCellClick(side, key);
