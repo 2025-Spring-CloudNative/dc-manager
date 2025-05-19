@@ -4,5 +4,5 @@ export type DataCenter =
     "name": string,
     "location": string
   },
-  "subnetId": string
+  "subnetId"?: string
 }

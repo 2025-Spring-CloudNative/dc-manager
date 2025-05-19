@@ -37,7 +37,7 @@ export async function createDataCenter(data: DataCenter): Promise<DataCenter> {
   }
 }
 
-export async function updateDataCenter(id: string, data: { name: string; location: string }) {
+export async function updateDataCenter(id: string, data: DataCenter): Promise<DataCenter> {
   try {
     const response = await apiInstance.patch(`/${id}`, data);
     return response.data;

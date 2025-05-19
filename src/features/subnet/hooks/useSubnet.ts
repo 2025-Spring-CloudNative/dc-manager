@@ -59,7 +59,7 @@ export function useUpdateSubnetMutation() {
 export function useDeleteSubnetMutation() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: deleteSubnet,
+    mutationFn: (id:string) => deleteSubnet(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subnet"] });
     },

@@ -32,17 +32,36 @@ export async function getSubnetById(id: number) {
 
 // CREATE a subnet
 export async function createSubnet(data: Subnet): Promise<Subnet> {
-  const response = await apiInstance.post("/", data);
-  return response.data;
+  try {
+    const response = await apiInstance.post("/", data);
+    return response.data;
+  }
+  catch (error) {
+    console.error("Error creating subnet:", error);
+    throw error;
+  }
 }
 
 // UPDATE a subnet
 export async function updateSubnet(id: string, data: Subnet): Promise<Subnet> {
-  const response = await apiInstance.patch(`/${id}`, data);
-  return response.data;
+  try {
+    const response = await apiInstance.patch(`/${id}`, data);
+    return response.data;
+  }
+  catch (error) {
+    console.error("Error updating subnet:", error);
+    throw error;
+  }
 }
 
 // DELETE a subnet
 export async function deleteSubnet(id: string): Promise<void> {
-  await apiInstance.delete(`/${id}`);
+  try {
+    const response = await apiInstance.delete(`/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting subnet:", error);
+    throw error;
+  }
+
 }

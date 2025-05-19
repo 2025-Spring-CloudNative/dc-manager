@@ -1,7 +1,7 @@
-export type Subnet = 
+export type Room = 
 {
-  id?: number;
-  cidr: string,
-  netmask: string,
-  gateway: string
+  id?: number,
+  name: string,
+  unit: number,
+  dataCenterId: number
 }
