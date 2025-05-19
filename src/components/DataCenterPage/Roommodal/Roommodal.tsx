@@ -96,7 +96,8 @@ const RoomModal: React.FC<RoomModalProps> = ({
           <div className={styles.titleWrapper}>
             <Separator className={styles.leftSeparator} />
             <h2 className={styles.modalTitle}>
-              {isEditMode ? "編輯資料庫房間" : "創建資料中心"}
+              新增資料庫房間
+              {/* {isEditMode ? "編輯資料庫房間" : "創建資料中心"} */}
             </h2>
             <Separator className={styles.rightSeparator} />
           </div>
@@ -135,7 +136,7 @@ const RoomModal: React.FC<RoomModalProps> = ({
             {(createMutation.isLoading || updateMutation.isLoading)
               ? "儲存中..."
               : isEditMode
-              ? "確認修改"
+              ? "確認"
               : "確認創建"}
           </Button>
         </div>

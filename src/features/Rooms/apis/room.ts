@@ -27,7 +27,7 @@ export async function getRoomById(id: string) {
     }
 }
 
-export async function createRoom(data: { name: string; "unit": number; dataCenterId: number }) {
+export async function createRoom(data: { name: string; unit: number; dataCenterId: number }) {
     try {
         const response = await apiInstance.post("/", data)
         return response.data

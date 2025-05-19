@@ -23,6 +23,8 @@ import { useGetRackQuery } from "@/features/Racks/hooks/useRack";
 import { DataCenter } from "@/components/data/datacenter";
 import { Room } from "@/components/data/room";
 import { Rack } from "@/components/data/rack";
+import CreateModal from "@/components/shared/CreateModal";
+
 
 // import for hover data center
 import { cn } from "@/lib/utils";
@@ -130,15 +132,11 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     const [isRoommodalOpen, setCreateModalOpen] = useState(false);
     const [ selectedDC, setSelectedDC] = useState<DataCenter | null>(null); // optional, for editing
 
-    const handleOpenRoommodal = () => {
-        setSelectedDC(null); // reset for "create"
-        setCreateModalOpen(true);
-    };
 
     const handleCloseRoommodal = () => {
         setCreateModalOpen(false);
     };
-    
+    const roomMutation = useAddRoomMutation();
     const renderDataTable = (dataCentersList: DataCenter[], side: "left" | "right") => (
         // const [isCreateModalOpen, setCreateModalOpen] = useState(false);
         
@@ -246,13 +244,6 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         <>
         <Card className={styles.combinedComponentCard}>
             <div className={styles.headerButtonArea}>
-                <Button className={styles.editCabinetButton} onClick={() => setRackModalOpen((prev) => ({ ...prev, left: true }))}>
-                    編輯機櫃-Left
-                </Button>
-                
-                <Button className={styles.editCabinetButton} onClick={() => setRackModalOpen((prev) => ({ ...prev, right: true }))}>
-                    編輯機櫃-Right
-                </Button>
             </div>
             <div className={styles.titleArea}>
                 <div className={styles.titleWrapper}>
@@ -265,44 +256,31 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                 {renderDataTable(dataCenters.left, "left")}
                 {renderDataTable(dataCenters.right, "right")}
             </div>
-
-
-
-
-
         </Card>
-            {isRackModalOpen.left && dataCenters.left[0] && (
-                <RackManagementModal
-                    isOpen={isRackModalOpen.left}
-                    onClose={() => setRackModalOpen((prev) => ({ ...prev, left: false }))}
-                    side="left"
-                    currentDataCenter={dataCenters.left[0]}
-                    rooms={roomsData} // Pass the fetched rooms data
-                    racks={racksData} // Pass the fetched racks data
-                    clickedCells={clickedCells}
-                    handleCellClick={handleCellClick}
-                    // onSave={} // Your save function
-                />
-            )}
-            {isRackModalOpen.right && dataCenters.right[0] && (
-                <RackManagementModal
-                    isOpen={isRackModalOpen.right}
-                    onClose={() => setRackModalOpen((prev) => ({ ...prev, right: false }))}
-                    side="right"
-                    currentDataCenter={dataCenters.right[0]}
-                    rooms={roomsData} // Pass the fetched rooms data
-                    racks={racksData} // Pass the fetched racks data
-                    clickedCells={clickedCells}
-                    handleCellClick={handleCellClick}
-                    // onSave={} // Your save function
-                />
-            )}
         <div>
-            <RoomModal
+            {/* <RoomModal
                 isOpen={isRoommodalOpen}
                 onClose={handleCloseRoommodal}
                 currentDataCenter={selectedDC}
+            /> */}
+            
+
+            { selectedDC&&
+            <CreateModal
+            isOpen={isRoommodalOpen}
+            onClose={handleCloseRoommodal}
+            title="新增房間"
+            fields={[
+                { name: "name", label: "房間名稱", type: "text", required: true },
+                { name: "unit", label: "房間高度", type: "number", defaultValue: 9 },
+            ]}
+            mutation={roomMutation}
+            extraData={{ dataCenterId: selectedDC.id }}
             />
+            }   
+
+
+
         </div>
         </>
     );
