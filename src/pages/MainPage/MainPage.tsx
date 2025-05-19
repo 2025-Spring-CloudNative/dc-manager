@@ -7,7 +7,7 @@ import styles from "./MainPage.module.scss"
 const MainPage = () => {
     const cardItems = [
         { text: "資料中心", href: "/DataCenterPage" },
-        { text: "網路設定", href: "/network" },
+        { text: "網路設定", href: "/IPmanagementPage" },
         { text: "服務管理", href: "/service" },
     ]
 

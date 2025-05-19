@@ -77,7 +77,7 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
     isError,
     error,
   } = useGetDataCentersQuery();
-    const {data:subnets} = useGetSubnetsQuery()
+  const {data:subnets} = useGetSubnetsQuery()
 
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
   const [selectedDC, setSelectedDC] = useState<DataCenter | null>(null); // optional, for editing

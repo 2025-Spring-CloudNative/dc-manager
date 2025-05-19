@@ -4,7 +4,7 @@ import dcms from "@/assets/DCMS.png"
 
 const navItems = [
     { text: "資料中心", href: "/DatacenterPage" },
-    { text: "網路設定", href: "/network" },
+    { text: "網路設定", href: "/IPmanagementPage" },
     { text: "服務管理", href: "/service" },
     { text: "帳戶", href: "/login" },
 ]

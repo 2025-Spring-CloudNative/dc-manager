@@ -5,6 +5,7 @@ const apiInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true,
 });
 
 // GET all subnets
