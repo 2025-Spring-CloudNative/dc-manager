@@ -342,3 +342,8 @@
   display: inline-block;
   max-width: 100%;
 }
+.disabledCell {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+  pointer-events: none;
+}

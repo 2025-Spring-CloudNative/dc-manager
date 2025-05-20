@@ -5,5 +5,5 @@ export type Rack =
     height: number,
     tag: string,
     roomId?: number
-    serviceId?: number
+    serviceId?: number | null
   }

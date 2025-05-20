@@ -44,21 +44,28 @@ const IpSelectModal: React.FC<IpSelectModalProps> = ({
         onClose();
     };
     const handleSave = () => {
-        if (selectedServiceId && currentRack) {
-            UpdateRack.mutate({
-                id: currentRack.id.toString(),
-                data: {
-                    name: currentRack.name,
-                    height: currentRack.height,
-                    tag: currentRack.tag,
-                    roomId: currentRack.roomId,
+        if (selectedServiceId && currentRack?.id) {
+            console.log("Selected Service ID:", selectedServiceId);
+            console.log("Current Rack ID:", currentRack.id);
+            UpdateRack.mutate(
+                {
+                    id: currentRack.id,
                     serviceId: selectedServiceId,
                 },
-            });
-            onClose();
+                {
+                    onSuccess: () => {
+                        console.log("✅ 更新成功");
+                        onClose();
+                    },
+                    onError: (err) => {
+                        console.error("❌ 更新失敗", err);
+                    },
+                }
+            );
+        } else {
+            console.warn("⚠️ 請選擇服務");
         }
-        onClose();
-    }
+    };
 
 
 

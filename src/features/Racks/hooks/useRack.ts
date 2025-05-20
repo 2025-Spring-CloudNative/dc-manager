@@ -41,15 +41,16 @@ export function useAddRackMutation() {
     })
 }
 export function useUpdateRackMutation() {
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ id, ...data }: { id: number, data: Rack }) => updateRack(id, data),
+        mutationFn: (data: Partial<Rack>) => updateRack(data.id, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["rack"] })
+            queryClient.invalidateQueries({ queryKey: ["rack"] });
         },
-    })
+    });
 }
+
 export function useDeleteRackMutation() {
     const queryClient = useQueryClient()
 

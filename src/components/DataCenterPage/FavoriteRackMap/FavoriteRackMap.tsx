@@ -76,14 +76,14 @@ const ActionMenu: React.FC<{
                     </button>
                 )}
                 {onThird && (
-                    <button className={styles.selectService} onClick={() => { onThird(); }}>
+                    <button className={styles.selectService} onClick={() => { onThird(); onCloseMenu(); }}>
                         <span className={styles.subButtonTitle}>
                             {type === "room" ? "修改Room" : "選擇Service"}
                         </span>
                     </button>
                 )}
                 {type === "rack" && onForth && (
-                    <button className={styles.selectService} onClick={() => { onForth(); }}>
+                    <button className={styles.selectService} onClick={() => { onForth(); onCloseMenu(); }}>
                         <span className={styles.subButtonTitle}>
                             修改Rack
                         </span>
@@ -240,11 +240,15 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                             {filterRoomsByDataCenterId(dc.id).flatMap((room) =>
                                 filterRacksByRoomId(room.id).map((rack) => {
                                     const cellKey = `${dc.id}-${unit}-${room.name}-${rack.name}-${side}`;
-                                    const isClicked = clickedCells[side]?.has(cellKey);
-                                    const isDisabled = room.unit < parseInt(unit);
                                     const unitNum = parseInt(unit);
+
+                                    // 判斷條件：若房間高度或 rack 高度不足，則 disable
+                                    const isDisabled = room.unit < unitNum || rack.height < unitNum;
+
+                                    const isClicked = clickedCells[side]?.has(cellKey);
                                     const machineInThisCell = getMachineInCell(rack.id, unitNum);
                                     const isStartUnit = machineInThisCell?.startUnit === unitNum;
+
                                     return (
                                         <TableCell
                                             key={cellKey}
@@ -253,13 +257,19 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                                                 newSet.has(cellKey) ? newSet.delete(cellKey) : newSet.add(cellKey);
                                                 return { ...prev, [side]: newSet };
                                             })}
-                                            className={cn(styles.unitCell, isClicked && styles.clickedCell, isDisabled && styles.disabledCell, machineInThisCell && styles.hasMachine)}
+                                            className={cn(
+                                                styles.unitCell,
+                                                isClicked && styles.clickedCell,
+                                                isDisabled && styles.disabledCell,
+                                                machineInThisCell && styles.hasMachine
+                                            )}
                                         >
                                             {isStartUnit && <span className={styles.machineLabel}>{machineInThisCell.name}</span>}
                                         </TableCell>
                                     );
                                 })
                             )}
+
                         </TableRow>
                     ))}
                 </TableBody>

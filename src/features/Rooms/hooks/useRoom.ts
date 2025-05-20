@@ -46,7 +46,7 @@ export function useUpdateRoomMutation() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ id, ...data }: { id: string;[key: string]: any }) => updateRoom(id, data),
+        mutationFn: (data) => updateRoom(data.id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["room"] });
         },

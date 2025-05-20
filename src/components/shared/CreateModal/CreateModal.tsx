@@ -88,22 +88,22 @@ const CreateModal: React.FC<CreateModalProps> = ({
           </div>
         </div>
 
-          <div className={styles.inputColumn}>
-            {fields.map((field) => (
-              <div key={field.name}>
-                <label className={styles.inputFont}>{field.label}</label>
-                <Input
-                  type={field.type}
-                  name={field.name}
-                  placeholder={field.placeholder ?? `輸入${field.label}`}
-                  className={styles.inputField}
-                  value={form[field.name]?.toString() ?? ""}
-                  onChange={handleChange}
-                  min={field.type === "number" ? 1 : undefined}
-                />
-              </div>
-            ))}
-          </div>
+        <div className={styles.inputColumn}>
+          {fields.map((field) => (
+            <div key={field.name}>
+              <label className={styles.inputFont}>{field.label}</label>
+              <Input
+                type={field.type}
+                name={field.name}
+                placeholder={field.placeholder ?? `輸入${field.label}`}
+                className={styles.inputField}
+                value={form[field.name]?.toString() ?? ""}
+                onChange={handleChange}
+                min={field.type === "number" ? 1 : undefined}
+              />
+            </div>
+          ))}
+        </div>
 
         <div className={styles.modalActions}>
           <Button className={styles.saveButton} onClick={handleSubmit} disabled={isPending}>
