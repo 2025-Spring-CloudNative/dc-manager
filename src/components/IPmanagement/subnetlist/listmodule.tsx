@@ -64,6 +64,7 @@ export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, DC}) => {
             {expandedId && allIPs && Array.isArray(allIPs) && allIPs.map((ip: IP) => (
                 <div key={ip.id} className={styles.honeycombWrapper}>
                     <PoolModule
+                        id={ip.id}
                         name={ip.name}
                         type={ip.type}
                         cidr={ip.cidr}

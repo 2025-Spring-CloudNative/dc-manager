@@ -2,18 +2,29 @@
 import React from "react";
 import styles from "./poollist.module.scss"; // or your own style file
 import Button from "@/components/shared/Button";
+import { IpModule } from "@/components/IPmanagement/iplist/iplist";
+import { getlocalIPAddressbypoolID} from "@/features/IPAddress/hooks/IPAddress";	
+import { useState } from "react";
+import { IPAdress } from "@/features/IPAddress/types";
 
 export interface Props {
-  // id?: number;
-  name?: string;
-  type?: string;
+  id?: number,
+  name?: string,
+  type?: string,
   cidr?: string,
   created_at?: Date,
   updated_at?: Date,
   // subnet_id?: number,
 }
 
-export const PoolModule: React.FC<Props> = ({ name, type, cidr, created_at, updated_at }) => {
+export const PoolModule: React.FC<Props> = ({ id, name, type, cidr, created_at, updated_at }) => {
+  const { data: IPaddress } = getlocalIPAddressbypoolID(id) as { data: IPAdress };
+  
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+
+  const toggleAccordion = (id: number) => {
+      setExpandedId(prev => (prev === id ? null : id));
+  };
 
   return (
    <div className={styles.wrapper}>  

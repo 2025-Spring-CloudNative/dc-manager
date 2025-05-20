@@ -6,7 +6,7 @@ import {
 import { IP } from "@/features/IPPool/types";
 import { IPAdress } from "../types";
 // All
-export function useGetIPPoolQuery() {
+export function useGetIPAddressQuery() {
     const { data, isLoading, isError, isSuccess, error } = useQuery({
         queryKey: ["ipaddress"],
         queryFn: getIPAddress,
@@ -22,7 +22,7 @@ export function useGetIPPoolQuery() {
 }
 
 // filter by subnetId
-export function useGetIPPoolbypoolIdQuery(poolID: number) {
+export function useGetIPAddressbypoolIdQuery(poolID: number) {
     const { data, isLoading, isError, isSuccess, error } = useQuery({
         queryKey: ["ip-pool", poolID],
         queryFn: () => getIPAddressbypoolId(poolID),
@@ -38,8 +38,8 @@ export function useGetIPPoolbypoolIdQuery(poolID: number) {
 
 
 // filter on all IPs by subnetId
-export function getlocalIPPoolbypoolID(poolID: number) {
-    const { data: allIPs, isLoading, isError, isSuccess, error } = useGetIPPoolQuery();
+export function getlocalIPAddressbypoolID(poolID: number) {
+    const { data: allIPs, isLoading, isError, isSuccess, error } = useGetIPAddressQuery();
 
     const data = allIPs?.filter((ip: IPAdress) => ip.poolId === poolID);
 
