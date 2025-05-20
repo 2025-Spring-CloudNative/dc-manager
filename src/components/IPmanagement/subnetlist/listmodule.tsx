@@ -37,27 +37,27 @@ export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, DC}) => {
                 </Button>
 
                 <div className={styles.frame}>
-                <div className={styles.text}>Subnet {DC}</div>
-                <div className={styles.divider} />
-                <p className={styles.item}>
-                    <span className={styles.label}>CIDR:</span>
-                    <span className={styles.value}> {CIDR}</span>
-                </p>
-                <div className={styles.divider} />
-                <p className={styles.item}>
-                    <span className={styles.label}>NETMASK:</span>
-                    <span className={styles.value}> {NETMASK}</span>
-                </p>
-                <div className={styles.divider} />
-                <p className={styles.item}>
-                    <span className={styles.label}>GATEWAY:</span>
-                    <span className={styles.value}> {GATEWAY}</span>
-                </p>
-                <div className={styles.divider} />
-                <p className={styles.item}>
-                    <span className={styles.label}>DC:</span>
-                    <span className={styles.value}>{DC}</span>
-                </p>
+                    <div className={styles.text}>Subnet {DC}</div>
+                    <div className={styles.divider} />
+                    <p className={styles.item}>
+                        <span className={styles.label}>CIDR:</span>
+                        <span className={styles.value}> {CIDR}</span>
+                    </p>
+                    <div className={styles.divider} />
+                    <p className={styles.item}>
+                        <span className={styles.label}>NETMASK:</span>
+                        <span className={styles.value}> {NETMASK}</span>
+                    </p>
+                    <div className={styles.divider} />
+                    <p className={styles.item}>
+                        <span className={styles.label}>GATEWAY:</span>
+                        <span className={styles.value}> {GATEWAY}</span>
+                    </p>
+                    <div className={styles.divider} />
+                    <p className={styles.item}>
+                        <span className={styles.label}>DC:</span>
+                        <span className={styles.value}>{DC}</span>
+                    </p>
                 </div>
             </div>
 
@@ -72,14 +72,6 @@ export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, DC}) => {
                     />
                 </div>
             ))}
-                {/* <div className={styles.honeycombWrapper}>
-                    <PoolModule
-                        CIDR={CIDR}
-                        NETMASK={NETMASK}
-                        GATEWAY={GATEWAY}
-                        DC={DC}
-                    />
-                    </div> */}
         </div>
     );
 };

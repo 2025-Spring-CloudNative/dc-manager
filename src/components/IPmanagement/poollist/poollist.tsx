@@ -24,7 +24,7 @@ export const PoolModule: React.FC<Props> = ({ name, type, cidr, created_at, upda
           +
           </Button>
           <div className={styles.frame}>
-              <div className={styles.text}>{name}</div>
+              <div className={styles.text}>Pool {name?.split("-")[1]}</div>
                   <div className={styles.divider} />
                   <p className={styles.item}>
                   <span className={styles.label}>TYPE:</span>
