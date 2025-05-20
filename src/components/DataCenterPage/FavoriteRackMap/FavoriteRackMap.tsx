@@ -147,7 +147,11 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         return machines.find((m) => m.rackId === rackId && unit >= m.startUnit && unit <= m.startUnit + m.unit - 1);
     };
     const filterRoomsByDataCenterId = (dcId?: number): Room[] => roomsData?.filter((r) => r.dataCenterId === dcId) ?? [];
-    const filterRacksByRoomId = (roomId?: number): Rack[] => racksData?.filter((r) => r.roomId === roomId) ?? [];
+    const filterRacksByRoomId = (roomId?: number): Rack[] =>
+        (racksData?.filter((r) => r.roomId === roomId)
+            .sort((a, b) => a.id - b.id) // ✅ 根據 id 排序，或可改用 name
+        ) ?? [];
+
 
     const renderHeader = (item: Room | Rack, type: "room" | "rack", parent?: Room) => {
         const isClicked = focusedItem.type === type && focusedItem.id === item.id && focusedItem.mode === "clicked";
@@ -186,7 +190,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
 
         return (
             <TableHead
-                key={type === "room" ? item.id : `${parent?.name}-${item.name}`}
+                key={item.id}  // ✅ 直接用 ID 作為 key
                 colSpan={type === "room" ? filterRacksByRoomId(item.id).length : undefined}
                 className={cn(type === "room" ? styles.roomHeader : styles.rackHeader, isClicked && styles.clicked)}
                 onClick={handleClick}
@@ -239,7 +243,8 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                             <TableCell className={styles.unitHeader}><span className={styles.unitTitle}>{unit}</span></TableCell>
                             {filterRoomsByDataCenterId(dc.id).flatMap((room) =>
                                 filterRacksByRoomId(room.id).map((rack) => {
-                                    const cellKey = `${dc.id}-${unit}-${room.name}-${rack.name}-${side}`;
+                                    const cellKey = `${dc.id}-${unit}-${room.id}-${rack.id}-${side}`;
+
                                     const unitNum = parseInt(unit);
 
                                     // 判斷條件：若房間高度或 rack 高度不足，則 disable
