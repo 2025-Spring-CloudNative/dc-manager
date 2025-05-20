@@ -1,5 +1,5 @@
 import { XIcon } from "lucide-react";
-import { useState, useRef, useEffect} from "react";
+import { useState, useRef, useEffect } from "react";
 import Button from "@/components/shared/Button";
 import Card from "@/components/DataCenterPage/Card";
 import Separator from "@/components/shared/Separator";
@@ -24,6 +24,7 @@ import {
 import {
     useGetRoomQuery,
     useAddRoomMutation,
+    useUpdateRoomMutation
 } from "@/features/Rooms/hooks/useRoom";
 
 import {
@@ -51,68 +52,74 @@ interface DataCenterComponentSectionProps {
         right: DataCenter[];
     };
 }
-const RackActionMenu: React.FC<{
+const ActionMenu: React.FC<{
+    type: "room" | "rack";
     onDelete: () => void;
-    onAddHost: () => void;
+    onAdd?: () => void;
+    onThird?: () => void; // 👈 加上這個即可
     onCloseMenu: () => void;
-}> = ({ onDelete, onAddHost, onCloseMenu }) => (
-    <div
-        className={styles.roomButtonEdit}
-        style={{
-            position: "absolute",
-            zIndex: 100,
-        }}
-        onClick={(e) => e.stopPropagation()}
-    >
-        <button
-            className={styles.delRoom}
-            onClick={() => {
-                onDelete();
-                onCloseMenu();
-            }}
+}> = ({ type, onDelete, onAdd, onThird, onCloseMenu }) => {
+    return (
+        <div
+            className={styles.roomButtonEdit}
+            style={{ position: "absolute", zIndex: 100 }}
+            onClick={(e) => e.stopPropagation()}
         >
-            刪除Rack
-        </button>
-        <button
-            className={styles.addRack}
-            onClick={() => {
-                onAddHost();
-                onCloseMenu();
-            }}
-        >
-            [+]Host
-        </button>
-    </div>
-);
-
-const RoomActionMenu: React.FC<{
-    onDelete: () => void;
-    onAddRack: () => void;
-}> = ({ onDelete, onAddRack }) => (
-    <div
-        className={styles.roomButtonEdit}
-        style={{
-            position: "absolute",
-            //   top: `${top}px`,
-            //   left: `${left}px`,
-            zIndex: 100,
-        }}
-        onClick={(e) => e.stopPropagation()}
-    >
-        <div className={styles.roomCtrlMenu}>
-            <button className={styles.delRoom} onClick={onDelete}>
-                <span className={styles.subButtonTitle}>刪除Room</span>
-            </button>
-            <button className={styles.addRack} onClick={onAddRack}>
-                <span className={styles.subButtonTitle}>[+]Rack</span>
-            </button>
+            <div className={styles.roomCtrlMenu}>
+                <button className={styles.delRoom} onClick={() => { onDelete(); onCloseMenu(); }}>
+                    <span className={styles.subButtonTitle}>{`刪除${type === "room" ? "Room" : "Rack"}`}</span>
+                </button>
+                {onAdd && (
+                    <button className={styles.addRack} onClick={() => { onAdd(); onCloseMenu(); }}>
+                        <span className={styles.subButtonTitle}>{type === "room" ? "[+]Rack" : "[+]Host"}</span>
+                    </button>
+                )}
+                {onThird && (
+                    <button className={styles.selectService} onClick={() => { onThird(); }}>
+                        <span className={styles.subButtonTitle}>
+                            {type === "room" ? "修改Room" : "選擇Service"}
+                        </span>
+                    </button>
+                )}
+            </div>
         </div>
-    </div>
-);
+    );
+};
+
 
 const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     dataCenters,
 }) => {
+    const [clickedCells, setClickedCells] = useState<{ [side: string]: Set<string>; }>({ left: new Set(), right: new Set() });
+    const [isRackmodalOpen, setRackModalOpen] = useState(false);
+    const [overlayMenu, setOverlayMenu] = useState<{ type: "room" | "rack" | null; id: number | null; pos: { top: number; left: number }; }>({ type: null, id: null, pos: { top: 0, left: 0 } });
+    const [focusedItem, setFocusedItem] = useState<{ type: "room" | "rack" | null; id: number | null; mode: "clicked" | "hovered" | null }>({ type: null, id: null, mode: null });
+    const [machines, setMachines] = useState<Machine[]>([]);
+    const [hoveredbuttonId, setHoveredbuttonId] = useState<number | null>(null);
+    const [clickedId, setClickedId] = useState<number | null>(null);
+    const [isRoommodalOpen, setCreateModalOpen] = useState(false);
+    const [selectedDC, setSelectedDC] = useState<DataCenter | null>(null);
+    const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
+    const [isEditRoomOpen, setIsEditRoomOpen] = useState(false);
+
+    const handleCloseRoommodal = () => {
+        setCreateModalOpen(false);
+        setSelectedDC(null);
+    };
+    const { data: roomsData } = useGetRoomQuery();
+    const { data: racksData } = useGetRackQuery();
+    const { mutate: deleteRoombyID } = useDeleteRoomMutation();
+    const { mutate: deleteRackbyID } = useDeleteRackMutation();
+    const { mutate: deleteDC } = useDeleteDataCenterMutation();
+    const updateRoomMutation = useUpdateRoomMutation();
+
+    const roomMutation = useAddRoomMutation();
+    const rackMutation = useAddRackMutation();
+
+
+    useEffect(() => {
+        getMachines().then(setMachines).catch((err) => console.error("❌ 無法取得 machines 資料", err));
+    }, []);
     const max_units = (dcId: number | undefined): string[] => {
         const rooms = filterRoomsByDataCenterId(dcId);
         if (!rooms || rooms.length === 0)
@@ -124,340 +131,123 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         ];
     };
 
-    const [clickedCells, setClickedCells] = useState<{
-        [side: string]: Set<string>;
-    }>({
-        left: new Set(),
-        right: new Set(),
-    });
-    const [isRackmodalOpen, setRackModalOpen] = useState(false);
-
-    const [clickedRoomId, setClickedRoomId] = useState<number | null>(null);
-    const [hoveredRoomId, setHoveredRoomId] = useState<number | null>(null);
-    const [clickedRackId, setClickedRackId] = useState<number | null>(null);
-    const [hoveredRackId, setHoveredRackId] = useState<number | null>(null);
-    const [rackMenuOverlay, setRackMenuOverlay] = useState<{
-        rackId: number | null;
-        pos: { top: number; left: number };
-    }>({ rackId: null, pos: { top: 0, left: 0 } });
-    const overlayRef = useRef<HTMLDivElement | null>(null);
-    const [overlayInfo, setOverlayInfo] = useState<{
-        roomId: number | null;
-        pos: { top: number; left: number };
-    }>({ roomId: null, pos: { top: 0, left: 0 } });
-
-
-
-    const [machines, setMachines] = useState<Machine[]>([]);
-
-    useEffect(() => {
-      getMachines()
-        .then(setMachines)
-        .catch((err) => {
-          console.error("❌ 無法取得 machines 資料", err);
-        });
-    }, []);
-    
-    // ✅ 在元件頂層呼叫 useQuery 來獲取房間和機櫃資料
-    const {
-        data: roomsData,
-        isLoading: isLoadingRooms,
-        isError: isErrorRooms,
-    } = useGetRoomQuery();
-    const {
-        data: racksData,
-        isLoading: isLoadingRacks,
-        isError: isErrorRacks,
-    } = useGetRackQuery();
-    const { mutate: deleteRoombyID } = useDeleteRoomMutation();
-    const { mutate: deleteRackbyID } = useDeleteRackMutation();
-
-    const isMachineInCell = (
-        rackId: number,
-        unit: number // unit number from current row
-      ) => {
-        return machines.some((machine) => {
-          if (machine.rackId !== rackId) return false;
-          const start = machine.startUnit;
-          const end = start + machine.unit - 1;
-          return unit >= start && unit <= end;
-        });
-      };
-      const getMachineInCell = (rackId: number, unit: number): Machine | undefined => {
-        return machines.find((machine) => {
-          const start = machine.startUnit;
-          const end = start + machine.unit - 1;
-          return machine.rackId === rackId && unit >= start && unit <= end;
-        });
-      };
-      
-    const handleCellClick = (localSide: "left" | "right", cellKey: string) => {
-        setClickedCells((prev) => {
-            const newSet = new Set(prev[localSide]);
-            newSet.has(cellKey) ? newSet.delete(cellKey) : newSet.add(cellKey);
-            return { ...prev, [localSide]: newSet };
-        });
+    const getMachineInCell = (rackId: number, unit: number): Machine | undefined => {
+        return machines.find((m) => m.rackId === rackId && unit >= m.startUnit && unit <= m.startUnit + m.unit - 1);
     };
-    // console.log('isRackModalOpen:', isRackModalOpen);
+    const filterRoomsByDataCenterId = (dcId?: number): Room[] => roomsData?.filter((r) => r.dataCenterId === dcId) ?? [];
+    const filterRacksByRoomId = (roomId?: number): Rack[] => racksData?.filter((r) => r.roomId === roomId) ?? [];
 
-    const filterRoomsByDataCenterId = (dcId: number | undefined): Room[] => {
-        return roomsData
-            ? roomsData.filter((room: Room) => room.dataCenterId === dcId)
-            : [];
-    };
-
-    const filterRacksByRoomId = (roomId: number | undefined): Rack[] => {
-        return racksData
-            ? racksData.filter((rack: Rack) => rack.roomId === roomId)
-            : [];
-    };
-
-    const renderRoomHeaders = (room: Room) => {
-        const rackCount =
-            racksData?.filter((rack) => rack.roomId === room.id).length ?? 0;
-        const isClicked = clickedRoomId === room.id;
-        const isHovered = hoveredRoomId === room.id;
+    const renderHeader = (item: Room | Rack, type: "room" | "rack", parent?: Room) => {
+        const isClicked = focusedItem.type === type && focusedItem.id === item.id && focusedItem.mode === "clicked";
+        const isHovered = focusedItem.type === type && focusedItem.id === item.id && focusedItem.mode === "hovered";
 
         const handleClick = (e: React.MouseEvent) => {
             e.stopPropagation();
             const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-            const top = rect.bottom + window.scrollY;
-            const left = rect.left + rect.width / 2 + window.scrollX;
-
-            const isSameRoom = clickedRoomId === room.id;
-
-            setClickedRoomId(isSameRoom ? null : room.id);
-            setOverlayInfo(
-                isSameRoom
-                    ? { roomId: null, pos: { top: 0, left: 0 } }
-                    : { roomId: room.id, pos: { top, left } }
-            );
+            const pos = { top: rect.bottom + window.scrollY, left: rect.left + rect.width / 2 + window.scrollX };
+            const isSame = isClicked;
+            setFocusedItem(isSame ? { type: null, id: null, mode: null } : { type, id: item.id, mode: "clicked" });
+            setOverlayMenu(isSame ? { type: null, id: null, pos: { top: 0, left: 0 } } : { type, id: item.id, pos });
         };
 
-        const handleDelete = () => {
-            deleteRoombyID(room.id.toString());
+
+
+        const handleDelete = () => type === "room" ? deleteRoombyID(item.id.toString()) : deleteRackbyID(item.id.toString());
+        const handleAdd = () => type === "room" ? (setSelectedRoom(item as Room), setRackModalOpen(true)) : console.log("新增Host", item.id);
+        const handleCloseMenu = () => { setOverlayMenu({ type: null, id: null, pos: { top: 0, left: 0 } }); setFocusedItem({ type: null, id: null, mode: null }); };
+        const handleThird = () => {
+            if (type === "room") {
+                setSelectedRoom(item as Room);
+                setIsEditRoomOpen(true);
+            } else {
+                console.log("選擇Service for Rack", item.id);
+            }
         };
 
-        const handleAddRack = () => {
-            setSelectedRoom(room);
-            setRackModalOpen(true);
-        };
+
 
         return (
             <TableHead
-                key={room.id}
-                colSpan={rackCount}
-                className={`${styles.roomHeader} ${isClicked ? styles.clicked : ""}`}
+                key={type === "room" ? item.id : `${parent?.name}-${item.name}`}
+                colSpan={type === "room" ? filterRacksByRoomId(item.id).length : undefined}
+                className={cn(type === "room" ? styles.roomHeader : styles.rackHeader, isClicked && styles.clicked)}
                 onClick={handleClick}
-                onMouseEnter={() => {
-                    if (clickedRoomId === null) setHoveredRoomId(room.id);
-                }}
-                onMouseLeave={() => {
-                    if (clickedRoomId === null) setHoveredRoomId(null);
-                }}
+                onMouseEnter={() => !isClicked && setFocusedItem({ type, id: item.id, mode: "hovered" })}
+                onMouseLeave={() => !isClicked && setFocusedItem({ type: null, id: null, mode: null })}
             >
-                <div className={styles.roomContent}>
-                    <span className={styles.roomTitle}>
-                        {isClicked || isHovered ? "編輯Room" : room.name}
-                    </span>
-
-                    {overlayInfo.roomId === room.id && (
-                        <RoomActionMenu onDelete={handleDelete} onAddRack={handleAddRack} />
-                    )}
-                </div>
+                <span className={type === "room" ? styles.roomTitle : styles.rackTitle}>
+                    {(isClicked || isHovered) ? `編輯${type === "room" ? "Room" : "Rack"}` : item.name}
+                </span>
+                {overlayMenu.type === type && overlayMenu.id === item.id && (
+                    <ActionMenu type={type} onDelete={handleDelete} onAdd={handleAdd} onThird={handleThird} onCloseMenu={handleCloseMenu} />
+                )}
             </TableHead>
         );
     };
-    const renderRackHeaders = (room: Room) => {
-        const racks = filterRacksByRoomId(room.id);
-        return racks.map((rack) => {
-            const isClicked = clickedRackId === rack.id;
-            const isHovered = hoveredRackId === rack.id;
 
-            const handleClick = (e: React.MouseEvent) => {
-                e.stopPropagation();
-                const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                const top = rect.bottom + window.scrollY;
-                const left = rect.left + rect.width / 2 + window.scrollX;
 
-                const isSame = clickedRackId === rack.id;
-                setClickedRackId(isSame ? null : rack.id);
-                setRackMenuOverlay(
-                    isSame
-                        ? { rackId: null, pos: { top: 0, left: 0 } }
-                        : { rackId: rack.id, pos: { top, left } }
-                );
-            };
-
-            const handleDelete = () => {
-                deleteRackbyID(rack.id.toString());
-            };
-
-            const handleAddHost = () => {
-                console.log("新增Host到Rack", rack.id);
-            };
-
-            const handleCloseMenu = () => {
-                setClickedRackId(null);
-                setRackMenuOverlay({ rackId: null, pos: { top: 0, left: 0 } });
-            };
-
-            return (
-                <TableHead
-                    key={`${room.name}-${rack.name}`}
-                    className={`${styles.rackHeader} ${isClicked ? styles.clicked : ""}`}
-                    onClick={handleClick}
-                    onMouseEnter={() => setHoveredRackId(rack.id)}
-                    onMouseLeave={() => setHoveredRackId(null)}
-                >
-                    <span className={styles.rackTitle}>
-                        {isClicked || isHovered ? "編輯Rack" : rack.name}
-                    </span>
-
-                    {rackMenuOverlay.rackId === rack.id && (
-                        <RackActionMenu
-                            top={rackMenuOverlay.pos.top}
-                            left={rackMenuOverlay.pos.left}
-                            onDelete={handleDelete}
-                            onAddHost={handleAddHost}
-                            onCloseMenu={handleCloseMenu}
-                        />
-                    )}
-                </TableHead>
-            );
-        });
-    };
-    // console.log(machines)
-    const { mutate: deleteDC, isLoading: isDeleting } =
-        useDeleteDataCenterMutation();
-    const handleDelete = (id: number) => {
-        if (window.confirm("確定要刪除這個資料中心？")) {
-            deleteDC(id);
-        }
-    };
-
-    // const { mutate: addRack, isLoading: isAddingRack } = useAddRackMutation();
-
-    const [hoveredbuttonId, setHoveredbuttonId] = useState<number | null>(null);
-    const [clickedId, setClickedId] = useState<number | null>(null);
-
-    // handel roommodal
-    const [isRoommodalOpen, setCreateModalOpen] = useState(false);
-    const [selectedDC, setSelectedDC] = useState<DataCenter | null>(null); // optional, for editing
-    const [selectedRoom, setSelectedRoom] = useState<Room | null>(null); // optional, for editing
-
-    const handleCloseRoommodal = () => {
-        setCreateModalOpen(false);
-    };
-    const roomMutation = useAddRoomMutation();
-    const rackMutation = useAddRackMutation();
-    const renderDataTable = (
-        dataCentersList: DataCenter[],
-        side: "left" | "right"
-    ) =>
-        // const [isCreateModalOpen, setCreateModalOpen] = useState(false);
-
-        dataCentersList.map((dc) => (
-            <div
-                key={`favorite-table-${side}-${dc.id}`}
-                className={styles.tableContainer}
-            >
-                {/* ✅ Custom header placed ABOVE the table */}
-                <div
-                    className={cn(
-                        styles.dcHeader,
-                        hoveredbuttonId === dc.id && styles.dcHeaderHovered
-                    )}
-                    onMouseEnter={() => {
-                        setHoveredbuttonId(dc.id);
-                    }}
-                    onMouseLeave={() => {
-                        setHoveredbuttonId(null);
-                        setClickedId(null);
-                    }}
-                    onClick={() => {
-                        if (hoveredbuttonId === dc.id) setClickedId(dc.id);
-                    }}
-                >
-                    {clickedId === dc.id && (
-                        <div className={styles.actionButtons}>
-                            <Button
-                                className={styles.deletedc}
-                                onClick={() => handleDelete(dc.id)}
-                                disabled={isDeleting}
-                            >
-                                刪除DC
-                            </Button>
-                            <Button
-                                className={styles.create_room}
-                                onClick={() => {
-                                    setSelectedDC(dc);
-                                    setCreateModalOpen(true);
-                                }}
-                            >
-                                [+]Room
-                            </Button>
-                        </div>
-                    )}
-                    <span className={styles.dcTitle}>
-                        {hoveredbuttonId === dc.id ? "編輯DC" : dc.name}
-                    </span>
-                </div>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className={styles.unitHeader}></TableHead>
-                            {filterRoomsByDataCenterId(dc.id).map((room) =>
-                                renderRoomHeaders(room)
+    const renderDataTable = (dataCentersList: DataCenter[], side: "left" | "right") => dataCentersList.map((dc) => (
+        <div key={`dc-${side}-${dc.id}`} className={styles.tableContainer}>
+            <div className={cn(styles.dcHeader, hoveredbuttonId === dc.id && styles.dcHeaderHovered)}
+                onMouseEnter={() => setHoveredbuttonId(dc.id)}
+                onMouseLeave={() => { setHoveredbuttonId(null); setClickedId(null); }}
+                onClick={() => hoveredbuttonId === dc.id && setClickedId(dc.id)}>
+                {clickedId === dc.id && (
+                    <div className={styles.actionButtons}>
+                        <Button className={styles.deletedc} onClick={() => deleteDC(dc.id)}>
+                            刪除DC
+                        </Button>
+                        <Button className={styles.create_room} onClick={() => { setSelectedDC(dc); setCreateModalOpen(true); }}>
+                            [+]Room
+                        </Button>
+                    </div>
+                )}
+                <span className={styles.dcTitle}>{hoveredbuttonId === dc.id ? "編輯DC" : dc.name}</span>
+            </div>
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className={styles.unitHeader}></TableHead>
+                        {filterRoomsByDataCenterId(dc.id).map((room) => renderHeader(room, "room"))}
+                    </TableRow>
+                    <TableRow>
+                        <TableHead className={styles.unitHeader}><span className={styles.unitTitle}>Unit</span></TableHead>
+                        {filterRoomsByDataCenterId(dc.id).flatMap((room) => filterRacksByRoomId(room.id).map((rack) => renderHeader(rack, "rack", room)))}
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {max_units(dc.id).slice(1).map((unit) => (
+                        <TableRow key={unit}>
+                            <TableCell className={styles.unitHeader}><span className={styles.unitTitle}>{unit}</span></TableCell>
+                            {filterRoomsByDataCenterId(dc.id).flatMap((room) =>
+                                filterRacksByRoomId(room.id).map((rack) => {
+                                    const cellKey = `${dc.id}-${unit}-${room.name}-${rack.name}-${side}`;
+                                    const isClicked = clickedCells[side]?.has(cellKey);
+                                    const isDisabled = room.unit < parseInt(unit);
+                                    const unitNum = parseInt(unit);
+                                    const machineInThisCell = getMachineInCell(rack.id, unitNum);
+                                    const isStartUnit = machineInThisCell?.startUnit === unitNum;
+                                    return (
+                                        <TableCell
+                                            key={cellKey}
+                                            onClick={isDisabled ? undefined : () => setClickedCells((prev) => {
+                                                const newSet = new Set(prev[side]);
+                                                newSet.has(cellKey) ? newSet.delete(cellKey) : newSet.add(cellKey);
+                                                return { ...prev, [side]: newSet };
+                                            })}
+                                            className={cn(styles.unitCell, isClicked && styles.clickedCell, isDisabled && styles.disabledCell, machineInThisCell && styles.hasMachine)}
+                                        >
+                                            {isStartUnit && <span className={styles.machineLabel}>{machineInThisCell.name}</span>}
+                                        </TableCell>
+                                    );
+                                })
                             )}
                         </TableRow>
-                        <TableRow>
-                            <TableHead className={styles.unitHeader}>
-                                <span className={styles.unitTitle}>Unit</span>
-                            </TableHead>
-                            {filterRoomsByDataCenterId(dc.id).flatMap((room) => renderRackHeaders(room))}
-                        </TableRow>
-
-                    </TableHeader>
-                    <TableBody>
-                        {max_units(dc.id).slice(1).map((unit) => (
-                            <TableRow key={unit}>
-                                <TableCell className={styles.unitHeader}>
-                                    <span className={styles.unitTitle}>{unit}</span>
-                                </TableCell>
-                                {filterRoomsByDataCenterId(dc.id).flatMap((room) =>
-                                    filterRacksByRoomId(room.id).map((rack) => {
-                                        const cellKey = `${dc.id}-${unit}-${room.name}-${rack.name}-${side}`;
-                                        const isClicked = clickedCells[side]?.has(cellKey);
-                                        const isDisabled = room.unit < parseInt(unit);
-                                        const unitNum = parseInt(unit); // "3" → 3
-                                        const machineInThisCell = getMachineInCell(rack.id, unitNum);
-                                        const isStartUnit = machineInThisCell?.startUnit === unitNum;
-                                        
-                                        return (
-                                            <TableCell
-                                            key={cellKey}
-                                            onClick={isDisabled ? undefined : () => handleCellClick(side, cellKey)}
-                                            className={cn(
-                                                styles.unitCell,
-                                                isClicked && styles.clickedCell,
-                                                isDisabled && styles.disabledCell,
-                                                machineInThisCell && styles.hasMachine // ✅ 新增
-                                            )}
-                                            >     {isStartUnit && (
-                                                <span className={styles.machineLabel}>
-                                                  {machineInThisCell.name}
-                                                </span>
-                                              )}</TableCell>
-                                        );
-                                    })
-                                )}
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
-        ));
+                    ))}
+                </TableBody>
+            </Table>
+        </div>
+    ));
     return (
         <>
             <Card className={styles.combinedComponentCard}>
@@ -475,11 +265,6 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                 </div>
             </Card>
             <div>
-                {/* <RoomModal
-                isOpen={isRoommodalOpen}
-                onClose={handleCloseRoommodal}
-                currentDataCenter={selectedDC}
-            /> */}
 
                 {selectedDC && (
                     <CreateModal
@@ -488,12 +273,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         title="新增房間"
                         fields={[
                             { name: "name", label: "房間名稱", type: "text", required: true },
-                            {
-                                name: "unit",
-                                label: "房間高度",
-                                type: "number",
-                                defaultValue: 10,
-                            },
+                            { name: "unit", label: "房間高度", type: "number", defaultValue: 10, },
                         ]}
                         mutation={roomMutation}
                         extraData={{ dataCenterId: selectedDC.id }}
@@ -510,18 +290,33 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         title="新增Rack"
                         fields={[
                             { name: "name", label: "Rack名稱", type: "text", required: true },
-                            {
-                                name: "height",
-                                label: "Rack高度",
-                                type: "number",
-                                defaultValue: 10,
-                            },
+                            { name: "height", label: "Rack高度", type: "number", defaultValue: 10, },
                             { name: "tag", label: "Rack tag", type: "text", required: true },
                         ]}
                         mutation={rackMutation}
                         extraData={{ roomId: selectedRoom.id }}
                     />
                 )}
+                {selectedRoom && (
+                    <CreateModal
+                        isOpen={isEditRoomOpen}
+                        onClose={() => {
+                            setIsEditRoomOpen(false);
+                            setSelectedRoom(null);
+                        }}
+                        title="修改Room"
+                        fields={[
+                            { name: "name", label: "房間名稱", type: "text", required: true, defaultValue: selectedRoom.name },
+                            { name: "unit", label: "房間高度", type: "number", required: true, defaultValue: selectedRoom.unit },
+                            { name: "dataCenterId", label: "資料中心 ID", type: "number", required: false, defaultValue: selectedRoom.dataCenterId, disabled: true },
+                        ]}
+                        mutation={updateRoomMutation}
+                        extraData={{ id: selectedRoom.id.toString() }}
+                    />
+                )}
+
+
+
             </div>
         </>
     );

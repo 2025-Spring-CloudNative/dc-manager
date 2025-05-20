@@ -49,13 +49,13 @@ const IpSelectModal: React.FC<IpSelectModalProps> = ({
 }) => {
     const units = ["1", "2", "3", "4"];
     // const [selectedCells, setSelectedCells] = useState<Set<string>>(new Set());
-    const { data:subnetdata, isLoading, isError } = useGetSubnetsQuery();
+    const { data: subnetdata, isLoading, isError } = useGetSubnetsQuery();
     const [selectedSubnetId, setSelectedSubnetId] = useState<number | null>(null);
 
     const handleCloseModal = () => {
         // setSelectedCells(new Set());
-        if(subnetdata)
-        console.log("Subnet Data:", subnetdata);
+        if (subnetdata)
+            console.log("Subnet Data:", subnetdata);
         onClose();
     };
 
@@ -63,15 +63,15 @@ const IpSelectModal: React.FC<IpSelectModalProps> = ({
 
     const renderbysubnet = (subnetdata: any) => {
         return (
-                        <TableBody>
-                                <TableRow key={subnetdata.id}>
-                                    <TableCell className={styles.unitHeader}>
-                                        <span className={styles.unitTitle}>{subnetdata.id}</span>
-                                    </TableCell>
-                                    <TableCell className={styles.unitCell}>{subnetdata.createdAt} </TableCell>
-                                    <TableCell className={styles.unitCell}>{subnetdata.cidr} </TableCell>
-                                </TableRow>
-                        </TableBody>
+            <TableBody>
+                <TableRow key={subnetdata.id}>
+                    <TableCell className={styles.unitHeader}>
+                        <span className={styles.unitTitle}>{subnetdata.id}</span>
+                    </TableCell>
+                    <TableCell className={styles.unitCell}>{subnetdata.createdAt} </TableCell>
+                    <TableCell className={styles.unitCell}>{subnetdata.cidr} </TableCell>
+                </TableRow>
+            </TableBody>
         );
     };
 
@@ -113,19 +113,19 @@ const IpSelectModal: React.FC<IpSelectModalProps> = ({
                         <TableBody>
                             {subnetdata?.map((subnet) => (
                                 <TableRow key={subnet.id}>
-                                <TableCell className={styles.unitHeader}>
-                                    <input
-                                    type="checkbox"
-                                    name="subnetSelection"
-                                    value={subnet.id}
-                                    checked={selectedSubnetId === subnet.id}
-                                    onChange={() => setSelectedSubnetId(subnet.id)}
-                                    className={styles.checkboxcell}
-                                    />
-                                    Service {subnet.id}
-                                </TableCell>
-                                <TableCell className={styles.unitCell}>{subnet.createdAt}</TableCell>
-                                <TableCell className={styles.unitCell}>{subnet.cidr}</TableCell>
+                                    <TableCell className={styles.unitHeader}>
+                                        <input
+                                            type="checkbox"
+                                            name="subnetSelection"
+                                            value={subnet.id}
+                                            checked={selectedSubnetId === subnet.id}
+                                            onChange={() => setSelectedSubnetId(subnet.id)}
+                                            className={styles.checkboxcell}
+                                        />
+                                        Service {subnet.id}
+                                    </TableCell>
+                                    <TableCell className={styles.unitCell}>{subnet.createdAt}</TableCell>
+                                    <TableCell className={styles.unitCell}>{subnet.cidr}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -135,7 +135,7 @@ const IpSelectModal: React.FC<IpSelectModalProps> = ({
                 </div>
 
                 <div className={styles.modalActions}>
-                    <Button className={styles.saveButton}onClick={handleCloseModal} >確認選擇</Button>
+                    <Button className={styles.saveButton} onClick={handleCloseModal} >確認選擇</Button>
                 </div>
             </div>
         </div>

@@ -136,8 +136,8 @@ const RoomModal: React.FC<RoomModalProps> = ({
             {(createMutation.isLoading || updateMutation.isLoading)
               ? "儲存中..."
               : isEditMode
-              ? "確認"
-              : "確認創建"}
+                ? "確認"
+                : "確認創建"}
           </Button>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getRooms, getRoomById, createRoom , updateRoom, deleteRoom} from "../apis/room"
+import { getRooms, getRoomById, createRoom, updateRoom, deleteRoom } from "../apis/room"
 import { Room } from "../types"
 export function useGetRoomQuery() {
     const { data, isLoading, isError, isSuccess, error } = useQuery({
@@ -36,22 +36,23 @@ export function useAddRoomMutation() {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: (data: { name: string; unit: number; dataCenterId: number}) => createRoom(data),
+        mutationFn: (data: { name: string; unit: number; dataCenterId: number }) => createRoom(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["room"] })
         },
     })
 }
 export function useUpdateRoomMutation() {
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({id,data}: {id:string, data: Room}) => updateRoom(id,data),
+        mutationFn: ({ id, ...data }: { id: string;[key: string]: any }) => updateRoom(id, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["room"] })
+            queryClient.invalidateQueries({ queryKey: ["room"] });
         },
-    })
+    });
 }
+
 export function useDeleteRoomMutation() {
     const queryClient = useQueryClient()
 

@@ -197,84 +197,84 @@ const RackManagementModal: React.FC<RackManagementModalProps> = ({
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
                 <h2 className={styles.modalTitle}>編輯機櫃 - {side.charAt(0).toUpperCase() + side.slice(1)}</h2>
-                <div className={styles.tableWithInputsWrapper}> 
-                <div className={styles.inputColumn}>
-                    <label>機櫃名稱</label>
-                    <Input
-                        type="text"
-                        placeholder="輸入機櫃名稱"
-                        className={styles.inputField}
-                        value={currentRackName}
-                        onChange={(e) => setCurrentRackName(e.target.value)}
-                    />
-                    <label>機櫃高度</label>
-                    <Input
-                        type="text"
-                        placeholder="輸入機櫃高度"
-                        className={styles.inputField}
-                        value={currentRackHeight}
-                        onChange={(e) => setCurrentRackHeight(e.target.value)}
-                    />
-                    <label>IP 位址 (唯讀)</label>
-                    <Input
-                        type="text"
-                        placeholder="N/A"
-                        className={styles.inputField}
-                        readOnly
-                    />
-                </div>
-                <div className={styles.tableContainer}>
-                    <Table key={`rack-management-table-${currentDataCenter.id}`}>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead
-                                    colSpan={countTotalRacksInDC(currentDataCenter.id)}
-                                    className={styles.dcHeader}
-                                >
-                                    <span className={styles.dcTitle}>{currentDataCenter.name}</span>
-                                </TableHead>
-                            </TableRow>
-                            <TableRow>
-                                <TableHead className={styles.unitHeader}></TableHead>
-                                {filterRoomsByDataCenterId(currentDataCenter.id)?.map(renderRoomHeaders)}
-                            </TableRow>
-                            <TableRow>
-                                <TableHead className={styles.unitHeader}>
-                                    <span className={styles.unitTitle}>Unit</span>
-                                </TableHead>
-                                {filterRoomsByDataCenterId(currentDataCenter.id)?.flatMap((room) =>
-                                    filterRacksByRoomId(room.id)?.map((rack) => (
-                                        <TableHead key={rack.id} className={styles.rackHeader}>
-                                            <span className={styles.rackTitle}>{rack.name}</span>
-                                        </TableHead>
-                                    ))
-                                )}
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {units.map((unit) => (
-                                <TableRow key={unit}>
-                                    <TableCell className={styles.unitHeader}>
-                                        <span className={styles.unitTitle}>{unit}</span>
-                                    </TableCell>
+                <div className={styles.tableWithInputsWrapper}>
+                    <div className={styles.inputColumn}>
+                        <label>機櫃名稱</label>
+                        <Input
+                            type="text"
+                            placeholder="輸入機櫃名稱"
+                            className={styles.inputField}
+                            value={currentRackName}
+                            onChange={(e) => setCurrentRackName(e.target.value)}
+                        />
+                        <label>機櫃高度</label>
+                        <Input
+                            type="text"
+                            placeholder="輸入機櫃高度"
+                            className={styles.inputField}
+                            value={currentRackHeight}
+                            onChange={(e) => setCurrentRackHeight(e.target.value)}
+                        />
+                        <label>IP 位址 (唯讀)</label>
+                        <Input
+                            type="text"
+                            placeholder="N/A"
+                            className={styles.inputField}
+                            readOnly
+                        />
+                    </div>
+                    <div className={styles.tableContainer}>
+                        <Table key={`rack-management-table-${currentDataCenter.id}`}>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead
+                                        colSpan={countTotalRacksInDC(currentDataCenter.id)}
+                                        className={styles.dcHeader}
+                                    >
+                                        <span className={styles.dcTitle}>{currentDataCenter.name}</span>
+                                    </TableHead>
+                                </TableRow>
+                                <TableRow>
+                                    <TableHead className={styles.unitHeader}></TableHead>
+                                    {filterRoomsByDataCenterId(currentDataCenter.id)?.map(renderRoomHeaders)}
+                                </TableRow>
+                                <TableRow>
+                                    <TableHead className={styles.unitHeader}>
+                                        <span className={styles.unitTitle}>Unit</span>
+                                    </TableHead>
                                     {filterRoomsByDataCenterId(currentDataCenter.id)?.flatMap((room) =>
-                                        filterRacksByRoomId(room.id)?.map((rack) => {
-                                            const cellKey = `${currentDataCenter.id}${KEY_SEPARATOR}${room.id}${KEY_SEPARATOR}${rack.id}${KEY_SEPARATOR}${unit}`;
-                                            const isSelected = selectedCells.has(cellKey);
-                                            return (
-                                                <TableCell
-                                                    key={cellKey}
-                                                    onClick={() => handleInternalCellSelect(currentDataCenter.id, room.id, rack.id, unit)}
-                                                    className={`${styles.unitCell} ${isSelected ? styles.clickedCell : ""}`}
-                                                />
-                                            );
-                                        })
+                                        filterRacksByRoomId(room.id)?.map((rack) => (
+                                            <TableHead key={rack.id} className={styles.rackHeader}>
+                                                <span className={styles.rackTitle}>{rack.name}</span>
+                                            </TableHead>
+                                        ))
                                     )}
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </div>
+                            </TableHeader>
+                            <TableBody>
+                                {units.map((unit) => (
+                                    <TableRow key={unit}>
+                                        <TableCell className={styles.unitHeader}>
+                                            <span className={styles.unitTitle}>{unit}</span>
+                                        </TableCell>
+                                        {filterRoomsByDataCenterId(currentDataCenter.id)?.flatMap((room) =>
+                                            filterRacksByRoomId(room.id)?.map((rack) => {
+                                                const cellKey = `${currentDataCenter.id}${KEY_SEPARATOR}${room.id}${KEY_SEPARATOR}${rack.id}${KEY_SEPARATOR}${unit}`;
+                                                const isSelected = selectedCells.has(cellKey);
+                                                return (
+                                                    <TableCell
+                                                        key={cellKey}
+                                                        onClick={() => handleInternalCellSelect(currentDataCenter.id, room.id, rack.id, unit)}
+                                                        className={`${styles.unitCell} ${isSelected ? styles.clickedCell : ""}`}
+                                                    />
+                                                );
+                                            })
+                                        )}
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </div>
 
                 <div className={styles.modalActions}>

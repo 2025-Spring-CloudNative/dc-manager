@@ -61,7 +61,6 @@ const data_center = () => {
 
                 {/* Combined Favorite Tables */}
                 <div className={styles.favoriteTablesContainer}>
-                    <h3>常用資料中心</h3>
                     <DataCenterComponentSection
                         dataCenters={{
                             left: selectedLeftDC ? [selectedLeftDC] : [],
