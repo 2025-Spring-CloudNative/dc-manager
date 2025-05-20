@@ -3,34 +3,41 @@ import styles from './listmodule.module.scss';
 import Button from "@/components/shared/Button";
 import { useState } from 'react';
 import { PoolModule } from "@/components/IPmanagement/poollist/poollist";
+import { IP } from "@/features/IPPool/types";
+import { getlocalIPPoolbysubnetId, useGetIPPoolbysubnetIdQuery } from "@/features/IPPool/hooks/IPPool";
 
 interface Props {
     CIDR?: string;
     NETMASK?: string;
     GATEWAY?: string;
     DC?: number;
+    // isExpanded: boolean;
+    // onToggle: (id: number) => void;
 }
 
-export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, DC }) => {
-    const [expanded, setExpanded] = useState<number | null>(null);
+export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, DC}) => {
 
-    const toggleHoneycomb = (id: number) => {
-        setExpanded((prev) => (prev === id ? null : id));
+    const { data: allIPs } = useGetIPPoolbysubnetIdQuery(DC!) as { data: IP };
+
+    const [expandedId, setExpandedId] = useState<number | null>(null);
+
+    const toggleAccordion = (id: number) => {
+        setExpandedId(prev => (prev === id ? null : id));
     };
 
     return (
             
-        <div>
+        <div className={styles.listBlock}>
             <div className={styles.wrapper}>
                 <Button
                 className={styles.icon}
-                onClick={() => toggleHoneycomb(DC)}
+                onClick={() => toggleAccordion(DC!)}
                 >
-                +
+                {expandedId ? "-" : "+"}
                 </Button>
 
                 <div className={styles.frame}>
-                <div className={styles.text}>Subnet A</div>
+                <div className={styles.text}>Subnet {DC}</div>
                 <div className={styles.divider} />
                 <p className={styles.item}>
                     <span className={styles.label}>CIDR:</span>
@@ -54,16 +61,25 @@ export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, DC }) => {
                 </div>
             </div>
 
-            {expanded && (
-                <div className={styles.honeycombWrapper}>
-                <PoolModule
-                    CIDR={CIDR}
-                    NETMASK={NETMASK}
-                    GATEWAY={GATEWAY}
-                    DC={DC}
-                />
+            {expandedId && allIPs && Array.isArray(allIPs) && allIPs.map((ip: IP) => (
+                <div key={ip.id} className={styles.honeycombWrapper}>
+                    <PoolModule
+                        name={ip.name}
+                        type={ip.type}
+                        cidr={ip.cidr}
+                        created_at={ip.createdAt}
+                        updated_at={ip.updatedAt}
+                    />
                 </div>
-            )}
+            ))}
+                {/* <div className={styles.honeycombWrapper}>
+                    <PoolModule
+                        CIDR={CIDR}
+                        NETMASK={NETMASK}
+                        GATEWAY={GATEWAY}
+                        DC={DC}
+                    />
+                    </div> */}
         </div>
     );
 };
