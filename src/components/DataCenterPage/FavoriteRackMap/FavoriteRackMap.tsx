@@ -34,7 +34,9 @@ import {
 } from "@/features/Racks/hooks/useRack";
 import CreateModal from "@/components/shared/CreateModal";
 import { useDeleteRoomMutation } from "@/features/Rooms/hooks/useRoom";
-
+import { DataCenter } from "@/features/dataCenter/types";
+import { Room } from "@/features/Rooms/types";
+import { Rack } from "@/features/Racks/types";
 import { getMachines } from "@/features/Machine/hooks/useMachine"; // 你自己定義的 api 檔案
 import { Machine } from "@/features/Machine/types"; // machine 型別
 
@@ -119,8 +121,8 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     useEffect(() => {
         getMachines().then(setMachines).catch((err) => console.error("❌ 無法取得 machines 資料", err));
     }, []);
-    const max_units = (dcId: number | undefined): string[] => {
-        const rooms = filterRoomsByDataCenterId(dcId);
+    const max_units = (dcId: number | null): string[] => {
+        const rooms = filterRoomsByDataCenterId(dcId ?? undefined);
         if (!rooms || rooms.length === 0)
             return ["Unit", "1", "2", "3", "4", "5", "6", "7", "8", "9"]; // Default value if no rooms
         const maxUnit = Math.max(...rooms.map((room) => room.unit));
@@ -145,13 +147,13 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
             const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
             const pos = { top: rect.bottom + window.scrollY, left: rect.left + rect.width / 2 + window.scrollX };
             const isSame = isClicked;
-            setFocusedItem(isSame ? { type: null, id: null, mode: null } : { type, id: item.id, mode: "clicked" });
-            setOverlayMenu(isSame ? { type: null, id: null, pos: { top: 0, left: 0 } } : { type, id: item.id, pos });
+            setFocusedItem(isSame ? { type: null, id: null, mode: null } : { type, id: item.id ?? null, mode: "clicked" });
+            setOverlayMenu(isSame ? { type: null, id: null, pos: { top: 0, left: 0 } } : { type, id: item.id ?? null, pos });
         };
 
 
 
-        const handleDelete = () => type === "room" ? deleteRoombyID(item.id.toString()) : deleteRackbyID(item.id.toString());
+        const handleDelete = () => type === "room" ? deleteRoombyID(item.id) : deleteRackbyID(item.id);
         const handleAdd = () => type === "room" ? (setSelectedRoom(item as Room), setRackModalOpen(true)) : console.log("新增Host", item.id);
         const handleCloseMenu = () => { setOverlayMenu({ type: null, id: null, pos: { top: 0, left: 0 } }); setFocusedItem({ type: null, id: null, mode: null }); };
         const handleThird = () => {
@@ -312,7 +314,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                             { name: "dataCenterId", label: "資料中心 ID", type: "number", required: false, defaultValue: selectedRoom.dataCenterId, disabled: true },
                         ]}
                         mutation={updateRoomMutation}
-                        extraData={{ id: selectedRoom.id.toString() }}
+                        extraData={{ id: selectedRoom.id }}
                     />
                 )}
                 {selectedRack && (

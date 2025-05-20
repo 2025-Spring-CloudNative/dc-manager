@@ -15,7 +15,7 @@ export function useGetRackQuery() {
         error,
     }
 }
-export function useGetRackByIdQuery(id: string) {
+export function useGetRackByIdQuery(id: number) {
     const { data, isLoading, isError, isSuccess, error } = useQuery({
         queryKey: ["rack", id],
         queryFn: () => getRackById(id),
@@ -44,7 +44,7 @@ export function useUpdateRackMutation() {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: ({ id, data }: { id: string, data: Rack }) => updateRack(id, data),
+        mutationFn: ({ id, data }: { id: number, data: Rack }) => updateRack(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["rack"] })
         },
@@ -54,7 +54,7 @@ export function useDeleteRackMutation() {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: (id: string) => deleteRack(id),
+        mutationFn: (id: number) => deleteRack(id),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["rack"] })
         },

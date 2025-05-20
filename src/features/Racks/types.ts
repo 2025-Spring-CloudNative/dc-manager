@@ -1,6 +1,6 @@
 export type Rack =
   {
-    id?: string,
+    id?: number,
     name: string,
     height: number,
     tag: string,

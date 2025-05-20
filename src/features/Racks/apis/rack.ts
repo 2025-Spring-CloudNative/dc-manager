@@ -2,7 +2,7 @@ import axios from "axios"
 import { Rack } from "../types"
 
 const apiInstance = axios.create({
-    baseURL: "http://140.112.90.37:4000/rack" ,
+    baseURL: "http://140.112.90.37:4000/rack",
     headers: {
         "Content-Type": "application/json",
     },
@@ -18,7 +18,7 @@ export async function getRacks() {
     }
 }
 
-export async function getRackById(id: string) {
+export async function getRackById(id: number) {
     try {
         const response = await apiInstance.get(`/${id}`)
         return response.data
@@ -37,7 +37,7 @@ export async function createRack(data: Rack): Promise<Rack> {
     }
 }
 
-export async function updateRack(id: string, data: Rack): Promise<Rack> {
+export async function updateRack(id: number, data: Rack): Promise<Rack> {
     try {
         const response = await apiInstance.patch(`/${id}`, data)
         return response.data
@@ -46,7 +46,7 @@ export async function updateRack(id: string, data: Rack): Promise<Rack> {
         throw error
     }
 }
-export async function deleteRack(id: string): Promise<void> {
+export async function deleteRack(id: number): Promise<void> {
     try {
         await apiInstance.delete(`/${id}`)
     } catch (error) {
