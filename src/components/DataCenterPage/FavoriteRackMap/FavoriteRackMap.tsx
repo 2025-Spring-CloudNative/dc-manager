@@ -14,7 +14,7 @@ import {
 
 import styles from "./FavoriteRackMap.module.scss";
 import RackManagementModal from "@/components/DataCenterPage/RackManagementModal";
-import IpSelectModal from "@/components/DataCenterPage/IpSelectModal";
+import IpSelectModal from "@/components/DataCenterPage/ServiceSelectModal";
 import CreateDCmodal from "@/components/DataCenterPage/DCmodal";
 // import { DataCenter } from "@/components/data/rackData";
 import {
@@ -32,9 +32,6 @@ import {
     useAddRackMutation,
     useDeleteRackMutation,
 } from "@/features/Racks/hooks/useRack";
-import { DataCenter } from "@/components/data/datacenter";
-import { Room } from "@/components/data/room";
-import { Rack } from "@/components/data/rack";
 import CreateModal from "@/components/shared/CreateModal";
 import { useDeleteRoomMutation } from "@/features/Rooms/hooks/useRoom";
 
@@ -101,6 +98,8 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     const [selectedDC, setSelectedDC] = useState<DataCenter | null>(null);
     const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
     const [isEditRoomOpen, setIsEditRoomOpen] = useState(false);
+    const [selectedRack, setSelectedRack] = useState<Rack | null>(null);
+    const [isIpSelectModalOpen, setIsIpSelectModalOpen] = useState(false);
 
     const handleCloseRoommodal = () => {
         setCreateModalOpen(false);
@@ -160,7 +159,9 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                 setSelectedRoom(item as Room);
                 setIsEditRoomOpen(true);
             } else {
-                console.log("選擇Service for Rack", item.id);
+                setSelectedRack(item as Rack);
+                setIsIpSelectModalOpen(true);
+                console.log("選擇Service for Rack", item as Rack);
             }
         };
 
@@ -312,6 +313,16 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         ]}
                         mutation={updateRoomMutation}
                         extraData={{ id: selectedRoom.id.toString() }}
+                    />
+                )}
+                {selectedRack && (
+                    <IpSelectModal
+                        isOpen={isIpSelectModalOpen}
+                        onClose={() => {
+                            setIsIpSelectModalOpen(false);
+                            setSelectedRack(null);
+                        }}
+                        currentRack={selectedRack}
                     />
                 )}
 
