@@ -6,16 +6,26 @@ import {
     userLogin,
     userLogout,
     userRegister,
+    updateUserInfo,
+    updateUserPassword,
 } from "../apis/userApi"
 
 // session
 export const useSession = () => {
     const { accessToken } = useAuth()
-    return useQuery({
+    const isQueryEnabled = !!accessToken // run only when logged-in
+
+    const query = useQuery({
         queryKey: ["session"],
         queryFn: getSession,
-        enabled: !!accessToken, // run only when logged-in
+        enabled: isQueryEnabled,
     })
+
+    // Normalize: undefined (not run) => null (not logged in)
+    const user = isQueryEnabled ? query.data : null
+    const isLoggedIn = !!user
+
+    return { ...query, data: user, isLoggedIn }
 }
 
 /*
@@ -64,6 +74,30 @@ export const useRegisterMutation = () => {
         onSuccess: ({ accessToken, user }) => {
             setAccessToken(accessToken)
             queryClient.setQueryData(["session"], user)
+        },
+    })
+}
+
+// Update user info
+export const useUpdateUserInfoMutation = () => {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: updateUserInfo,
+        onSuccess: (user) => {
+            queryClient.setQueryData(["session"], user)
+        },
+    })
+}
+
+// Reset user password
+export const useResetUserPasswordMutation = () => {
+    const queryClient = useQueryClient()
+
+    return useMutation({
+        mutationFn: updateUserPassword,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["session"] }) // refresh session data
         },
     })
 }

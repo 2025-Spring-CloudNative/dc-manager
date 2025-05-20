@@ -10,7 +10,6 @@ import type { InternalAxiosRequestConfig } from "axios"
 import { useQueryClient } from "@tanstack/react-query"
 
 import api from "@lib/axios"
-// import { queryClient } from "@lib/queryClient"
 import type { User } from "@features/user/types"
 
 type InternalAxiosRequestConfigWithRetry = InternalAxiosRequestConfig & {
@@ -27,8 +26,6 @@ type TAuthContext = {
     accessToken?: string | null
     currentUser?: User | null
     setAccessToken: (value: string | null) => void
-    // handleLogin: () => Promise<void>
-    // handleLogout: () => Promise<void>
 }
 
 const AuthContext = createContext<TAuthContext | undefined>(undefined)
@@ -50,21 +47,9 @@ function AuthProvider({ children }: PropsWithChildren) {
 
     // bootstrap: fetch access token using cookie's refresh token
     useEffect(() => {
-        // async function fetchToken() {
-        //     try {
-        //         const response = await api.get("/auth/session")
-        //         const { accessToken } = response.data
-        //         setToken(accessToken)
-        //     } catch (error) {
-        //         console.log("Error fetching token: ", error)
-        //         setToken(null)
-        //     }
-        // }
         async function fetchToken() {
             try {
-                const response = await api.post("/auth/refresh-token", null, {
-                    withCredentials: true,
-                })
+                const response = await api.get("/auth/refresh")
 
                 const { accessToken, user } = response.data
 
@@ -105,22 +90,22 @@ function AuthProvider({ children }: PropsWithChildren) {
                     error.config as InternalAxiosRequestConfigWithRetry
 
                 if (
-                    error.response.status === 403 &&
+                    error.response.status === 401 &&
                     error.response.data.message === "Unauthorized" &&
                     !originalRequest._retry // only retry once
                 ) {
                     try {
-                        const response = await api.post("/auth/refresh-token")
-                        const { accessToken } = response.data
+                        originalRequest._retry = true
 
+                        const response = await api.get("/auth/refresh")
+                        const { accessToken } = response.data
                         setToken(accessToken)
 
                         originalRequest.headers.Authorization = `Bearer ${accessToken}`
-                        originalRequest._retry = true
 
                         return api(originalRequest)
                     } catch (error) {
-                        console.error("Error refreshing token: ", error)
+                        console.error("Response Interceptor Error:", error)
                         setToken(null)
                         setCurrentUser(null)
                         queryClient.clear()
