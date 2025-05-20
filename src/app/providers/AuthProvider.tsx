@@ -70,7 +70,8 @@ function AuthProvider({ children }: PropsWithChildren) {
     useLayoutEffect(() => {
         const authInterceptor = api.interceptors.request.use((config) => {
             const cfg = config as InternalAxiosRequestConfigWithRetry
-            if (!cfg._retry && token) config.headers.Authorization = `Bearer ${token}`
+            if (!cfg._retry && token)
+                config.headers.Authorization = `Bearer ${token}`
 
             return config
         })
@@ -85,7 +86,8 @@ function AuthProvider({ children }: PropsWithChildren) {
         const refreshInterceptor = api.interceptors.response.use(
             (response) => response,
             async (error) => {
-                const originalRequest = error.config as InternalAxiosRequestConfigWithRetry
+                const originalRequest =
+                    error.config as InternalAxiosRequestConfigWithRetry
 
                 if (
                     error.response.status === 401 &&
@@ -93,17 +95,17 @@ function AuthProvider({ children }: PropsWithChildren) {
                     !originalRequest._retry // only retry once
                 ) {
                     try {
+                        originalRequest._retry = true
+
                         const response = await api.get("/auth/refresh")
                         const { accessToken } = response.data
-
                         setToken(accessToken)
 
                         originalRequest.headers.Authorization = `Bearer ${accessToken}`
-                        originalRequest._retry = true
 
                         return api(originalRequest)
                     } catch (error) {
-                        console.error("Error refreshing token: ", error)
+                        console.error("Response Interceptor Error:", error)
                         setToken(null)
                         setCurrentUser(null)
                         queryClient.clear()

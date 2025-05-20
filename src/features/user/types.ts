@@ -13,3 +13,14 @@ export type User = {
 export type UserWithPassword = User & {
     password: string
 }
+
+export function mapRoleToString(role: UserRole | undefined) {
+    switch (role) {
+        case "admin":
+            return "管理員"
+        case "user":
+            return "使用者"
+        default:
+            return undefined
+    }
+}

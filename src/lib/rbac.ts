@@ -67,7 +67,9 @@ usage:
     can(userObject, "create", "DataCenter") // false
 */
 export function can(user: User, action: Action, resource: Resource): boolean {
-    const permissions = POLICY[user.role]
+    if (!user) return false
+
+    const permissions = POLICY[user.role] ?? []
     for (const p of permissions) {
         if (
             p.resource === "*" ||

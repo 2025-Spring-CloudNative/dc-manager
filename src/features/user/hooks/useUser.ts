@@ -13,11 +13,19 @@ import {
 // session
 export const useSession = () => {
     const { accessToken } = useAuth()
-    return useQuery({
+    const isQueryEnabled = !!accessToken // run only when logged-in
+
+    const query = useQuery({
         queryKey: ["session"],
         queryFn: getSession,
-        enabled: !!accessToken, // run only when logged-in
+        enabled: isQueryEnabled,
     })
+
+    // Normalize: undefined (not run) => null (not logged in)
+    const user = isQueryEnabled ? query.data : null
+    const isLoggedIn = !!user
+
+    return { ...query, data: user, isLoggedIn }
 }
 
 /*

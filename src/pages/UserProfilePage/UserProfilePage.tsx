@@ -1,12 +1,12 @@
 import { useState } from "react"
 import styles from "./UserProfilePage.module.scss"
 import { useSession } from "@features/user/hooks/useUser"
-
+import { mapRoleToString } from "@/features/user/types"
 import UpdateUserInfoModal from "@components/UserProfilePage/UpdateUserInfoModal"
 import ResetUserPasswordModal from "@components/UserProfilePage/ResetUserPasswordModal"
 
 export default function UserProfilePage() {
-    const { data: user } = useSession()
+    const { data: user, isLoggedIn } = useSession()
     const [editOpen, setEditOpen] = useState(false)
     const [resetOpen, setResetOpen] = useState(false)
 
@@ -17,20 +17,34 @@ export default function UserProfilePage() {
             <div className={styles.card}>
                 <Field label="姓名" value={user?.name} />
                 <Field label="Email" value={user?.email} />
-                <Field label="權限" value={user?.role} />
+                <Field label="權限" value={mapRoleToString(user?.role)} />
             </div>
 
             {/* TODO */}
             <div className={styles.actions}>
-                <button className={styles.button} onClick={() => setEditOpen(true)}>
-                    Edit Info
+                <button
+                    className={styles.button}
+                    onClick={() => setEditOpen(true)}
+                    disabled={!isLoggedIn}
+                >
+                    編輯資訊
                 </button>
-                <button className={styles.button} onClick={() => setResetOpen(true)}>
-                    Reset Password
+                <button
+                    className={styles.button}
+                    onClick={() => setResetOpen(true)}
+                    disabled={!isLoggedIn}
+                >
+                    重設密碼
                 </button>
             </div>
-            <UpdateUserInfoModal isOpen={editOpen} onClose={() => setEditOpen(false)} />
-            <ResetUserPasswordModal isOpen={resetOpen} onClose={() => setResetOpen(false)} />
+            <UpdateUserInfoModal
+                isOpen={editOpen}
+                onClose={() => setEditOpen(false)}
+            />
+            <ResetUserPasswordModal
+                isOpen={resetOpen}
+                onClose={() => setResetOpen(false)}
+            />
         </section>
     )
 }

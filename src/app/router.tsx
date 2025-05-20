@@ -7,6 +7,7 @@ import DataCenterPage from "@pages/DataCenterPage"
 import LoginPage from "@pages/LoginPage"
 import UserProfilePage from "@pages/UserProfilePage"
 import NotFound from "@components/shared/NotFound"
+import RequireLogin from "./RequireLogin"
 
 /**
  * Central place to build the data router.
@@ -18,10 +19,18 @@ const routes: RouteObject[] = [
         path: "/",
         element: <AppLayout />,
         children: [
+            // public routes
             { index: true, element: <MainPage /> },
-            { path: "DataCenterPage", element: <DataCenterPage /> },
             { path: "login", element: <LoginPage /> },
-            { path: "user", element: <UserProfilePage /> },
+
+            // protected routes
+            {
+                element: <RequireLogin />,
+                children: [
+                    { path: "user", element: <UserProfilePage /> },
+                    { path: "DataCenterPage", element: <DataCenterPage /> },
+                ],
+            },
 
             // any unmatched child goes to 404
             { path: "*", element: <NotFound /> },

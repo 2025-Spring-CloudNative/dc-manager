@@ -1,24 +1,24 @@
 import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import styles from "./LoginPage.module.scss"
 import { useLoginMutation } from "@features/user/hooks/useUser"
 
 export default function LoginPage() {
     const loginMutation = useLoginMutation()
     const navigate = useNavigate()
+    const location = useLocation()
     const [form, setForm] = useState({ email: "", password: "" })
 
     const { isError, error } = loginMutation
+    const from = location.state?.from?.pathname || "/"
 
     const handleChange = (e: any) =>
         setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
 
     const handleSubmit = (e: any) => {
         e.preventDefault()
-        // TODO: replace with real auth call
-        // console.log("Logging in with:", form)
         loginMutation.mutate(form, {
-            onSuccess: () => navigate("/"),
+            onSuccess: () => navigate(from, { replace: true }),
         })
     }
 
@@ -56,7 +56,7 @@ export default function LoginPage() {
                     className={styles.button}
                     disabled={!form.email || !form.password}
                 >
-                    Log in
+                    登入
                 </button>
 
                 {/* simple inline error; swap for toast/snackbar if you prefer */}
