@@ -31,6 +31,7 @@ import {
     useGetRackQuery,
     useAddRackMutation,
     useDeleteRackMutation,
+    useUpdateRackMutation
 } from "@/features/Racks/hooks/useRack";
 import CreateModal from "@/components/shared/CreateModal";
 import { useDeleteRoomMutation } from "@/features/Rooms/hooks/useRoom";
@@ -55,9 +56,10 @@ const ActionMenu: React.FC<{
     type: "room" | "rack";
     onDelete: () => void;
     onAdd?: () => void;
-    onThird?: () => void; // 👈 加上這個即可
+    onThird?: () => void;
+    onForth?: () => void;
     onCloseMenu: () => void;
-}> = ({ type, onDelete, onAdd, onThird, onCloseMenu }) => {
+}> = ({ type, onDelete, onAdd, onThird, onForth, onCloseMenu }) => {
     return (
         <div
             className={styles.roomButtonEdit}
@@ -77,6 +79,13 @@ const ActionMenu: React.FC<{
                     <button className={styles.selectService} onClick={() => { onThird(); }}>
                         <span className={styles.subButtonTitle}>
                             {type === "room" ? "修改Room" : "選擇Service"}
+                        </span>
+                    </button>
+                )}
+                {type === "rack" && onForth && (
+                    <button className={styles.selectService} onClick={() => { onForth(); }}>
+                        <span className={styles.subButtonTitle}>
+                            修改Rack
                         </span>
                     </button>
                 )}
@@ -100,6 +109,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     const [selectedDC, setSelectedDC] = useState<DataCenter | null>(null);
     const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
     const [isEditRoomOpen, setIsEditRoomOpen] = useState(false);
+    const [isEditRackOpen, setIsEditRackOpen] = useState(false);
     const [selectedRack, setSelectedRack] = useState<Rack | null>(null);
     const [isIpSelectModalOpen, setIsIpSelectModalOpen] = useState(false);
 
@@ -113,6 +123,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     const { mutate: deleteRackbyID } = useDeleteRackMutation();
     const { mutate: deleteDC } = useDeleteDataCenterMutation();
     const updateRoomMutation = useUpdateRoomMutation();
+    const updateRackMutation = useUpdateRackMutation();
 
     const roomMutation = useAddRoomMutation();
     const rackMutation = useAddRackMutation();
@@ -166,6 +177,10 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                 console.log("選擇Service for Rack", item as Rack);
             }
         };
+        const handleForth = () => {
+            setSelectedRack(item as Rack);
+            setIsEditRackOpen(true);
+        };
 
 
 
@@ -182,7 +197,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                     {(isClicked || isHovered) ? `編輯${type === "room" ? "Room" : "Rack"}` : item.name}
                 </span>
                 {overlayMenu.type === type && overlayMenu.id === item.id && (
-                    <ActionMenu type={type} onDelete={handleDelete} onAdd={handleAdd} onThird={handleThird} onCloseMenu={handleCloseMenu} />
+                    <ActionMenu type={type} onDelete={handleDelete} onAdd={handleAdd} onThird={handleThird} onForth={handleForth} onCloseMenu={handleCloseMenu} />
                 )}
             </TableHead>
         );
@@ -311,13 +326,13 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         fields={[
                             { name: "name", label: "房間名稱", type: "text", required: true, defaultValue: selectedRoom.name },
                             { name: "unit", label: "房間高度", type: "number", required: true, defaultValue: selectedRoom.unit },
-                            { name: "dataCenterId", label: "資料中心 ID", type: "number", required: false, defaultValue: selectedRoom.dataCenterId, disabled: true },
+                            // { name: "dataCenterId", label: "資料中心 ID", type: "number", required: false, defaultValue: selectedRoom.dataCenterId, disabled: true },
                         ]}
                         mutation={updateRoomMutation}
                         extraData={{ id: selectedRoom.id }}
                     />
                 )}
-                {selectedRack && (
+                {selectedRack && isIpSelectModalOpen && (
                     <IpSelectModal
                         isOpen={isIpSelectModalOpen}
                         onClose={() => {
@@ -327,7 +342,24 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         currentRack={selectedRack}
                     />
                 )}
-
+                {selectedRack && isEditRackOpen && (
+                    <CreateModal
+                        isOpen={isEditRackOpen}
+                        onClose={() => {
+                            setIsEditRackOpen(false);
+                            setSelectedRack(null);
+                        }}
+                        title="修改Rack"
+                        fields={[
+                            { name: "name", label: "Rack 名稱", type: "text", required: true, defaultValue: selectedRack.name },
+                            { name: "height", label: "Rack 高度", type: "number", required: true, defaultValue: selectedRack.height },
+                            { name: "tag", label: "Rack tag", type: "text", required: true, defaultValue: selectedRack.tag },
+                            // { name: "dataCenterId", label: "資料中心 ID", type: "number", required: false, defaultValue: selectedRack.dataCenterId, disabled: true },
+                        ]}
+                        mutation={updateRackMutation}
+                        extraData={{ id: selectedRack.id }}
+                    />
+                )}
 
 
             </div>

@@ -44,7 +44,7 @@ export function useUpdateRackMutation() {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: ({ id, data }: { id: number, data: Rack }) => updateRack(id, data),
+        mutationFn: ({ id, ...data }: { id: number, data: Rack }) => updateRack(id, data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["rack"] })
         },
