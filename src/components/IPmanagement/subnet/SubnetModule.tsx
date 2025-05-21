@@ -13,15 +13,14 @@ export const SubnetModule: React.FC<Props> = ({ className }) => {
   const { data: subnets, isLoading, isError, error } = useGetSubnetsQuery();
   
   return (
-    <div className={styles.scrollContainer}>
+    <div className={styles.scrollContainer} key={'subnet'}>
       {isLoading && <p>Loading...</p>}
       {isError && <p>Error: {(error as Error).message}</p>}      
       {subnets &&
-          subnets.map((subnet: Subnet, index: number) => (
-            
-            <div className={`${styles.component} ${className || ""}`}>
-              <div key={index}>
-                <div>
+        subnets.map((subnet: Subnet, index: number) => (
+          <div className={`${styles.component} ${className || ""}`} key={'subnet' + index}>
+            <div key={index}>
+              <div>
                   <ListModule
                       CIDR={subnet.cidr}
                       NETMASK={subnet.netmask}

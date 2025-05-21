@@ -27,7 +27,7 @@ export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, DC}) => {
 
     return (
             
-        <div className={styles.listBlock}>
+        <div className={styles.listBlock} >
             <div className={styles.wrapper}>
                 <Button
                 className={styles.icon}
@@ -62,7 +62,7 @@ export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, DC}) => {
             </div>
 
             {expandedId && allIPs && Array.isArray(allIPs) && allIPs.map((ip: IP) => (
-                <div key={ip.id} className={styles.honeycombWrapper}>
+                <div key={'pool' + ip.id} className={styles.honeycombWrapper} >
                     <PoolModule
                         id={ip.id}
                         name={ip.name}

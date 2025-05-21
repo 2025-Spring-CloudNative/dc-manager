@@ -76,3 +76,28 @@
   height: 30px;
   background-color: #6bb7be;
 }
+
+// style for address and machine id 
+.machineInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;       // horizontally center both lines
+  justify-content: center;
+  position: relative;        // relative container
+  height: 100%;              // optional, depends on parent
+}
+
+.address {
+  font-weight: 700;
+  color: #000;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.machineId {
+  font-weight: 500;
+  color: #6bb7be;
+  font-size: 14px;
+  margin-top: 4px;
+  line-height: 1.2;
+}

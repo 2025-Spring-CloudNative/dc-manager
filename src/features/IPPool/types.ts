@@ -1,6 +1,6 @@
 export type IP = 
 {
-  id?: number,
+  id: number,
   name: string,
   type: string,
   cidr: string,
