@@ -39,6 +39,11 @@
   height: 35px;
   padding: 9px 0;
   width: 999px;
+  border: 3px solid #6bb7be;
+  box-sizing: border-box; /* Ensures border is included in element's dimensions */
+  height: calc(100% + 6px); /* Increases height by the border width */
+  width: calc(100% + 6px); /* Increases width by the border width */
+  margin: -3px; /* Adjusts position to account for increased size */
 }
 
 .text {

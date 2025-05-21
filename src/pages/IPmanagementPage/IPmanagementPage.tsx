@@ -28,17 +28,21 @@ const IPmanagementPage = () => {
             </div>
             <div className={styles.backgroundGradient}>
                 <Card className={styles.IPCard}>
-                    <Button
-                        className={`${styles.infoButton} ${styles.favoriteButton}`}
-                        onClick={handleOpenCreateModal}
-                    >
-                        創建 Subnet
-                    </Button>
+                    <div className={styles.pageHeader}>
+                        <h1 className={styles.pageTitle}>IP Management</h1>
+                        <Button
+                            className={`${styles.createButton}`}
+                            onClick={handleOpenCreateModal}
+                        >
+                            創建 Subnet
+                        </Button>
+                    </div>
+                    
                     <CreateSubnet
                         isOpen={isCreateModalOpen}
                         onClose={handleCloseCreateModal}
                     />
-                    <h1 className={styles.pageTitle}>IP Management</h1>
+                    
                     <SubnetModule />
                 </Card>
             </div>

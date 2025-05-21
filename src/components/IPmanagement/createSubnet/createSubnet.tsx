@@ -5,98 +5,83 @@ import Input from "@/components/shared/Input/Input";
 import Separator from "@/components/shared/Separator";
 import { XIcon } from "lucide-react";
 import {
-  useCreateDataCenterMutation,
-  useUpdateDataCenterMutation,
-} from "@/features/dataCenter/hooks/useDataCenter";
+  useCreateSubnetMutation,
+  useUpdateSubnetMutation,
+} from "@/features/subnet/hooks/useSubnet";
 import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet";
+import { Subnet } from "@/features/subnet/types";
 
-
-interface DataCenterModalProps {
+interface SubnetModalProps {
   isOpen: boolean;
   onClose: () => void;
-  currentDataCenter?: {
-    id: number;
-    name: string;
-    location: string;
-    subnetCidr?: string; // optional for backward compatibility
-  } | null;
 }
 
-export const CreateSubnet: React.FC<DataCenterModalProps> = ({
+export const CreateSubnet: React.FC<SubnetModalProps> = ({
   isOpen,
   onClose,
-  currentDataCenter,
 }) => {
-  const isEditMode = !!currentDataCenter;
 
   const [form, setForm] = useState({
-    dataCenter: {
-      name: "",
-      location: "",
-    },
-    subnetCidr: "",
+    Subnet: {
+      id: 0,
+      cidr: "",
+      netmask: "",
+      gateway: "",
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    }
   });
 
-  const createMutation = useCreateDataCenterMutation();
-  const updateMutation = useUpdateDataCenterMutation();
-  const { data: subnets, isLoading: isLoadingSubnets } = useGetSubnetsQuery();
+  const createMutation = useCreateSubnetMutation();
+  const updateMutation = useUpdateSubnetMutation();
+  // const { data: subnets, isLoading: isLoadingSubnets } = useGetSubnetsQuery();
   // initialization
   useEffect(() => {
-    if (currentDataCenter) {
-      setForm({
-        dataCenter: {
-          name: currentDataCenter.name,
-          location: currentDataCenter.location,
-        },
-        subnetCidr: currentDataCenter.subnetCidr || "",
-      });
-    } else {
-      setForm({
-        dataCenter: {
-          name: "",
-          location: "",
-        },
-        subnetCidr: "",
-      });
-    }
-  }, [currentDataCenter, isOpen]);
+    
+    setForm({
+      Subnet: {
+        id: 0,
+        cidr: "",
+        netmask: "",
+        gateway: "",
+        created_at: "",
+        updated_at: "",
+      }
+    });
+  }, [ isOpen]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === "name" || name === "location") {
-      setForm((prev) => ({
-        ...prev,
-        dataCenter: {
-          ...prev.dataCenter,
-          [name]: value,
-        },
-      }));
-    } else {
-      setForm((prev) => ({ ...prev, [name]: value }));
-    }
+
+    setForm((prev) => ({
+      ...prev,
+      Subnet: {
+        ...prev.Subnet,
+        [name]: value,
+      },
+    }));
   };
+
 
   const handleSubmit = async () => {
     try {
-      if (isEditMode && currentDataCenter) {
-        await updateMutation.mutateAsync({
-          id: currentDataCenter.id.toString(),
-          data: {
-            name: form.dataCenter.name,
-            location: form.dataCenter.location,
-          },
-        });
-        alert("資料中心已更新！");
-      } else {
-        await createMutation.mutateAsync(form);
-        alert("資料中心創建成功！");
-      }
+      const currentTimestamp = new Date().toISOString();
+
+      const payload = {
+        ...form.Subnet,
+        created_at: currentTimestamp,
+        updated_at: null,
+      };
+
+      await createMutation.mutateAsync(payload);
+      alert("Subnet創建成功！");
       onClose();
     } catch (error) {
       console.error("儲存失敗", error);
       alert("儲存失敗，請檢查資料");
     }
   };
+
 
   const handleCloseModal = () => {
     onClose();
@@ -115,7 +100,7 @@ export const CreateSubnet: React.FC<DataCenterModalProps> = ({
           <div className={styles.titleWrapper}>
             <Separator className={styles.leftSeparator} />
             <h2 className={styles.modalTitle}>
-              {isEditMode ? "編輯資料中心" : "創建Subnet"}
+              {"創建Subnet"}
             </h2>
             <Separator className={styles.rightSeparator} />
           </div>
@@ -123,41 +108,45 @@ export const CreateSubnet: React.FC<DataCenterModalProps> = ({
 
         <div className={styles.tableContainer}>
           <div className={styles.inputColumn}>
-            <label className={styles.inputFont}>Subnet名稱</label>
+            <label className={styles.inputFont}>Subnet id</label>
             <Input
               type="text"
-              name="name"
+              name="id"
               placeholder="輸入Subnet名稱"
               className={styles.inputField}
-              value={form.dataCenter.name}
+              value={String(form.Subnet.id)}
               onChange={handleChange}
             />
 
-            <label className={styles.inputFont}>DC位置</label>
+            <label className={styles.inputFont}>Subnet cidr</label>
             <Input
               type="text"
-              name="location"
-              placeholder="輸入DC位置"
+              name="cidr"
+              placeholder="輸入Subnet位置"
               className={styles.inputField}
-              value={form.dataCenter.location}
+              value={form.Subnet.cidr}
               onChange={handleChange}
             />
 
-          <label className={styles.inputFont}>DC Subnet CIDR</label>
-          <select
-            name="subnetCidr"
-            className={styles.subnetSelect}
-            value={form.subnetCidr}
-            onChange={handleChange}
-            disabled={isLoadingSubnets}
-          >
-            <option value="">自動分配</option>
-            {subnets?.map((subnet) => (
-              <option key={subnet.id} value={subnet.cidr}>
-                {subnet.cidr}
-              </option>
-            ))}
-          </select>
+            <label className={styles.inputFont}>Subnet Mask</label>
+            <Input
+              type="text"
+              name="netmask"
+              placeholder="輸入Subnet遮罩"
+              className={styles.inputField}
+              value={form.Subnet.netmask}
+              onChange={handleChange}
+            />
+
+            <label className={styles.inputFont}>Subnet Gateway</label>
+            <Input
+              type="text"
+              name="gateway"
+              placeholder="輸入Subnet閘門"
+              className={styles.inputField}
+              value={form.Subnet.gateway}
+              onChange={handleChange}
+            />
 
           </div>
         </div>
@@ -170,8 +159,6 @@ export const CreateSubnet: React.FC<DataCenterModalProps> = ({
           >
             {(createMutation.isLoading || updateMutation.isLoading)
               ? "儲存中..."
-              : isEditMode
-              ? "確認修改"
               : "確認創建"}
           </Button>
         </div>

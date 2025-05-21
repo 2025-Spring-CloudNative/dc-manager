@@ -45,30 +45,63 @@
   backdrop-filter: blur(6.6px) brightness(100%);
   -webkit-backdrop-filter: blur(6.6px) brightness(100%);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;      /* ⬅️ 讓 header 在上、列表在下 */
+  align-items: flex-start;     /* 保持左對齊 */
+  justify-content: flex-start; /* 不用置中 */
+}
+
+.pageHeader {
+  display: flex;
+  align-items: center; // 💡 Aligns title and button vertically
+  gap: 80px;  
+  margin-bottom: 24px;
 }
 
 .pageTitle {
+  flex-shrink: 0;
   font-family: "Noto Sans", sans-serif;
   font-size: 28px;
   font-weight: 700;
   color: #14484d;
   letter-spacing: 1.2px;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-  margin-bottom: 700px;
+  margin-left: 20px; // Remove default bottom margin
 }
 
-.infoButton {
-  width: auto;
+.createButton {
+  width: 150px;
   height: 35px;
+  padding: 6px 10px;
   border-radius: 54px;
-  font-size: 1rem;
+  background-color: #d6fafa;
+  color: #14484d;
   font-weight: 500;
-  color: var(--layout-800);
-  backdrop-filter: blur(6.6px) brightness(100%);
-  // -webkit-backdrop-filter: blur(6.6px) brightness(100%);
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  margin-left: 900px; // Pushes button to the right
 }
+
+
+// .pageTitle {
+//   font-family: "Noto Sans", sans-serif;
+//   font-size: 28px;
+//   font-weight: 700;
+//   color: #14484d;
+//   letter-spacing: 1.2px;
+//   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+//   margin-bottom: 700px;
+// }
+
+// .infoButton {
+//   width: auto;
+//   height: 35px;
+//   border-radius: 54px;
+//   font-size: 1rem;
+//   font-weight: 500;
+//   color: var(--layout-800);
+//   backdrop-filter: blur(6.6px) brightness(100%);
+//   // -webkit-backdrop-filter: blur(6.6px) brightness(100%);
+// }
 
 /* 針對常用按鈕給淺藍底色 */
 .favoriteButton {
