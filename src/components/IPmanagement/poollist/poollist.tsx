@@ -18,8 +18,8 @@ export interface Props {
 }
 
 export const PoolModule: React.FC<Props> = ({ id, name, type, cidr, created_at, updated_at }) => {
-  // const { data: IPaddress } = getlocalIPAddressbypoolID(id) as { data: IPAdress };
-  const { data: IPaddress } = useGetIPAddressbypoolIdQuery(id) as { data: IPAdress };
+  const { data: IPaddress } = getlocalIPAddressbypoolID(id) as { data: IPAdress };
+  // const { data: IPaddress } = useGetIPAddressbypoolIdQuery(id) as { data: IPAdress };
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const toggleAccordion = (id: number) => {
@@ -52,13 +52,13 @@ export const PoolModule: React.FC<Props> = ({ id, name, type, cidr, created_at, 
                 <div className={styles.divider} />
                 <p className={styles.item}>
                 <span className={styles.label}>uAt:</span>
-                <span className={styles.value}> {updated_at ? updated_at.toLocaleString() : ""}</span>
+                <span className={styles.value}> {updated_at ? updated_at.toLocaleString().split('T')[0] : ""}</span>
                 </p>
 
                 <div className={styles.divider} />
                 <p className={styles.item}>
                 <span className={styles.label}>cAt:</span>
-                <span className={styles.value}>{created_at ? created_at.toLocaleString() : ""}</span>
+                <span className={styles.value}>{created_at ? created_at.toLocaleString().split('T')[0] : ""}</span>
                 </p>
         </div>
       </div>

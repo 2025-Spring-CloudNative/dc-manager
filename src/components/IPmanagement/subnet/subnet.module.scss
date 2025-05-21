@@ -15,9 +15,15 @@
   display: block;
 }
 
+// .scrollContainer {
+//   max-height: 600px;       // 🔧 adjust height as needed
+//   overflow-y: auto;
+//   padding-right: 8px;      // ✅ avoid scrollbar overlap
+//   scroll-behavior: smooth; // optional for smoother scroll
+// }
 .scrollContainer {
-  max-height: 600px;       // 🔧 adjust height as needed
+  max-height: 600px;
   overflow-y: auto;
-  padding-right: 8px;      // ✅ avoid scrollbar overlap
-  scroll-behavior: smooth; // optional for smoother scroll
+  padding-right: 8px;
+  scroll-behavior: smooth;
 }

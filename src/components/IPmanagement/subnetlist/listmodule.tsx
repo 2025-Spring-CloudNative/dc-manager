@@ -26,7 +26,6 @@ export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, DC}) => {
     };
 
     return (
-            
         <div className={styles.listBlock} >
             <div className={styles.wrapper}>
                 <Button

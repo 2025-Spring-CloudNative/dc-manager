@@ -71,6 +71,19 @@
   letter-spacing: 0.26px;
 }
 
+.status_value {
+  background-color: #6bb7be;     // blue-teal background
+  color: #fff;                   // white text
+  font-weight: 700;              // bold
+  text-transform: uppercase;     // make text uppercase
+  padding: 4px 12px;             // inner spacing
+  border-radius: 12px;           // rounded pill
+  letter-spacing: 1px;           // space between letters
+  display: inline-block;         // allow padding to apply
+  font-size: 14px;
+}
+
+
 .divider {
   width: 1px;
   height: 30px;
@@ -97,7 +110,7 @@
 .machineId {
   font-weight: 500;
   color: #6bb7be;
-  font-size: 14px;
+  font-size: 18px;
   margin-top: 4px;
   line-height: 1.2;
 }
