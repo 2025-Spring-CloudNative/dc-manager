@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { PoolModule } from "@/components/IPmanagement/poollist/poollist";
 import { IP } from "@/features/IPPool/types";
 import { DataCenter } from '@/components/data/datacenter';
-import { getlocalIPPoolbysubnetId, useGetIPPoolbysubnetIdQuery } from "@/features/IPPool/hooks/IPPool";
+import { useGetIPPoolbysubnetIdQuery } from "@/features/IPPool/hooks/IPPool";
 import { useGetDataCenterBySubnetIDQuery } from "@/features/dataCenter/hooks/useDataCenter";
 
 interface Props {
@@ -20,7 +20,8 @@ interface Props {
 export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, id}) => {
 
     const { data: allIPs } = useGetIPPoolbysubnetIdQuery(id!) as { data: IP };
-    const { data: dc } = useGetDataCenterBySubnetIDQuery(id!) as { data: DataCenter };
+    const { data: dcArr } = useGetDataCenterBySubnetIDQuery(id!) as { data: DataCenter[] };
+    const dc = Array.isArray(dcArr) && dcArr.length > 0 ? dcArr[0] : null;
 
     const [expandedId, setExpandedId] = useState<number | null>(null);
 
@@ -58,7 +59,7 @@ export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, id}) => {
                     <div className={styles.divider} />
                     <p className={styles.item}>
                         <span className={styles.label}>DC:</span>
-                        {/* <span className={styles.value}>{dc.id}</span> */}
+                        <span className={styles.value}>{dc ? dc.id : "Null"}</span>
                     </p>
                 </div>
             </div>

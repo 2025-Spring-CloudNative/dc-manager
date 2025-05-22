@@ -4,7 +4,6 @@ import { ListModule } from "../subnetlist";
 import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet";
 import { Subnet } from "@/features/subnet/types";
 
-
 interface Props {
   className?: string;
 }

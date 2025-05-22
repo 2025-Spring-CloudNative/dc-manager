@@ -29,7 +29,8 @@ export async function getDataCenterById(id: number) {
 
 export async function getDataCenterBySubnetID(subnetId: number) {
   try {
-    const response = await apiInstance.get(`/?subnetId=${subnetId}`);
+    const response = await apiInstance.get(`?subnetId=${subnetId}`);
+    console.log("Data center by subnet ID:", response.data, subnetId);
     return response.data;
   } catch (error) {
     console.error("Error fetching data center by subnet ID:", error);
