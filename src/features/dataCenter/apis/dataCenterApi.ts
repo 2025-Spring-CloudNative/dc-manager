@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiInstance = axios.create({
-  baseURL: "http://140.112.90.37:4000/data-center",
+  baseURL: "http://140.112.90.36:4000/data-center",
   headers: {
     "Content-Type": "application/json",
   },
@@ -23,6 +23,16 @@ export async function getDataCenterById(id: number) {
     return response.data;
   } catch (error) {
     console.error("Error fetching data center by ID:", error);
+    throw error;
+  }
+}
+
+export async function getDataCenterBySubnetID(subnetId: number) {
+  try {
+    const response = await apiInstance.get(`/?subnetId=${subnetId}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data center by subnet ID:", error);
     throw error;
   }
 }

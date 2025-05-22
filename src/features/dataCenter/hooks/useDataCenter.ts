@@ -5,6 +5,7 @@ import {
   createDataCenter,
   updateDataCenter,
   deleteDataCenter,
+  getDataCenterBySubnetID,
 } from "../apis/dataCenterApi";
 
 // Get all
@@ -29,6 +30,15 @@ export function useGetDataCenterByIdQuery(id: number) {
     queryKey: ["dataCenter", id],
     queryFn: () => getDataCenterById(id),
     enabled: !!id,
+  });
+}
+
+// Get by Subnet ID
+export function useGetDataCenterBySubnetIDQuery(subnetId: number) {
+  return useQuery({
+    queryKey: ["dataCenter", "subnetId", subnetId],
+    queryFn: () => getDataCenterBySubnetID(subnetId),
+    enabled: !!subnetId,
   });
 }
 

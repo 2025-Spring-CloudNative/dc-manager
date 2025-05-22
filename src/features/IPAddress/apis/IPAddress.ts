@@ -1,7 +1,7 @@
 import axios from "axios";
 // import { IPAdress } from "@/features/IPAddress/types";
 const apiInstance = axios.create({
-  baseURL: "http://140.112.90.37:4000/ip-address",
+  baseURL: "http://140.112.90.36:4000/ip-address",
   headers: {
     "Content-Type": "application/json",
   },

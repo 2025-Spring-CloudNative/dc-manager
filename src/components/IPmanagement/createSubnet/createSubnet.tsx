@@ -23,12 +23,9 @@ export const CreateSubnet: React.FC<SubnetModalProps> = ({
 
   const [form, setForm] = useState({
     Subnet: {
-      id: 0,
       cidr: "",
       netmask: "",
       gateway: "",
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
     }
   });
 
@@ -40,12 +37,9 @@ export const CreateSubnet: React.FC<SubnetModalProps> = ({
     
     setForm({
       Subnet: {
-        id: 0,
         cidr: "",
         netmask: "",
         gateway: "",
-        created_at: "",
-        updated_at: "",
       }
     });
   }, [ isOpen]);
@@ -108,15 +102,6 @@ export const CreateSubnet: React.FC<SubnetModalProps> = ({
 
         <div className={styles.tableContainer}>
           <div className={styles.inputColumn}>
-            <label className={styles.inputFont}>Subnet id</label>
-            <Input
-              type="text"
-              name="id"
-              placeholder="輸入Subnet名稱"
-              className={styles.inputField}
-              value={String(form.Subnet.id)}
-              onChange={handleChange}
-            />
 
             <label className={styles.inputFont}>Subnet cidr</label>
             <Input

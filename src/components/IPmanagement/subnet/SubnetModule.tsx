@@ -25,7 +25,7 @@ export const SubnetModule: React.FC<Props> = ({ className }) => {
                       CIDR={subnet.cidr}
                       NETMASK={subnet.netmask}
                       GATEWAY={subnet.gateway}
-                      DC={subnet.id}
+                      id={subnet.id}
                   />
                 </div>
                 <div style={{ marginBottom: "10px" }} />
