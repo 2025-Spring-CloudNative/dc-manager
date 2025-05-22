@@ -57,6 +57,10 @@
     border: 1px solid #ccc;
     border-radius: 8px;
   }
+  .readonlyInput {
+    background-color: #f0f0f0;
+    cursor: not-allowed;
+  }
   
   .tableContainer {
     width: 70%; /* Adjust width for table container */
@@ -210,3 +214,14 @@
       border-radius: 4px;
     }
   }
+  .selectable {
+    cursor: pointer;
+    &:hover {
+      background-color: #eef; // hover 效果
+    }
+  }
+  
+  .selected {
+    background-color: #a3d5ff; // 被選取的顏色
+  }
+  

@@ -46,7 +46,7 @@ export function useUpdateMachineMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: Partial<Machine>) => updateMachine(data.id!, data),
+    mutationFn: ({ id, data }: { id: number; data: Machine }) => updateMachine(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["machines"] });
     },

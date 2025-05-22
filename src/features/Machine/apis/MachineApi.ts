@@ -27,6 +27,7 @@ export async function getMachineById(id: number) {
 }
 export async function createMachine(data: Machine): Promise<Machine> {
   try {
+    console.log("Creating machine with data:", data);
     const response = await apiInstance.post("/", data);
     return response.data;
   } catch (error) {
@@ -36,6 +37,9 @@ export async function createMachine(data: Machine): Promise<Machine> {
 }
 export async function updateMachine(id: number, data: Machine): Promise<Machine> {
   try {
+    console.log("Updating machine with ID:", id, "and data:", data);
+    delete data.id; // Remove id from data to avoid sending it in the body
+    delete data.createdAt; // Remove createdAt from data to avoid sending it in the body
     const response = await apiInstance.patch(`/${id}`, data);
     return response.data;
   } catch (error) {

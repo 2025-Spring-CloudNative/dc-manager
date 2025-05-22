@@ -21,18 +21,22 @@ import {
 } from "@/components/shared/Table";
 import { cn } from "@/lib/utils";
 
-interface ManageMachineModalProps {
+interface MachineModalProps {
     isOpen: boolean;
     onClose: () => void;
     rack: Rack;
     machines: Machine[];
+    title: string;
+    editmachine?: Machine;
 }
 
-const ManageMachineModal: React.FC<ManageMachineModalProps> = ({
+const MachineModal: React.FC<MachineModalProps> = ({
     isOpen,
     onClose,
     rack,
     machines,
+    title,
+    editmachine
 }) => {
     const [form, setForm] = useState<Machine>({
         name: "",
@@ -42,29 +46,60 @@ const ManageMachineModal: React.FC<ManageMachineModalProps> = ({
         rackId: rack.id as number,
         status: "active",
     });
-    const [editingId, setEditingId] = useState<number | null>(null);
-
+    // const [editingId, setEditingId] = useState<number | null>(null);
+    const [selectedUnits, setSelectedUnits] = useState<Set<number>>(new Set());
     const createMutation = useCreateMachineMutation();
     const updateMutation = useUpdateMachineMutation();
-    const deleteMutation = useDeleteMachineMutation();
-    console.log("rack height", rack.height);
-    console.log("machines = ", machines)
+
+    // 根據 editmachine 是否存在，決定使用哪個 mutation
+    const mutation = editmachine ? updateMutation : createMutation;
+    useEffect(() => {
+        if (selectedUnits.size === 0) return;
+
+        const unitsArray = Array.from(selectedUnits).sort((a, b) => a - b);
+        const start = unitsArray[0];
+        const count = unitsArray.length;
+
+        setForm((prev) => ({
+            ...prev,
+            startUnit: start,
+            unit: count,
+        }));
+    }, [selectedUnits]);
+
+    // const deleteMutation = useDeleteMachineMutation();
     useEffect(() => {
         if (isOpen) {
-            setForm({
-                name: "",
-                startUnit: 1,
-                unit: 1,
-                macAddress: "",
-                rackId: rack.id as number,
-                status: "active",
-            });
-            setEditingId(null);
+            if (editmachine) {
+                setForm(editmachine);
+                const selected = new Set<number>();
+                for (let i = 0; i < editmachine.unit; i++) {
+                    selected.add(editmachine.startUnit + i);
+                }
+                console.log("Selected units:", selected);
+                setSelectedUnits(selected);
+            } else {
+                setForm({
+                    name: "",
+                    startUnit: 1,
+                    unit: 1,
+                    macAddress: "",
+                    rackId: rack.id,
+                    status: "active",
+                });
+                setSelectedUnits(new Set());
+            }
         }
-    }, [isOpen, rack.id]);
+    }, [isOpen, rack.id, editmachine]);
+
     const getMachineInCell = (unit: number): Machine | undefined => {
-        return machines.find((m) => unit >= m.startUnit && unit <= m.startUnit + m.unit - 1);
+        return machines.find((m) =>
+            m.id !== editmachine?.id && // 排除當前要編輯的機器
+            unit >= m.startUnit &&
+            unit <= m.startUnit + m.unit - 1
+        );
     };
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setForm((prev) => ({
@@ -76,37 +111,38 @@ const ManageMachineModal: React.FC<ManageMachineModalProps> = ({
     const handleSubmit = async () => {
         if (!form.name || !form.macAddress) return alert("請完整填寫");
 
-        const payload = { ...form, rackId: rack.id };
+        const unitsArray = Array.from(selectedUnits).sort((a, b) => a - b);
+        const isContiguous = unitsArray.every((u, i, arr) => i === 0 || u === arr[i - 1] + 1);
+
+        if (!isContiguous) {
+            return alert("請選擇連續的單元");
+        }
+
+        const payload = {
+            ...form,
+            rackId: rack.id,
+            startUnit: unitsArray[0],
+            unit: unitsArray.length,
+        };
 
         try {
-            if (editingId) {
-                await updateMutation.mutateAsync({ ...payload, id: editingId });
+            // console.log("Submitting payload:", payload);
+            if (editmachine) { // No need to check payload.id here, it will be in form if editmachine exists
+                // Assert that payload.id is a number when calling updateMutation
+                await updateMutation.mutateAsync({ id: payload.id as number, data: payload as Machine });
             } else {
-                await createMutation.mutateAsync(payload);
+                // This else block handles the create case
+                await createMutation.mutateAsync(payload as Machine);
             }
-            setForm({ name: "", startUnit: 1, unit: 1, macAddress: "", rackId: rack.id, status: "active" });
-            setEditingId(null);
+            setForm({ name: "", startUnit: 1, unit: 1, macAddress: "", rackId: rack.id!, status: "active" });
+            setSelectedUnits(new Set());
+            onClose();
         } catch (e) {
             console.error(e);
             alert("儲存失敗");
         }
     };
 
-    const handleEdit = (machine: Machine) => {
-        setForm(machine);
-        setEditingId(machine.id ?? null);
-    };
-
-    const handleDelete = async (id?: number) => {
-        if (!id) return;
-        if (!confirm("確認刪除這台機器？")) return;
-        try {
-            await deleteMutation.mutateAsync(id);
-        } catch (e) {
-            console.error(e);
-            alert("刪除失敗");
-        }
-    };
 
     if (!isOpen) return null;
 
@@ -120,7 +156,7 @@ const ManageMachineModal: React.FC<ManageMachineModalProps> = ({
                 <div className={styles.titleArea}>
                     <div className={styles.titleWrapper}>
                         <Separator className={styles.leftSeparator} />
-                        <h2 className={styles.modalTitle}>管理機器</h2>
+                        <h2 className={styles.modalTitle}>{title}</h2>
                         <Separator className={styles.rightSeparator} />
                     </div>
                 </div>
@@ -130,10 +166,11 @@ const ManageMachineModal: React.FC<ManageMachineModalProps> = ({
                         <Input name="name" value={form.name} onChange={handleChange} className={styles.inputField} />
 
                         <label>起始 Unit</label>
-                        <Input name="startUnit" type="number" value={form.startUnit} onChange={handleChange} className={styles.inputField} />
+                        <Input name="startUnit" type="number" value={form.startUnit} readOnly className={cn(styles.inputField, styles.readonlyInput)} />
 
                         <label>佔用 Unit 數</label>
-                        <Input name="unit" type="number" value={form.unit} onChange={handleChange} className={styles.inputField} />
+                        <Input name="unit" type="number" value={form.unit} readOnly className={cn(styles.inputField, styles.readonlyInput)} />
+
 
                         <label>MAC Address</label>
                         <Input name="macAddress" value={form.macAddress} onChange={handleChange} className={styles.inputField} />
@@ -155,14 +192,38 @@ const ManageMachineModal: React.FC<ManageMachineModalProps> = ({
                                 const machineInCell = getMachineInCell(unit);
 
                                 return (
-                                    <TableRow key={unit}>
+                                    <TableRow
+                                        key={unit}
+                                        onClick={() => {
+                                            if (!machineInCell) {
+                                                setSelectedUnits(prev => {
+                                                    const newSet = new Set(prev);
+                                                    if (newSet.has(unit)) {
+                                                        newSet.delete(unit); // 取消選取
+                                                    } else {
+                                                        newSet.add(unit); // 新增選取
+                                                    }
+                                                    return newSet;
+                                                });
+                                            }
+                                        }}
+                                        className={cn({
+                                            [styles.selectable]: !machineInCell,
+                                            [styles.selected]: selectedUnits.has(unit),
+                                        })}
+                                    >
+
                                         {/* 左邊的 Unit Label */}
                                         <TableCell className={styles.unitHeader}>
                                             <span className={styles.unitTitle}>{unit}</span>
                                         </TableCell>
 
                                         {/* 機器名稱（只在起始單位顯示） */}
-                                        <TableCell className={machineInCell ? styles.hasMachine : styles.unitCell}>
+                                        <TableCell className={cn({
+                                            [styles.hasMachine]: machineInCell,
+                                            [styles.selectable]: !machineInCell,
+                                            [styles.selected]: selectedUnits.has(unit),
+                                        })}>
                                             {machineStartUnit ? machineStartUnit.name : ""}
                                         </TableCell>
                                     </TableRow>
@@ -175,12 +236,13 @@ const ManageMachineModal: React.FC<ManageMachineModalProps> = ({
 
                 <div className={styles.modalActions}>
                     <Button className={styles.saveButton} onClick={handleSubmit}>
-                        {editingId ? "更新" : "新增"}
+                        {editmachine ? "更新" : "新增"}
                     </Button>
+
                 </div>
             </div>
         </div >
     );
 };
 
-export default ManageMachineModal;
+export default MachineModal;

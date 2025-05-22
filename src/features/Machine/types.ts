@@ -5,5 +5,6 @@ export type Machine = {
     unit: number;
     macAddress: string;
     rackId: number;
-    status: string;
+    status?: string;
+    createdAt?: string;
 }
