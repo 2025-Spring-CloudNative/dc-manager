@@ -1,61 +1,61 @@
 import axios from "axios";
 
 const apiInstance = axios.create({
-  baseURL: "http://140.112.90.36:4000/data-center",
+  baseURL: "http://140.112.90.36:4000/service",
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-export async function getDataCenters() {
+export async function getServices() {
   try {
     const response = await apiInstance.get("/");
     return response.data;
   } catch (error) {
-    console.error("Error fetching data center data:", error);
+    console.error("Error fetching service data:", error);
     throw error;
   }
 }
 
-export async function getDataCenterById(id: string) {
+export async function getServiceById(id: string) {
   try {
     const response = await apiInstance.get(`/${id}`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching data center by ID:", error);
+    console.error("Error fetching service by ID:", error);
     throw error;
   }
 }
 
-export async function createDataCenter(data: {
-  dataCenter: { name: string; location: string };
-  subnetCidr: string;
+export async function createService(data: {
+  service: { id: string; name: string };
+  poolId: string;
 }) {
   try {
     const response = await apiInstance.post("/", data);
     return response.data;
   } catch (error) {
-    console.error("Error creating data center:", error);
+    console.error("Error creating service:", error);
     throw error;
   }
 }
 
-export async function updateDataCenter(id: string, data: { name: string; location: string }) {
+export async function updateService(id: string, data: { name: string; location: string }) {
   try {
     const response = await apiInstance.patch(`/${id}`, data);
     return response.data;
   } catch (error) {
-    console.error("Error updating data center:", error);
+    console.error("Error updating service:", error);
     throw error;
   }
 }
 
-export async function deleteDataCenter(id: string) {
+export async function deleteService(id: string) {
   try {
     const response = await apiInstance.delete(`/${id}`);
     return response.data;
   } catch (error) {
-    console.error("Error deleting data center:", error);
+    console.error("Error deleting service:", error);
     throw error;
   }
 }

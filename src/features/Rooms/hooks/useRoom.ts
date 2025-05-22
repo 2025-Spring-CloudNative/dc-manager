@@ -1,5 +1,5 @@
-import { useQuery } from "@tanstack/react-query"
-import { getRooms, getRoomById } from "../apis/room"
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
+import { getRooms, getRoomById, deleteRoom } from "../apis/room"
 
 export function useGetRoomQuery() {
     const { data, isLoading, isError, isSuccess, error } = useQuery({
@@ -30,3 +30,15 @@ export function useGetRoomByIdQuery(id: string) {
         error,
     }
 }
+
+export function useDeleteRoomMutation() {
+    const queryClient = useQueryClient();
+  
+    return useMutation({
+      mutationFn: (id: string) => deleteRoom(id),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["room"] });
+      },
+    });
+  }
+  

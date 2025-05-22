@@ -4,6 +4,7 @@ import { createBrowserRouter } from "react-router-dom"
 import AppLayout from "@/app/AppLayout"
 import MainPage from "@pages/MainPage"
 import DataCenterPage from "@/pages/DataCenterPage"
+import ServiceManPage from "@/pages/ServiceManPage"
 import NotFound from "@components/shared/NotFound"
 
 /**
@@ -18,6 +19,7 @@ const routes: RouteObject[] = [
         children: [
             { index: true, element: <MainPage /> },
             { path: "DataCenterPage", element: <DataCenterPage /> },
+            { path: "service", element: <ServiceManPage /> },
 
             // any unmatched child goes to 404
             { path: "*", element: <NotFound /> },
