@@ -1,15 +1,22 @@
 import { useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import styles from "./LoginPage.module.scss"
-import { useLoginMutation } from "@features/user/hooks/useUser"
+import styles from "./RegisterPage.module.scss"
 
-export default function LoginPage() {
-    const loginMutation = useLoginMutation()
+import { UserWithPassword } from "@/features/user/types"
+import { useRegisterMutation } from "@features/user/hooks/useUser"
+
+export default function RegisterPage() {
+    const registerMutation = useRegisterMutation()
     const navigate = useNavigate()
     const location = useLocation()
-    const [form, setForm] = useState({ email: "", password: "" })
+    const [form, setForm] = useState<UserWithPassword>({
+        name: "",
+        email: "",
+        passwordHash: "",
+        role: "user",
+    })
 
-    const { isError, error } = loginMutation
+    const { isError, error } = registerMutation
     const from = location.state?.from?.pathname || "/"
 
     const handleChange = (e: any) =>
@@ -17,7 +24,7 @@ export default function LoginPage() {
 
     const handleSubmit = (e: any) => {
         e.preventDefault()
-        loginMutation.mutate(form, {
+        registerMutation.mutate(form, {
             onSuccess: () => navigate(from, { replace: true }),
         })
     }
@@ -25,7 +32,19 @@ export default function LoginPage() {
     return (
         <div className={styles.container}>
             <form className={styles.form} onSubmit={handleSubmit}>
-                <h1 className={styles.title}>登入</h1>
+                <h1 className={styles.title}>註冊帳號</h1>
+
+                <div className={styles.field}>
+                    <label htmlFor="name">姓名</label>
+                    <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        value={form.name}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
 
                 <div className={styles.field}>
                     <label htmlFor="email">Email</label>
@@ -40,12 +59,12 @@ export default function LoginPage() {
                 </div>
 
                 <div className={styles.field}>
-                    <label htmlFor="password">密碼</label>
+                    <label htmlFor="passwordHash">密碼</label>
                     <input
-                        id="password"
-                        name="password"
+                        id="passwordHash"
+                        name="passwordHash"
                         type="password"
-                        value={form.password}
+                        value={form.passwordHash}
                         onChange={handleChange}
                         required
                     />
@@ -54,16 +73,22 @@ export default function LoginPage() {
                 <button
                     type="submit"
                     className={styles.button}
-                    disabled={!form.email || !form.password || loginMutation.isPending}
+                    disabled={
+                        !form.name ||
+                        !form.email ||
+                        !form.passwordHash ||
+                        !form.role ||
+                        registerMutation.isPending
+                    }
                 >
-                    登入
+                    註冊
                 </button>
 
                 {/* simple inline error; swap for toast/snackbar if you prefer */}
                 {isError && (
                     <p className={styles.error}>
                         {/* backend should send { message } — fall back if not */}
-                        {error instanceof Error ? error.message : "Login failed"}
+                        {error instanceof Error ? error.message : "Register failed"}
                     </p>
                 )}
             </form>

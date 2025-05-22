@@ -13,6 +13,7 @@ const resources = [
     "Machine",
     "Service",
     "Subnet",
+    "User",
 ] as const
 export type Resource = (typeof resources)[number]
 
@@ -57,6 +58,10 @@ export const POLICY: RBACPolicy = {
             resource: "Subnet",
             action: ["read"],
         },
+        {
+            resource: "User",
+            action: ["*"],
+        },
     ],
 } as const
 
@@ -66,7 +71,7 @@ usage:
     can(userObject, "read", "DataCenter")   // true
     can(userObject, "create", "DataCenter") // false
 */
-export function can(user: User, action: Action, resource: Resource): boolean {
+export function can(user: User | undefined | null, action: Action, resource: Resource): boolean {
     if (!user) return false
 
     const permissions = POLICY[user.role] ?? []

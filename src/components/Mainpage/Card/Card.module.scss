@@ -1,6 +1,6 @@
 .cardBase {
-    width: 15vw;
-    height: 20vh;
+    width: 16vw;
+    height: 16vh;
     border-radius: 3vw;
     border: 5px solid #6dccd503;
     background-color: #6dccd54c;
@@ -9,21 +9,20 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-  }
-  
-  .cardHovered {
+}
+
+.cardHovered {
     background-color: #6dccd580;
     border-color: #cde9ec;
     transform: scale(1.05);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-  }
-  
-  .cardContent {
-    width: 10vw;
-    font-size: 3vw;
+}
+
+.cardContent {
+    width: 18vw;
+    font-size: 2vw;
     letter-spacing: 0.5vw;
-    font-weight: 400;
+    font-weight: 600;
     text-align: center;
     color: var(--variable-collection-color-7);
-  }
-  
+}

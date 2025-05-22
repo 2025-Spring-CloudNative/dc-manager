@@ -13,9 +13,16 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* make the link itself a flex item that centres its contents */
+.logoLink {
+    display: flex;
+    align-items: center; /* centres the <img> vertically */
+    height: 100%; /* take full bar height */
+}
+
 .logoImage {
     width: 11vw;
-    height: 4vh;
+    height: 50%;
     object-fit: contain;
 }
 
