@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Machine } from "../types";
 const apiInstance = axios.create({
-  baseURL: "http://140.112.90.37:4000/machine",
+  baseURL: "http://140.112.90.36:4000/machine",
   headers: {
     "Content-Type": "application/json",
   },
@@ -34,7 +34,7 @@ export async function createMachine(data: Machine): Promise<Machine> {
     throw error;
   }
 }
-export async function updateMachine(id: string, data: Machine): Promise<Machine> {
+export async function updateMachine(id: number, data: Machine): Promise<Machine> {
   try {
     const response = await apiInstance.patch(`/${id}`, data);
     return response.data;

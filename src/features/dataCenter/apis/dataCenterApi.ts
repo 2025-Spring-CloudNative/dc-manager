@@ -1,7 +1,7 @@
 import axios from "axios";
 import { DataCenter } from "../types";
 const apiInstance = axios.create({
-  baseURL: "http://140.112.90.37:4000/data-center",
+  baseURL: "http://140.112.90.36:4000/data-center",
   headers: {
     "Content-Type": "application/json",
   },

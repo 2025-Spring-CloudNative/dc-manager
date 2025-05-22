@@ -39,8 +39,11 @@ export function useCreateDataCenterMutation() {
   return useMutation({
     mutationFn: (data: {
       dataCenter: { name: string; location: string };
-      subnetCidr: string;
-    }) => createDataCenter(data),
+      subnetId?: string;
+    }) => createDataCenter({
+      dataCenter: data.dataCenter,
+      subnetId: data.subnetId ?? ""
+    }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["dataCenter"] });
     },

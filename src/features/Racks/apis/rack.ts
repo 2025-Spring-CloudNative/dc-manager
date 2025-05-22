@@ -2,7 +2,7 @@ import axios from "axios"
 import { Rack } from "../types"
 
 const apiInstance = axios.create({
-    baseURL: "http://140.112.90.37:4000/rack",
+    baseURL: "http://140.112.90.36:4000/rack",
     headers: {
         "Content-Type": "application/json",
     },

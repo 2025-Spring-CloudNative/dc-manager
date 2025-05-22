@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Subnet } from "@/features/subnet/types";
 const apiInstance = axios.create({
-  baseURL: "http://140.112.90.37:4000/subnet",
+  baseURL: "http://140.112.90.36:4000/subnet",
   headers: {
     "Content-Type": "application/json",
   },
@@ -9,13 +9,13 @@ const apiInstance = axios.create({
 
 // GET all subnets
 export async function getSubnets() {
-    try {
-        const response = await apiInstance.get("/")
-        return response.data
-    } catch (error) {
-        console.error("Error fetching subnet data:", error)
-        throw error
-    }
+  try {
+    const response = await apiInstance.get("/")
+    return response.data
+  } catch (error) {
+    console.error("Error fetching subnet data:", error)
+    throw error
+  }
 }
 
 // GET a single subnet by ID

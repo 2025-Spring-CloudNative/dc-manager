@@ -1,54 +1,65 @@
-import axios from "axios";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getMachines, getMachineById, createMachine, updateMachine, deleteMachine } from "../apis/MachineApi";
 import { Machine } from "../types";
-const apiInstance = axios.create({
-  baseURL: "http://140.112.90.37:4000/machine",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
 
-export async function getMachines() {
-  try {
-    const response = await apiInstance.get("/");
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching machine data:", error);
-    throw error;
-  }
+export function useGetMachinesQuery() {
+  const { data, isLoading, isError, isSuccess, error } = useQuery({
+    queryKey: ["machines"],
+    queryFn: getMachines,
+  });
+
+  return {
+    data,
+    isLoading,
+    isError,
+    isSuccess,
+    error,
+  };
 }
-export async function getMachineById(id: number) {
-  try {
-    const response = await apiInstance.get(`/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching machine by ID:", error);
-    throw error;
-  }
+export function useGetMachineByIdQuery(id: number) {
+  const { data, isLoading, isError, isSuccess, error } = useQuery({
+    queryKey: ["machines", id],
+    queryFn: () => getMachineById(id),
+  });
+
+  return {
+    data,
+    isLoading,
+    isError,
+    isSuccess,
+    error,
+  };
 }
-export async function createMachine(data: Machine): Promise<Machine> {
-  try {
-    const response = await apiInstance.post("/", data);
-    return response.data;
-  } catch (error) {
-    console.error("Error creating machine:", error);
-    throw error;
-  }
+// Create
+export function useCreateMachineMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: Machine) => createMachine(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["machines"] });
+    },
+  });
 }
-export async function updateMachine(id: string, data: Machine): Promise<Machine> {
-  try {
-    const response = await apiInstance.patch(`/${id}`, data);
-    return response.data;
-  } catch (error) {
-    console.error("Error updating machine:", error);
-    throw error;
-  }
+// Update 
+export function useUpdateMachineMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: Partial<Machine>) => updateMachine(data.id!, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["machines"] });
+    },
+  });
 }
-export async function deleteMachine(id: number) {
-  try {
-    const response = await apiInstance.delete(`/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error("Error deleting machine:", error);
-    throw error;
-  }
-}
+// Delete
+export function useDeleteMachineMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: number) => deleteMachine(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["machines"] });
+    },
+  });
+} 

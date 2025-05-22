@@ -18,9 +18,9 @@ import { useGetRackQuery } from "@/features/Racks/hooks/useRack";
 import { useGetSubnetsQuery, useGetSubnetByIdQuery } from "@/features/subnet/hooks/useSubnet";
 
 import { AxiosError } from 'axios';
-import { DataCenter } from "@/components/data/datacenter";
-import { Room } from "@/components/data/room";
-import { Rack } from "@/components/data/rack";
+import { DataCenter } from "@/features/dataCenter/types";
+import { Room } from "@/features/Rooms/types";
+import { Rack } from "@/features/Racks/types";
 
 interface RoomCountCellProps {
   dcId: number;

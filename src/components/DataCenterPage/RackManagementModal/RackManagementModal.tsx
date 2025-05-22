@@ -10,11 +10,12 @@ import {
 } from "@/components/shared/Table";
 import Input from "@/components/shared/Input/Input";
 import Button from "@/components/shared/Button";
+
 import { useGetRoomQuery } from "@/features/Rooms/hooks/useRoom";
 import { useGetRackQuery } from "@/features/Racks/hooks/useRack";
-import { DataCenter } from "@/components/data/datacenter";
-import { Room } from "@/components/data/room";
-import { Rack } from "@/components/data/rack";
+import { DataCenter } from "@/features/dataCenter/types";
+import { Room } from "@/features/Rooms/types";
+import { Rack } from "@/features/Racks/types";
 
 interface RackManagementModalProps {
     isOpen: boolean;

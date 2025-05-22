@@ -16,6 +16,8 @@ import styles from "./FavoriteRackMap.module.scss";
 import RackManagementModal from "@/components/DataCenterPage/RackManagementModal";
 import IpSelectModal from "@/components/DataCenterPage/ServiceSelectModal";
 import CreateDCmodal from "@/components/DataCenterPage/DCmodal";
+import ManageMachineModal from "@/components/DataCenterPage/MachineModal";
+
 // import { DataCenter } from "@/components/data/rackData";
 import {
     useGetDataCentersQuery,
@@ -38,7 +40,7 @@ import { useDeleteRoomMutation } from "@/features/Rooms/hooks/useRoom";
 import { DataCenter } from "@/features/dataCenter/types";
 import { Room } from "@/features/Rooms/types";
 import { Rack } from "@/features/Racks/types";
-import { getMachines } from "@/features/Machine/hooks/useMachine"; // 你自己定義的 api 檔案
+import { useGetMachinesQuery } from "@/features/Machine/hooks/useMachine"; // 你自己定義的 api 檔案
 import { Machine } from "@/features/Machine/types"; // machine 型別
 
 
@@ -101,8 +103,8 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     const [clickedCells, setClickedCells] = useState<{ [side: string]: Set<string>; }>({ left: new Set(), right: new Set() });
     const [isRackmodalOpen, setRackModalOpen] = useState(false);
     const [overlayMenu, setOverlayMenu] = useState<{ type: "room" | "rack" | null; id: number | null; pos: { top: number; left: number }; }>({ type: null, id: null, pos: { top: 0, left: 0 } });
-    const [focusedItem, setFocusedItem] = useState<{ type: "room" | "rack" | null; id: number | null; mode: "clicked" | "hovered" | null }>({ type: null, id: null, mode: null });
-    const [machines, setMachines] = useState<Machine[]>([]);
+    const [focusedItem, setFocusedItem] = useState<{ type: "room" | "rack" | null; id: number | undefined; mode: "clicked" | "hovered" | null }>({ type: null, id: null, mode: null });
+    // const [machines, setMachines] = useState<Machine[]>([]);
     const [hoveredbuttonId, setHoveredbuttonId] = useState<number | null>(null);
     const [clickedId, setClickedId] = useState<number | null>(null);
     const [isRoommodalOpen, setCreateModalOpen] = useState(false);
@@ -112,7 +114,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     const [isEditRackOpen, setIsEditRackOpen] = useState(false);
     const [selectedRack, setSelectedRack] = useState<Rack | null>(null);
     const [isIpSelectModalOpen, setIsIpSelectModalOpen] = useState(false);
-
+    const [isMachineModalOpen, setIsMachineModalOpen] = useState(false);
     const handleCloseRoommodal = () => {
         setCreateModalOpen(false);
         setSelectedDC(null);
@@ -128,10 +130,13 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     const roomMutation = useAddRoomMutation();
     const rackMutation = useAddRackMutation();
 
+    const { data: machines = [], isLoading, isError } = useGetMachinesQuery();
 
     useEffect(() => {
-        getMachines().then(setMachines).catch((err) => console.error("❌ 無法取得 machines 資料", err));
-    }, []);
+        if (isError) {
+            console.error("❌ 無法取得 machines 資料");
+        }
+    }, [isError]);
     const max_units = (dcId: number | null): string[] => {
         const rooms = filterRoomsByDataCenterId(dcId ?? undefined);
         if (!rooms || rooms.length === 0)
@@ -162,14 +167,14 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
             const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
             const pos = { top: rect.bottom + window.scrollY, left: rect.left + rect.width / 2 + window.scrollX };
             const isSame = isClicked;
-            setFocusedItem(isSame ? { type: null, id: null, mode: null } : { type, id: item.id ?? null, mode: "clicked" });
+            setFocusedItem(isSame ? { type: null, id: undefined, mode: null } : { type, id: item.id ?? undefined, mode: "clicked" });
             setOverlayMenu(isSame ? { type: null, id: null, pos: { top: 0, left: 0 } } : { type, id: item.id ?? null, pos });
         };
 
 
 
         const handleDelete = () => type === "room" ? deleteRoombyID(item.id) : deleteRackbyID(item.id);
-        const handleAdd = () => type === "room" ? (setSelectedRoom(item as Room), setRackModalOpen(true)) : console.log("新增Host", item.id);
+        const handleAdd = () => type === "room" ? (setSelectedRoom(item as Room), setRackModalOpen(true)) : (setSelectedRack(item as Rack), setIsMachineModalOpen(true));
         const handleCloseMenu = () => { setOverlayMenu({ type: null, id: null, pos: { top: 0, left: 0 } }); setFocusedItem({ type: null, id: null, mode: null }); };
         const handleThird = () => {
             if (type === "room") {
@@ -373,6 +378,18 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         ]}
                         mutation={updateRackMutation}
                         extraData={{ id: selectedRack.id }}
+                    />
+                )}
+                {selectedRack && isMachineModalOpen && (
+                    <ManageMachineModal
+                        isOpen={isMachineModalOpen}
+                        onClose={() => {
+                            setIsMachineModalOpen(false);
+                            setSelectedRack(null);
+                        }}
+                        rack={selectedRack}
+                        machines={machines.filter((m: Machine) => m.rackId === selectedRack.id)}
+
                     />
                 )}
 
