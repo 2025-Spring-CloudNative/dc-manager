@@ -3,12 +3,11 @@ import { Link } from "react-router-dom"
 import { Card, CardContent } from "@/components/Mainpage/Card/Card"
 import mainpageTitleImg from "@/assets/mainpage-title.png"
 import styles from "./MainPage.module.scss"
-import NvBar from "@/components/shared/NvBar"
 
 const MainPage = () => {
     const cardItems = [
-        { text: "資料中心", href: "/data-center" },
-        { text: "網路設定", href: "/network" },
+        { text: "資料中心", href: "/DataCenterPage" },
+        { text: "網路設定", href: "/IPmanagementPage" },
         { text: "服務管理", href: "/service" },
     ]
 
@@ -19,7 +18,6 @@ const MainPage = () => {
             <div className={styles.innerContainer}>
                 <div className={styles.heroSection}>
                     <img src={mainpageTitleImg} alt="Mainpage title" className={styles.heroImage} />
-                    <NvBar />
                 </div>
 
                 <div className={styles.cardContainer}>
