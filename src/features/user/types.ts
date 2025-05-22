@@ -11,7 +11,7 @@ export type User = {
 }
 
 export type UserWithPassword = User & {
-    password: string
+    passwordHash: string
 }
 
 export function mapRoleToString(role: UserRole | undefined) {

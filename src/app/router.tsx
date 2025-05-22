@@ -5,6 +5,7 @@ import AppLayout from "@app/AppLayout"
 import MainPage from "@pages/MainPage"
 import DataCenterPage from "@pages/DataCenterPage"
 import LoginPage from "@pages/LoginPage"
+import RegisterPage from "@pages/RegisterPage"
 import UserProfilePage from "@pages/UserProfilePage"
 import NotFound from "@components/shared/NotFound"
 import RequireLogin from "./RequireLogin"
@@ -22,6 +23,7 @@ const routes: RouteObject[] = [
             // public routes
             { index: true, element: <MainPage /> },
             { path: "login", element: <LoginPage /> },
+            { path: "register", element: <RegisterPage /> },
 
             // protected routes
             {

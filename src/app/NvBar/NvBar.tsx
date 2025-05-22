@@ -3,16 +3,22 @@ import AccountMenu from "@components/shared/AccountMenu"
 import styles from "./NvBar.module.scss"
 import dcms from "@/assets/DCMS.png"
 
-const navItems = [
+import { useSession } from "@features/user/hooks/useUser"
+
+const loggedInNavItems = [
     { text: "資料中心", href: "/DatacenterPage" },
     { text: "網路設定", href: "/network" },
     { text: "服務管理", href: "/service" },
 ]
 
-const NvBar = () => {
+function NvBar() {
+    const { isLoggedIn } = useSession()
+
+    const navItems = isLoggedIn ? loggedInNavItems : []
+
     return (
         <header className={styles.headerBar}>
-            <Link to="/">
+            <Link to="/" className={styles.logoLink}>
                 <img src={dcms} alt="DCMS" className={styles.logoImage} />
             </Link>
             <nav className={styles.navBar}>
