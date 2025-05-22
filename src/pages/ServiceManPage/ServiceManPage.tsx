@@ -16,6 +16,7 @@ import ServiceModal from "@/components/ServiceManPage/ServiceModal";
 const service_man = () => {
     const [inputValue, setInputValue] = useState("");
     const [selectedService, setSelectedService] = useState(null);
+    const [selectedService_rack, setSelectedService_rack] = useState(null);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showRackInfo, setShowRackInfo] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,7 +36,7 @@ const service_man = () => {
       };
     
     const handleViewRack = (service) => {
-        setSelectedService(service);
+        setSelectedService_rack(service);
         setShowRackInfo(true);
     };
 
@@ -81,10 +82,10 @@ const service_man = () => {
                             </div>
                         </Card>
 
-                        {showRackInfo && selectedService && (
+                        {showRackInfo && selectedService_rack && (
                             <Card className={styles.cardContainer}>
                                 <div className={styles.headerRow}>
-                                    <div className={styles.title_text}>{selectedService.name}</div>
+                                    <div className={styles.title_text}>{selectedService_rack.name}</div>
                                 </div>
                                 <div className={styles.tableWrapper}>
                                     <ServiceRackTable/>
