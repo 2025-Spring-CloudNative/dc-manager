@@ -1,0 +1,121 @@
+.poolcantainer {
+  margin-top: 10px;
+  padding: 12px;
+  background-color: #eefafc;
+  border-left: 4px solid #6bb7be;
+  // transform: rotate(1deg) scale(1.02);
+  transition: all 0.3s ease;
+}
+
+.label {
+  font-weight: 700;
+  color: #2a6368;
+}
+
+
+// style from listmodule 
+.wrapper {
+  display: flex;
+  flex-direction: row; /* Put button + frame in same line */
+  align-items: center;
+  position: relative;
+}
+
+.icon {
+  height: 26px;
+  width: 26px;
+  margin-right: 10px;
+  border-radius: 0;
+  font-weight: 400;
+  font-size: 1rem;
+  font-family: 'Noto Sans', Helvetica;
+  letter-spacing: 2px;
+}
+
+.frame {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 35px;
+  padding: 9px 0;
+  width: 999px;
+  border: 3px solid #6bb7be;
+  box-sizing: border-box; /* Ensures border is included in element's dimensions */
+  height: calc(100% + 6px); /* Increases height by the border width */
+  width: calc(100% + 6px); /* Increases width by the border width */
+  margin: -3px; /* Adjusts position to account for increased size */
+}
+
+.text {
+  font-family: "Noto Sans", Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  width: 87px;
+  text-align: center;
+}
+
+.item {
+  font-family: "Noto Sans", Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  text-align: center;
+  height: 25px;
+  margin: -5px 0 -3px 0;
+  letter-spacing: 1.6px;
+}
+
+.label {
+  color: #2a6368;
+  font-weight: 700;
+  letter-spacing: 0.26px;
+}
+
+.value {
+  color: #000;
+  letter-spacing: 0.26px;
+}
+
+.status_value {
+  background-color: #6bb7be;     // blue-teal background
+  color: #fff;                   // white text
+  font-weight: 700;              // bold
+  text-transform: uppercase;     // make text uppercase
+  padding: 4px 12px;             // inner spacing
+  border-radius: 12px;           // rounded pill
+  letter-spacing: 1px;           // space between letters
+  display: inline-block;         // allow padding to apply
+  font-size: 14px;
+}
+
+
+.divider {
+  width: 1px;
+  height: 30px;
+  background-color: #6bb7be;
+}
+
+// style for address and machine id 
+.machineInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;       // horizontally center both lines
+  justify-content: center;
+  position: relative;        // relative container
+  height: 100%;              // optional, depends on parent
+}
+
+.address {
+  font-weight: 700;
+  color: #000;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.machineId {
+  font-weight: 500;
+  color: #6bb7be;
+  font-size: 18px;
+  margin-top: 4px;
+  line-height: 1.2;
+}

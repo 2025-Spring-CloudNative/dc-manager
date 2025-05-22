@@ -1,0 +1,30 @@
+.component {
+  background-color: #ffffff;
+  border: 2px solid #6bb7be;
+  width: 1159px;
+  position: relative;
+  flex-direction: column;
+  display: block;
+
+  height: auto;         
+  min-height: 45px;    
+}
+
+
+.moduleContainer {
+  display: block;
+}
+
+// .scrollContainer {
+//   max-height: 600px;       // 🔧 adjust height as needed
+//   overflow-y: auto;
+//   padding-right: 8px;      // ✅ avoid scrollbar overlap
+//   scroll-behavior: smooth; // optional for smoother scroll
+// }
+.scrollContainer {
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 8px;
+  scroll-behavior: smooth;
+  margin-left: 10%;
+}
