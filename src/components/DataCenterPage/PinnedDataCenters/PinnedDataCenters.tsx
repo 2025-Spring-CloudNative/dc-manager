@@ -1,4 +1,3 @@
-import { XIcon } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import Button from "@/components/shared/Button";
 import Card from "@/components/DataCenterPage/Card";
@@ -12,14 +11,12 @@ import {
     TableRow,
 } from "@/components/shared/Table";
 
-import styles from "./FavoriteRackMap.module.scss";
+import styles from "./PinnedDataCenters.module.scss";
 import IpSelectModal from "@/components/DataCenterPage/ServiceSelectModal";
-import CreateDCmodal from "@/components/DataCenterPage/DCmodal";
 import MachineModal from "@/components/DataCenterPage/MachineModal";
 
 // import { DataCenter } from "@/components/data/rackData";
 import {
-    useGetDataCentersQuery,
     useDeleteDataCenterMutation,
 } from "@/features/dataCenter/hooks/useDataCenter";
 import {
@@ -40,13 +37,12 @@ import CreateModal from "@/components/shared/CreateModal";
 import { DataCenter } from "@/features/dataCenter/types";
 import { Room } from "@/features/Rooms/types";
 import { Rack } from "@/features/Racks/types";
-import { useCreateMachineMutation, useGetMachinesQuery, useDeleteMachineMutation } from "@/features/Machine/hooks/useMachine";
+import { useGetMachinesQuery, useDeleteMachineMutation } from "@/features/Machine/hooks/useMachine";
 import { Machine } from "@/features/Machine/types";
-
+import ActionMenu from "@/components/DataCenterPage/ActionMenu";
 
 // import for hover data center
 import { cn } from "@/lib/utils";
-import { Mutation } from "@tanstack/react-query";
 
 // enable create room with room modal
 interface DataCenterComponentSectionProps {
@@ -55,47 +51,6 @@ interface DataCenterComponentSectionProps {
         right: DataCenter[];
     };
 }
-const ActionMenu: React.FC<{
-    type: "room" | "rack" | "machine";
-    onDelete: () => void;
-    onAdd?: () => void;
-    onThird?: () => void;
-    onForth?: () => void;
-    onCloseMenu: () => void;
-}> = ({ type, onDelete, onAdd, onThird, onForth, onCloseMenu }) => {
-    return (
-        <div
-            className={styles.roomButtonEdit}
-            style={{ position: "absolute", zIndex: 1000 }} // zIndex for the menu itself
-            onClick={(e) => e.stopPropagation()}
-        >
-            <div className={styles.roomCtrlMenu}>
-                <button className={styles.delRoom} onClick={() => { onDelete(); onCloseMenu(); }}>
-                    <span className={styles.subButtonTitle}>{`刪除${type === "room" ? "Room" : type === "rack" ? "Rack" : "Machine"}`}</span>
-                </button>
-                {onAdd && (
-                    <button className={styles.addRack} onClick={() => { onAdd(); onCloseMenu(); }}>
-                        <span className={styles.subButtonTitle}>{type === "room" ? "[+]Rack" : type === "rack" ? "[+]Host" : "[+]Host"}</span>
-                    </button>
-                )}
-                {onThird && (
-                    <button className={styles.selectService} onClick={() => { onThird(); onCloseMenu(); }}>
-                        <span className={styles.subButtonTitle}>
-                            {type === "room" ? "修改Room" : type === "rack" ? "選擇Service" : "修改Host"}
-                        </span>
-                    </button>
-                )}
-                {type === "rack" && onForth && (
-                    <button className={styles.selectService} onClick={() => { onForth(); onCloseMenu(); }}>
-                        <span className={styles.subButtonTitle}>
-                            修改Rack
-                        </span>
-                    </button>
-                )}
-            </div>
-        </div>
-    );
-};
 
 
 const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
@@ -376,7 +331,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         type="machine"
                         onDelete={() => {
                             if (overlayMachineMenu.machine) {
-                                deleteMachineMutation(overlayMachineMenu.machine.id);
+                                deleteMachineMutation(overlayMachineMenu.machine.id!);
                                 // onCloseMenu will be called internally by ActionMenu, which calls the below
                                 // setOverlayMachineMenu({ machine: null, pos: { top: 0, left: 0 } }); 
                             }
@@ -384,7 +339,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         onThird={() => { // "Modify Host"
                             if (overlayMachineMenu.machine) {
                                 const machineToEdit = overlayMachineMenu.machine;
-                                const rackOfMachine = racksData?.find(r => r.id === machineToEdit.rackId);
+                                const rackOfMachine = racksData?.find((r: Rack) => r.id === machineToEdit.rackId);
                                 if (rackOfMachine) {
                                     setSelectedRack(rackOfMachine);
                                     setEditMachine(machineToEdit);

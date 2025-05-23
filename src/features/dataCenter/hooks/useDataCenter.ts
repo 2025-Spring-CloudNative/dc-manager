@@ -25,11 +25,17 @@ export function useGetDataCentersQuery() {
 
 // Get by ID
 export function useGetDataCenterByIdQuery(id: number) {
-  return useQuery({
+  const { data, isLoading, isError, isSuccess, error } = useQuery({
     queryKey: ["dataCenter", id],
     queryFn: () => getDataCenterById(id),
-    enabled: !!id,
   });
+  return {
+    data,
+    isLoading,
+    isError,
+    isSuccess,
+    error,
+  };
 }
 
 // Create
