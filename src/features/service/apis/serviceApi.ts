@@ -1,4 +1,5 @@
 import axios from "axios";
+import { Service, CreateServiceRequest } from "../types"
 
 const apiInstance = axios.create({
   baseURL: "http://140.112.90.36:4000/service",
@@ -7,7 +8,7 @@ const apiInstance = axios.create({
   },
 });
 
-export async function getServices() {
+export async function getService() {
   try {
     const response = await apiInstance.get("/");
     return response.data;
@@ -27,10 +28,7 @@ export async function getServiceById(id: string) {
   }
 }
 
-export async function createService(data: {
-  service: { id: string; name: string };
-  poolId: string;
-}) {
+export async function createService(data: CreateServiceRequest): Promise<CreateServiceRequest> {
   try {
     const response = await apiInstance.post("/", data);
     return response.data;
@@ -40,7 +38,9 @@ export async function createService(data: {
   }
 }
 
-export async function updateService(id: string, data: { name: string; location: string }) {
+
+
+export async function updateService(id: string, data: Service): Promise<Service>  {
   try {
     const response = await apiInstance.patch(`/${id}`, data);
     return response.data;
@@ -50,7 +50,7 @@ export async function updateService(id: string, data: { name: string; location: 
   }
 }
 
-export async function deleteService(id: string) {
+export async function deleteService(id: string): Promise<void>   {
   try {
     const response = await apiInstance.delete(`/${id}`);
     return response.data;

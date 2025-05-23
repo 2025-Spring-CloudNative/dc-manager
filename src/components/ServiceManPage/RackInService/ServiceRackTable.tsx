@@ -4,8 +4,20 @@ import ServiceRackHeader from './ServiceRackHeader';
 import ServiceRackRow from './ServiceRackRow';
 import ServiceRackMachineRow from './ServiceRackMachineRow';
 import { Fragment } from 'react/jsx-runtime';
+import { useGetServicesQuery, useGetServiceByIdQuery, deleteService } from "@/features/service/hooks/useService";
+import { useGetDataCentersQuery, useGetDataCenterByIdQuery} from "@/features/dataCenter/hooks/useDataCenter";
+import { useGetRackQuery, useGetRackByIdQuery } from "@/features/Racks/hooks/useRack";
+import { useGetIPPoolsQuery, useGetIPPoolByIdQuery, useExtendIPPoolMutation, useGetIPPoolUtilizationQuery, getIPPoolUtilization} from "@/features/ipPool/hooks/useIPPool";
+import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet";
+import { Rack } from "@/features/Racks/types";
+import { Service } from "@/features/service/types";
+import { IPPool} from "@/features/ipPool/types";
+import { DC } from "@/features/dataCenter/types";
+import { Subnet } from "@/features/subnet/types";
 
-
+interface ServiceRackTableProps {
+  selectedServiceRack: Service;
+}
 // todo: get rack using service id
 const initialRack = [
   { id: 1, name: 'Rack A',  utilization: 35 },
@@ -22,28 +34,30 @@ const initialMachine= [
 
 
 
-export default function ServiceRackTable() {
+export default function ServiceRackTable({ selectedServiceRack }: ServiceRackTableProps) {
   const [rack, setRack] = useState(initialRack);
   const [machine, setMachine] = useState(initialMachine);
   const [expandedRackId, setExpandedRackId] = useState<number | null>(null);
-
+  const { data: serviceData, isLoading: isLoadingServices, isError: isErrorServices } = useGetServicesQuery();
+  const { data: rackData, isLoading: isLoadingRack, isError: isErrorRack } = useGetRackQuery();
+  console.log('selectedServiceRack', selectedServiceRack);
+  if (isLoadingRack || isLoadingServices ||
+    !rackData || !serviceData ) {
+   return <div>Loading...</div>;
+ }
   const toggleRack = (id: number) => {
     setExpandedRackId(prev => (prev === id ? null : id));
   };
 
-  const handleDelete = (id: number) => {
-    setRack(prev => prev.filter(s => s.id !== id));
-  };
+  const rackInSelectedService = rackData.filter(rack => rack.serviceId === selectedServiceRack.id);
 
-  const ExtendIPPool = (id: number) => {
-    // setServices(prev => prev.filter(s => s.id !== id));
-    console.log('Extending IP Pool for:', id);
-  };
+  //const racksByService = groupRacksByService(rackData, serviceData);
+  console.log("selected_service", rackInSelectedService);
 
   return (
     <div className={styles.tableContainer}>
       <ServiceRackHeader />
-      {rack.map(rack => (
+      {rackInSelectedService.map(rack => (
         <Fragment key={rack.id}>
         <ServiceRackRow 
           key={rack.id} rack={rack} 

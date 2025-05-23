@@ -4,3 +4,4 @@ export interface DataCenter {
     location: string;
     subnetID: number;
 }
+

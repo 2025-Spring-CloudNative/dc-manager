@@ -1,17 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
-  getServices,
+  getService,
   getServiceById,
   createService,
   updateService,
   deleteService,
 } from "../apis/serviceApi";
+import { Service, CreateServiceRequest } from "../types"
 
 // Get all
 export function useGetServicesQuery() {
   const { data, isLoading, isError, isSuccess, error } = useQuery({
     queryKey: ["service"],
-    queryFn: getServices,
+    queryFn: getService,
   });
 
   return {
@@ -37,10 +38,7 @@ export function useCreateServiceMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: {
-      service: { name: string; location: string };
-      subnetCidr: string;
-    }) => createService(data),
+    mutationFn: (data: CreateServiceRequest) => createService(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["service"] });
     },
@@ -52,8 +50,7 @@ export function useUpdateServiceMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ id, data }: { id: string; data: { name: string; location: string } }) =>
-      updateService(id, data),
+    mutationFn: (data: Service) => updateService( data.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["service"] });
     },

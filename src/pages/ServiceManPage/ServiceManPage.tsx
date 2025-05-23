@@ -88,7 +88,7 @@ const service_man = () => {
                                     <div className={styles.title_text}>{selectedService_rack.name}</div>
                                 </div>
                                 <div className={styles.tableWrapper}>
-                                    <ServiceRackTable/>
+                                    <ServiceRackTable selectedServiceRack={selectedService_rack}/>
                                 </div>
                             </Card>
                         )}
