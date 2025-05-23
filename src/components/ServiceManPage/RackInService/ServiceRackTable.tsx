@@ -6,6 +6,7 @@ import ServiceRackMachineRow from './ServiceRackMachineRow';
 import { Fragment } from 'react/jsx-runtime';
 import { useGetServicesQuery, useGetServiceByIdQuery, deleteService } from "@/features/service/hooks/useService";
 import { useGetDataCentersQuery, useGetDataCenterByIdQuery} from "@/features/dataCenter/hooks/useDataCenter";
+import {useGetMachinesQuery} from"@/features/Machine/hooks/useMachine";
 import { useGetRackQuery, useGetRackByIdQuery } from "@/features/Racks/hooks/useRack";
 import { useGetIPPoolsQuery, useGetIPPoolByIdQuery, useExtendIPPoolMutation, useGetIPPoolUtilizationQuery, getIPPoolUtilization} from "@/features/ipPool/hooks/useIPPool";
 import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet";
@@ -14,6 +15,7 @@ import { Service } from "@/features/service/types";
 import { IPPool} from "@/features/ipPool/types";
 import { DC } from "@/features/dataCenter/types";
 import { Subnet } from "@/features/subnet/types";
+import { Machine } from "@/features/Machine/types";
 
 interface ServiceRackTableProps {
   selectedServiceRack: Service;
@@ -40,9 +42,10 @@ export default function ServiceRackTable({ selectedServiceRack }: ServiceRackTab
   const [expandedRackId, setExpandedRackId] = useState<number | null>(null);
   const { data: serviceData, isLoading: isLoadingServices, isError: isErrorServices } = useGetServicesQuery();
   const { data: rackData, isLoading: isLoadingRack, isError: isErrorRack } = useGetRackQuery();
+  const { data: machineData, isLoading: isLoadingMachine, isError: isErrorMachine } = useGetMachinesQuery();
   console.log('selectedServiceRack', selectedServiceRack);
-  if (isLoadingRack || isLoadingServices ||
-    !rackData || !serviceData ) {
+  if (isLoadingRack || isLoadingServices || isLoadingMachine ||
+    !rackData || !serviceData || !machineData) {
    return <div>Loading...</div>;
  }
   const toggleRack = (id: number) => {
@@ -50,7 +53,7 @@ export default function ServiceRackTable({ selectedServiceRack }: ServiceRackTab
   };
 
   const rackInSelectedService = rackData.filter(rack => rack.serviceId === selectedServiceRack.id);
-
+  console.log("machineData", machineData);
   //const racksByService = groupRacksByService(rackData, serviceData);
   console.log("selected_service", rackInSelectedService);
 
@@ -67,7 +70,7 @@ export default function ServiceRackTable({ selectedServiceRack }: ServiceRackTab
         {expandedRackId === rack.id && (
           <>
           {
-            machine
+            machineData
               .filter(m => m.rackId === rack.id) 
               .map(machine => (
                 <ServiceRackMachineRow
