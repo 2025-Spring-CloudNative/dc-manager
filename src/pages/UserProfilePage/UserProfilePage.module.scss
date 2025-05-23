@@ -1,0 +1,77 @@
+.container {
+    max-width: 640px;
+    margin: 4rem auto;
+    padding: 1rem 1rem;
+}
+
+.title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.card {
+    background: #ffffff;
+    padding: 1.5rem 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+}
+
+.field {
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+
+    display: flex;
+    align-items: center;
+    gap: 1rem; // space between label and value
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.label {
+    font-weight: 600;
+    color: #374151; // gray-700
+    // margin-right: 0.5rem; // ← gives 8 px space (adjust as needed)
+}
+
+.value {
+    color: #111827; // gray-900
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    justify-content: center;
+}
+
+.button {
+    flex: 1 1 160px;
+    padding: 0.75rem 1rem;
+    background: #5ac1bb; // indigo-500
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background 0.15s ease;
+
+    &:hover {
+        background: #22beb6; // indigo-600
+    }
+    &:active {
+        background: #5ac1bb; // indigo-700
+    }
+    &:disabled {
+        background: #d1d5db; // gray-400
+        cursor: not-allowed;
+    }
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+}
