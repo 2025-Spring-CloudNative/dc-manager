@@ -13,14 +13,14 @@ import {
 import styles from "./RackSummaryTable.module.scss";
 import { useGetDataCentersQuery, useDeleteDataCenterMutation } from "@/features/dataCenter/hooks/useDataCenter";
 import CreateDCmodal from "@/components/DataCenterPage/DCmodal";
-import { useGetRoomQuery } from "@/features/Rooms/hooks/useRoom"; 
+import { useGetRoomQuery } from "@/features/Rooms/hooks/useRoom";
 import { useGetRackQuery } from "@/features/Racks/hooks/useRack";
-import { useGetSubnetsQuery,useGetSubnetByIdQuery } from "@/features/subnet/hooks/useSubnet";
+import { useGetSubnetsQuery, useGetSubnetByIdQuery } from "@/features/subnet/hooks/useSubnet";
 
 import { AxiosError } from 'axios';
-import { DataCenter } from "@/components/data/datacenter";
-import { Room } from "@/components/data/room";
-import { Rack } from "@/components/data/rack";
+import { DataCenter } from "@/features/dataCenter/types";
+import { Room } from "@/features/Rooms/types";
+import { Rack } from "@/features/Racks/types";
 
 interface RoomCountCellProps {
   dcId: number;
@@ -58,7 +58,7 @@ const SubnetCidrCell: React.FC<SubnetCidrCellProps> = ({ subnetId }) => {
   if (isLoading) return <TableCell>Loading...</TableCell>;
   if (isError) return <TableCell>Error</TableCell>;
 
-  return <TableCell>{subnet?.cidr || "-"}</TableCell>;
+  return <TableCell>id = {subnet?.id},  cidr = {subnet?.cidr || "-"}</TableCell>;
 };
 
 
@@ -77,7 +77,7 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
     isError,
     error,
   } = useGetDataCentersQuery();
-  const {data:subnets} = useGetSubnetsQuery()
+  const { data: subnets } = useGetSubnetsQuery()
 
   const [isCreateModalOpen, setCreateModalOpen] = useState(false);
   const [selectedDC, setSelectedDC] = useState<DataCenter | null>(null); // optional, for editing
@@ -108,7 +108,7 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
       <div className={styles.tableWrapper}>
         <div className={styles.buttonWrapper}>
           <Button className={styles.addDCButton} onClick={handleOpenCreateModal}>
-              [+]dataCenter
+            [+]dataCenter
           </Button>
 
         </div>
@@ -140,53 +140,52 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
                 </TableRow>
               );
             })()}
-            {dataCenters && dataCenters.map((dc, index) => 
-              {
-                return(
-                    <TableRow key={index}>
-                      <TableCell>{dc.name}</TableCell>
-                      <TableCell>{dc.location}</TableCell>
-                      <SubnetCidrCell subnetId={dc.subnetId} />
-                      <RoomCountCell dcId={dc.id} />
-                      <TableCell>
-                        <div className={styles.favoriteGroup}>
-                          <Button
-                            className={`${styles.infoButton} ${styles.favoriteButton}`}
-                            onClick={() => onAddToLeft(dc)}
-                          >
-                            加到left
-                          </Button>
-                          <Button
-                            className={`${styles.infoButton} ${styles.favoriteButton}`}
-                            onClick={() => onAddToRight(dc)}
-                          >
-                            加到right
-                          </Button>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className={styles.favoriteGroup}>
-                          <Button
-                            className={`${styles.infoButton} ${styles.editButton}`}
-                            onClick={() => {
-                              setSelectedDC(dc);       // 設定要編輯的資料中心
-                              setCreateModalOpen(true); // 開啟 modal
-                            }}
-                          >
-                            編輯
-                          </Button>
-                          <Button
-                            className={`${styles.infoButton} ${styles.deleteButton}`}
-                            onClick={() => handleDelete(dc.id.toString())}
-                            disabled={isDeleting}
-                          >
-                            刪除
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                )
-              })
+            {dataCenters && dataCenters.map((dc, index) => {
+              return (
+                <TableRow key={index}>
+                  <TableCell>{dc.name}</TableCell>
+                  <TableCell>{dc.location}</TableCell>
+                  <SubnetCidrCell subnetId={dc.subnetId} />
+                  <RoomCountCell dcId={dc.id} />
+                  <TableCell>
+                    <div className={styles.favoriteGroup}>
+                      <Button
+                        className={`${styles.infoButton} ${styles.favoriteButton}`}
+                        onClick={() => onAddToLeft(dc)}
+                      >
+                        加到left
+                      </Button>
+                      <Button
+                        className={`${styles.infoButton} ${styles.favoriteButton}`}
+                        onClick={() => onAddToRight(dc)}
+                      >
+                        加到right
+                      </Button>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className={styles.favoriteGroup}>
+                      <Button
+                        className={`${styles.infoButton} ${styles.editButton}`}
+                        onClick={() => {
+                          setSelectedDC(dc);       // 設定要編輯的資料中心
+                          setCreateModalOpen(true); // 開啟 modal
+                        }}
+                      >
+                        編輯
+                      </Button>
+                      <Button
+                        className={`${styles.infoButton} ${styles.deleteButton}`}
+                        onClick={() => handleDelete(dc.id.toString())}
+                        disabled={isDeleting}
+                      >
+                        刪除
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )
+            })
             }
           </TableBody>
         </Table>
@@ -198,7 +197,7 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
       onClose={handleCloseCreateModal}
       currentDataCenter={selectedDC}
     />
-     </div>
+  </div>
   );
 };
 

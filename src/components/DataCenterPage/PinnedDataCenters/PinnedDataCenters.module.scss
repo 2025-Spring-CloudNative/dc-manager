@@ -1,0 +1,349 @@
+.componentCard {
+  width: 100%;
+  margin: 1.75rem auto;
+  border-radius: 30px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.63);
+  backdrop-filter: blur(6.6px) brightness(100%);
+  -webkit-backdrop-filter: blur(6.6px) brightness(100%);
+  padding: 2rem; /* p-8 */
+}
+
+.headerButtonArea {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+.editCabinetButton {
+  height: 43px;
+  width: auto;
+  border-radius: 54px;
+  margin-left: 20px;
+  border: 3px solid #a2e1e4;
+  background-color: #e5fbff;
+  color: #125359;
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 400;
+  letter-spacing: 2px;
+  font-family: "Noto Sans", Helvetica, sans-serif;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #d5ebef;
+  }
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.titleWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 684px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.leftSeparator,
+.rightSeparator {
+  position: absolute;
+  top: 40px;
+  width: 240px;
+  height: 5px;
+  background-color: #a2e1e4;
+}
+
+.leftSeparator {
+  left: 0;
+}
+
+.rightSeparator {
+  right: 0;
+}
+
+.title {
+  font-family: "Noto Sans", Helvetica, sans-serif;
+  font-size: 1.75rem; /* 28px */
+  font-weight: 400;
+  letter-spacing: 2.8px;
+  color: #000000;
+  text-align: center;
+  padding: 0 2rem; /* px-8 */
+}
+
+.tablesWrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.tableContainer {
+  border: 1px solid #c1d5d7;
+
+  overflow-x: scroll;
+}
+
+/* Table Header DC-B */
+.dcHeader {
+  // position: sticky;
+  // left: 0;
+  position: relative;
+  background-color: #46a4ad;
+  border: 1px solid #c1d5d7;
+  height: 3rem; /* h-10 */
+  text-align: center;
+}
+
+.dcTitle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: bold;
+  color: #ffffff;
+  font-size: 1rem; /* text-base = 16px */
+  letter-spacing: 2px;
+  // padding: 0;
+}
+
+/* Room Header */
+.roomHeader {
+  width: 10rem; /* w-40 */
+  background-color: #cde9ec;
+  height: 2.5rem;
+  border: 1px solid #c1d5d7;
+  text-align: center;
+  padding: 0;
+
+  &:hover {
+    background-color: #2a6368;
+    .roomTitle {
+      color: #ffffff;
+      font-weight: 600;
+    }
+  }
+
+  &.clicked {
+    background-color: #2a6368;
+    .roomTitle {
+      color: #ffffff;
+      font-weight: 600;
+    }
+  }
+}
+
+.subButtonTitle {
+  font-weight: 400;
+  font-size: 1rem; /* text-base */
+  text-align: center;
+  color: #000000;
+}
+
+.roomContent {
+  position: relative;
+}
+
+.roomButtonEdit {
+  // display: inline-block;
+  // position: absolute;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  background-color: #63cacf;
+  border: 1px solid #2a6368;
+  border-radius: 4px;
+  width: auto;
+  min-width: 110px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.delRoom,
+.addRack,
+.selectService{
+  width: 90%;
+  padding: 6px 10px;
+  border: none;
+  font-size: 0.95rem;
+  font-family: "Noto Sans", sans-serif;
+  text-align: center;
+  border-radius: 2px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background-color 0.2s ease;
+  // margin-bottom: ;
+}
+.delRoom {
+  background-color: #f5caca;
+  
+  &:hover {
+    background-color: #efbebe;
+  }
+}
+.addRack {
+  background-color: #cde9ec;
+
+  &:hover {
+    background-color: #b6dbe0;
+  }
+}
+.selectService {
+  background-color: #cde9ec;
+
+  &:hover {
+    background-color: #b6dbe0;
+  }
+}
+
+.unitHeader {
+  width: 80px;
+  background-color: #effdff;
+  height: 2.5rem;
+  border: 1px solid #c1d5d7;
+  text-align: center;
+  padding: 0;
+}
+
+.unitTitle {
+  font-weight: 500;
+  font-size: 1rem; /* text-base = 16px */
+  color: #000000;
+}
+
+.roomTitle {
+  font-weight: 500;
+  font-size: 1rem; /* text-base */
+  color: #000000;
+}
+
+.rackHeader {
+  // width: 10rem;
+  background-color: #effdff;
+  height: 2.5rem;
+  border: 1px solid #c1d5d7;
+  text-align: center;
+  padding: 0;
+}
+
+.rackTitle {
+  font-weight: 500;
+  font-size: 1rem; /* text-base */
+  color: #000000;
+}
+
+.unitCell {
+  min-width: 10rem;
+  background-color: var(--layout-100);
+  height: 2.5rem;
+  border: 1px solid #c1d5d7;
+  padding: 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* 被點擊時的樣式 */
+.clickedCell {
+  background-color: #a2e1e4; /* 被點擊後變藍綠色 */
+}
+
+.deletedc {
+  position: absolute;
+  top: 10%;
+  left: 6%;
+  width: 100px;
+  height: 33px;
+  background-color: #f5c9ca;
+  color: black;
+  font-weight: 400; // font-normal
+  font-size: 1rem; // text-base
+  font-family: "Noto_Sans", Helvetica;
+  letter-spacing: 2px; // tracking-[2.00px]
+  border-radius: 0; // rounded-none
+
+  &:hover {
+    background-color: #f5c9ca; // hover:bg-[#f5c9ca]
+  }
+}
+
+.create_room {
+  position: absolute;
+  top: 10%;
+  left: 84%;
+  width: 100px;
+  height: 33px;
+  background-color: #cde9ec;
+  color: black;
+  font-weight: 400; // font-normal
+  font-size: 1rem; // text-base
+  font-family: "Noto_Sans", Helvetica;
+  letter-spacing: 2px; // tracking-[2.00px]
+  border-radius: 0; // rounded-none
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #cde9ec; // hover:bg-[#cde9ec]
+  }
+}
+.rackHeader {
+  background-color: #effdff;
+  border: 1px solid #c1d5d7;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #2a6368;
+
+    .rackTitle {
+      color: white;
+      font-weight: 600;
+    }
+  }
+
+  &.clicked {
+    background-color: #2a6368;
+
+    .rackTitle {
+      color: white;
+      font-weight: 600;
+    }
+  }
+}
+.hasMachine {
+  background-color: #f6d776 !important; // 黃色背景，可自行修改
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border: 2px dashed #b77b00;
+    border-radius: 4px;
+  }
+}
+.machineLabel {
+  font-size: 1.5rem;
+  // font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  max-width: 100%;
+}
+.disabledCell {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+  pointer-events: none;
+}
