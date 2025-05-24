@@ -22,31 +22,29 @@ const ActionMenu: React.FC<{
                 } // zIndex for the menu itself
                 onClick={(e) => e.stopPropagation()}
             >
-                <div className={styles.roomCtrlMenu}>
 
-                    {can(user, "delete", type) ? <button className={styles.delRoom} onClick={() => { onDelete(); onCloseMenu(); }}>
-                        <span className={styles.subButtonTitle}>{`刪除${type}`}</span>
-                    </button> : null}
-                    {onAdd && subtype && can(user, "create", subtype) && (
-                        <button className={styles.addRack} onClick={() => { onAdd(); onCloseMenu(); }}>
-                            <span className={styles.subButtonTitle}>{`[+]${subtype}`}</span>
-                        </button>
-                    )}
-                    {onThird && can(user, "update", type) && (
-                        <button className={styles.selectService} onClick={() => { onThird(); onCloseMenu(); }}>
-                            <span className={styles.subButtonTitle}>
-                                {type === "Room" ? "修改Room" : type === "Rack" ? "選擇Service" : "修改Machine"}
-                            </span>
-                        </button>
-                    )}
-                    {type === "Rack" && onForth && can(user, "update", type) && (
-                        <button className={styles.selectService} onClick={() => { onForth(); onCloseMenu(); }}>
-                            <span className={styles.subButtonTitle}>
-                                修改Rack
-                            </span>
-                        </button>
-                    )}
-                </div>
+                {can(user, "delete", type) ? <button className={styles.delRoom} onClick={() => { onDelete(); onCloseMenu(); }}>
+                    <span className={styles.subButtonTitle}>{`刪除${type}`}</span>
+                </button> : null}
+                {onAdd && subtype && can(user, "create", subtype) && (
+                    <button className={styles.addRack} onClick={() => { onAdd(); onCloseMenu(); }}>
+                        <span className={styles.subButtonTitle}>{`[+]${subtype}`}</span>
+                    </button>
+                )}
+                {onThird && can(user, "update", type) && (
+                    <button className={styles.selectService} onClick={() => { onThird(); onCloseMenu(); }}>
+                        <span className={styles.subButtonTitle}>
+                            {type === "Room" ? "修改Room" : type === "Rack" ? "選擇Service" : "修改Machine"}
+                        </span>
+                    </button>
+                )}
+                {type === "Rack" && onForth && can(user, "update", type) && (
+                    <button className={styles.selectService} onClick={() => { onForth(); onCloseMenu(); }}>
+                        <span className={styles.subButtonTitle}>
+                            修改Rack
+                        </span>
+                    </button>
+                )}
             </div >) : <div />
     );
 };
