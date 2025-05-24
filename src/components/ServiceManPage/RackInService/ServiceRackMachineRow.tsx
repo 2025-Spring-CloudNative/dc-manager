@@ -19,7 +19,7 @@ export default function ServiceRackMachineRow({machine, rack}) {
 
   return (
     <div className={styles.machineRow}>
-      <div className={styles.status}>
+      <div className={`${styles.status} ${machine.status === "active" ? styles.activeStatus : ""}`}>
         <span className={styles.statusText}>{machine.status}</span>
       </div>
       <div className={styles.tableRowText} style={{ width: '135px' }}>{machine.name}</div>
