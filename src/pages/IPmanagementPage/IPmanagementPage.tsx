@@ -46,12 +46,6 @@ const IPmanagementPage = () => {
                                 創建 Subnet
                             </Button>
                         )}
-                        {/* <Button
-                            className={`${styles.createButton}`}
-                            onClick={handleOpenCreateModal}
-                        >
-                            創建 Subnet
-                        </Button> */}
                     </div>
                     
                     <CreateSubnet
