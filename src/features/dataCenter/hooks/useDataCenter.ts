@@ -6,6 +6,8 @@ import {
   updateDataCenter,
   deleteDataCenter,
 } from "../apis/dataCenterApi";
+import { DataCenter } from "../types";
+import { DC } from "@/features/service/types";
 
 // Get all
 export function useGetDataCentersQuery() {
@@ -70,4 +72,19 @@ export function useDeleteDataCenterMutation() {
       queryClient.invalidateQueries({ queryKey: ["dataCenter"] });
     },
   });
+}
+
+
+export function getDCbyId(id: number) {
+    const { data: allDCs, isLoading, isError, isSuccess, error } = useGetDataCentersQuery();
+
+    const data = allDCs?.filter((dc: DC) => dc.id === id);
+
+    return {
+      data,
+      isLoading,
+      isError,
+      isSuccess,
+      error,
+    }
 }

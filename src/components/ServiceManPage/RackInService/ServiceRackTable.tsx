@@ -6,6 +6,7 @@ import ServiceRackMachineRow from './ServiceRackMachineRow';
 import { Fragment } from 'react/jsx-runtime';
 import { useGetServicesQuery, useGetServiceByIdQuery, deleteService } from "@/features/service/hooks/useService";
 import { useGetDataCentersQuery, useGetDataCenterByIdQuery} from "@/features/dataCenter/hooks/useDataCenter";
+import { getlocalIPAddressbyMachineID} from "@/features/IPAddress/hooks/IPAddress";
 import {useGetMachinesQuery} from"@/features/Machine/hooks/useMachine";
 import { useGetRackQuery, useGetRackByIdQuery } from "@/features/Racks/hooks/useRack";
 import { useGetIPPoolsQuery, useGetIPPoolByIdQuery, useExtendIPPoolMutation, useGetIPPoolUtilizationQuery, getIPPoolUtilization} from "@/features/ipPool/hooks/useIPPool";
@@ -76,6 +77,7 @@ export default function ServiceRackTable({ selectedServiceRack }: ServiceRackTab
                 <ServiceRackMachineRow
                   key={machine.id}
                   machine={machine}
+                  rack={rack}
                 />
               ))
           }

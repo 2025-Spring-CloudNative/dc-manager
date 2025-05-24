@@ -8,7 +8,7 @@ export default function ServiceRow({ service, onDelete, onEdit, onViewRack, onEx
       <div className={styles.sepLine}></div>
       <div className={styles.tableRowText} style={{ width: '135px' }}>{service.datacenter}</div>
       <div className={styles.sepLine}></div>
-      <div className={styles.tableRowText} style={{ width: '135px' }}>{service.cidr}</div>
+      <div className={styles.tableRowText} style={{ width: '145px' }}>{service.cidr}</div>
       <div className={styles.sepLine}></div>
       <div className={styles.utilBar}>
         <div style={{ width: `${(service.utilization / 100) * 150}px` }} 

@@ -8,7 +8,7 @@ export default function ServiceHeader() {
       <div className={styles.sepLine}></div>
       <div className={styles.tableHeaderText} style={{ width: '135px' }}>Datacenter</div>
       <div className={styles.sepLine}></div>
-      <div className={styles.tableHeaderText} style={{ width: '135px' }}>CIDR</div>
+      <div className={styles.tableHeaderText} style={{ width: '145px' }}>CIDR</div>
       <div className={styles.sepLine}></div>
       <div className={styles.tableHeaderText} style={{ width: '185px' }}>IP Utilization</div>
     </div>
