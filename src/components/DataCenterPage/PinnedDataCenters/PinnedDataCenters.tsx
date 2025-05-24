@@ -40,6 +40,8 @@ import { Rack } from "@/features/Racks/types";
 import { useGetMachinesQuery, useDeleteMachineMutation } from "@/features/Machine/hooks/useMachine";
 import { Machine } from "@/features/Machine/types";
 import ActionMenu from "@/components/DataCenterPage/ActionMenu";
+import { useSession } from "@features/user/hooks/useUser"
+import { can } from "@lib/rbac"
 
 // import for hover data center
 import { cn } from "@/lib/utils";
@@ -56,10 +58,9 @@ interface DataCenterComponentSectionProps {
 const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     dataCenters,
 }) => {
-    const [clickedCells, setClickedCells] = useState<{ [side: string]: Set<string>; }>({ left: new Set(), right: new Set() });
     const [isRackmodalOpen, setRackModalOpen] = useState(false);
-    const [overlayMenu, setOverlayMenu] = useState<{ type: "room" | "rack" | null; id: number | null; pos: { top: number; left: number }; }>({ type: null, id: null, pos: { top: 0, left: 0 } });
-    const [focusedItem, setFocusedItem] = useState<{ type: "room" | "rack" | null; id: number | undefined; mode: "clicked" | "hovered" | null }>({ type: null, id: undefined, mode: null }); // id can be undefined
+    const [overlayMenu, setOverlayMenu] = useState<{ type: "Room" | "Rack" | null; id: number | null; pos: { top: number; left: number }; }>({ type: null, id: null, pos: { top: 0, left: 0 } });
+    const [focusedItem, setFocusedItem] = useState<{ type: "Room" | "Rack" | null; id: number | undefined; mode: "clicked" | "hovered" | null }>({ type: null, id: undefined, mode: null }); // id can be undefined
     // const [machines, setMachines] = useState<Machine[]>([]);
     const [hoveredbuttonId, setHoveredbuttonId] = useState<number | null>(null);
     const [clickedId, setClickedId] = useState<number | null>(null);
@@ -71,6 +72,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
     const [selectedRack, setSelectedRack] = useState<Rack | null>(null);
     const [isIpSelectModalOpen, setIsIpSelectModalOpen] = useState(false);
     const [isMachineModalOpen, setIsMachineModalOpen] = useState(false);
+    const { data: user, isLoggedIn } = useSession()
 
     const { data: roomsData } = useGetRoomQuery();
     const { data: racksData } = useGetRackQuery();
@@ -88,6 +90,11 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         machine: Machine | null;
         pos: { top: number; left: number };
     }>({ machine: null, pos: { top: 0, left: 0 } });
+    const [cellMenu, setCellMenu] = useState<{
+        machine: Machine | null;
+        pos: { top: number; left: number };
+    } | null>(null);
+
 
     const [editMachine, setEditMachine] = useState<Machine | null>(null);
 
@@ -125,7 +132,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         ) ?? [];
 
 
-    const renderHeader = (item: Room | Rack, type: "room" | "rack") => {
+    const renderHeader = (item: Room | Rack, type: "Room" | "Rack") => {
         const isClicked = focusedItem.type === type && focusedItem.id === item.id && focusedItem.mode === "clicked";
         const isHovered = focusedItem.type === type && focusedItem.id === item.id && focusedItem.mode === "hovered";
 
@@ -142,12 +149,12 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
             setOverlayMachineMenu({ machine: null, pos: { top: 0, left: 0 } });
         };
 
-        const handleDelete = () => type === "room" ? deleteRoombyID(item.id) : deleteRackbyID(item.id);
+        const handleDelete = () => type === "Room" ? deleteRoombyID(item.id) : deleteRackbyID(item.id);
         const handleAdd = () => {
-            if (type === "room") {
+            if (type === "Room") {
                 setSelectedRoom(item as Room);
                 setRackModalOpen(true);
-            } else { // type === "rack"
+            } else { // type === "Rack"
                 setSelectedRack(item as Rack);
                 setEditMachine(null); // Ensure we are in "add" mode for machine
                 setIsMachineModalOpen(true);
@@ -158,10 +165,10 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
             setFocusedItem({ type: null, id: undefined, mode: null });
         };
         const handleThird = () => {
-            if (type === "room") {
+            if (type === "Room") {
                 setSelectedRoom(item as Room);
                 setIsEditRoomOpen(true);
-            } else { // type === "rack"
+            } else { // type === "Rack"
                 setSelectedRack(item as Rack);
                 setIsIpSelectModalOpen(true);
                 console.log("選擇Service for Rack", item as Rack);
@@ -175,8 +182,8 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
         return (
             <TableHead
                 key={`${type}-${item.id}`}
-                colSpan={type === "room" ? filterRacksByRoomId(item.id).length || 1 : undefined} // Ensure colSpan is at least 1
-                className={cn(type === "room" ? styles.roomHeader : styles.rackHeader, isClicked && styles.clicked)}
+                colSpan={type === "Room" ? filterRacksByRoomId(item.id).length || 1 : undefined} // Ensure colSpan is at least 1
+                className={cn(type === "Room" ? styles.roomHeader : styles.rackHeader, isClicked && styles.clicked)}
                 onClick={handleClick}
                 onMouseEnter={() => !isClicked && setFocusedItem({ type, id: item.id, mode: "hovered" })}
                 onMouseLeave={() => {
@@ -185,8 +192,8 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                     }
                 }}
             >
-                <span className={type === "room" ? styles.roomTitle : styles.rackTitle}>
-                    {(isClicked || isHovered) ? `編輯${type === "room" ? "Room" : "Rack"}` : item.name}
+                <span className={type === "Room" ? styles.roomTitle : styles.rackTitle}>
+                    {(isClicked || isHovered) ? `編輯${type === "Room" ? "Room" : "Rack"}` : item.name}
                 </span>
                 {overlayMenu.type === type && overlayMenu.id === item.id && (
                     <ActionMenu
@@ -194,7 +201,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         onDelete={handleDelete}
                         onAdd={handleAdd}
                         onThird={handleThird}
-                        onForth={type === "rack" ? handleForth : undefined}
+                        onForth={type === "Rack" ? handleForth : undefined}
                         onCloseMenu={handleCloseMenu}
                     />
                 )}
@@ -222,12 +229,12 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                 >
                     {clickedId === dc.id && (
                         <div className={styles.actionButtons} onClick={(e) => e.stopPropagation()}>
-                            <Button className={styles.deletedc} onClick={() => deleteDC(dc.id)}>
+                            {can(user, "delete", "DataCenter") && <Button className={styles.deletedc} onClick={() => deleteDC(dc.id)}>
                                 刪除DC
-                            </Button>
-                            <Button className={styles.create_room} onClick={() => { setSelectedDC(dc); setCreateModalOpen(true); }}>
+                            </Button>}
+                            {can(user, "create", "DataCenter") && <Button className={styles.create_room} onClick={() => { setSelectedDC(dc); setCreateModalOpen(true); }}>
                                 [+]Room
-                            </Button>
+                            </Button>}
                         </div>
                     )}
                     <span className={styles.dcTitle}>{(hoveredbuttonId === dc.id || clickedId === dc.id) ? "編輯DC" : dc.name}</span>
@@ -236,11 +243,11 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                     <TableHeader>
                         <TableRow>
                             <TableHead className={styles.unitHeader}></TableHead>
-                            {filterRoomsByDataCenterId(dc.id).map((room) => renderHeader(room, "room"))}
+                            {filterRoomsByDataCenterId(dc.id).map((room) => renderHeader(room, "Room"))}
                         </TableRow>
                         <TableRow>
                             <TableHead className={styles.unitHeader}><span className={styles.unitTitle}>Unit</span></TableHead>
-                            {filterRoomsByDataCenterId(dc.id).flatMap((room) => filterRacksByRoomId(room.id).map((rack) => renderHeader(rack, "rack")))}
+                            {filterRoomsByDataCenterId(dc.id).flatMap((room) => filterRacksByRoomId(room.id).map((rack) => renderHeader(rack, "Rack")))}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -261,38 +268,63 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                                                 key={cellKey}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
+                                                    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                                                    const pos = {
+                                                        top: rect.bottom + window.scrollY,
+                                                        left: rect.left + rect.width / 2 + window.scrollX,
+                                                    };
                                                     if (machineInThisCell) {
-                                                        const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-                                                        setOverlayMachineMenu({
+                                                        setCellMenu({
                                                             machine: machineInThisCell,
-                                                            pos: {
-                                                                top: rect.bottom + window.scrollY,
-                                                                left: rect.left + window.scrollX + rect.width / 2
-                                                            },
+                                                            pos,
+                                                            key: cellKey, // used to match rendering
                                                         });
-                                                        // Close room/rack action menu if open
-                                                        setOverlayMenu({ type: null, id: null, pos: { top: 0, left: 0 } });
-                                                        setFocusedItem({ type: null, id: undefined, mode: null });
-                                                    } else if (overlayMachineMenu.machine) {
-                                                        // Clicked on an empty cell, close machine menu if it's open
-                                                        setOverlayMachineMenu({ machine: null, pos: { top: 0, left: 0 } });
+                                                    } else {
+                                                        setCellMenu(null);
                                                     }
                                                 }}
                                                 className={cn(
                                                     styles.unitCell,
-                                                    // isClicked && styles.clickedCell, // Not directly related to machine menu
                                                     isDisabled && styles.disabledCell,
                                                     machineInThisCell && styles.hasMachine,
-                                                    overlayMachineMenu.machine && overlayMachineMenu.machine.rackId === rack.id && unitNum >= overlayMachineMenu.machine.startUnit && unitNum < overlayMachineMenu.machine.startUnit + overlayMachineMenu.machine.unit && styles.machineSelectedForMenu
+                                                    cellMenu?.key === cellKey && styles.machineSelectedForMenu
                                                 )}
                                             >
                                                 {isStartUnit && <span className={styles.machineLabel}>{machineInThisCell.name}</span>}
+
+                                                {/* 👇 Inject the ActionMenu inside this TableCell if this cell is selected */}
+                                                {cellMenu?.key === cellKey && (
+                                                    <div
+                                                        className={styles.inlineActionMenu} // Use absolute or relative+absolute styles here
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
+                                                        <ActionMenu
+                                                            type="Machine"
+                                                            onDelete={() => {
+                                                                deleteMachineMutation(cellMenu.machine!.id);
+                                                                setCellMenu(null);
+                                                            }}
+                                                            onThird={() => {
+                                                                const rackOfMachine = racksData?.find((r) => r.id === cellMenu.machine!.rackId);
+                                                                if (rackOfMachine) {
+                                                                    setSelectedRack(rackOfMachine);
+                                                                    setEditMachine(cellMenu.machine!);
+                                                                    setIsMachineModalOpen(true);
+                                                                }
+                                                                setCellMenu(null);
+                                                            }}
+                                                            onCloseMenu={() => setCellMenu(null)}
+                                                        />
+                                                    </div>
+                                                )}
                                             </TableCell>
+
                                         );
                                     })
                                 )}
                             </TableRow>
                         ))}
+
                     </TableBody>
                 </Table>
             </div>
@@ -323,12 +355,12 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         top: `${overlayMachineMenu.pos.top}px`,
                         left: `${overlayMachineMenu.pos.left}px`,
                         zIndex: 1001,
-                        transform: 'translateX(-50%)'
+                        // transform: 'translateX(-50%)'
                     }}
                     onClick={(e) => e.stopPropagation()}
                 >
                     <ActionMenu
-                        type="machine"
+                        type="Machine"
                         onDelete={() => {
                             if (overlayMachineMenu.machine) {
                                 deleteMachineMutation(overlayMachineMenu.machine.id!);
@@ -361,10 +393,10 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                     <CreateModal
                         isOpen={isRoommodalOpen}
                         onClose={handleCloseRoommodal}
-                        title="新增房間"
+                        title="新增Room"
                         fields={[
-                            { name: "name", label: "房間名稱", type: "text", required: true },
-                            { name: "unit", label: "房間高度", type: "number", defaultValue: 10, },
+                            { name: "name", label: "Room名稱", type: "text", required: true },
+                            { name: "unit", label: "Room高度", type: "number", defaultValue: 10, },
                         ]}
                         mutation={addRoomMutation}
                         extraData={{ dataCenterId: selectedDC.id }}
@@ -397,8 +429,8 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         }}
                         title="修改Room"
                         fields={[
-                            { name: "name", label: "房間名稱", type: "text", required: true, defaultValue: selectedRoom.name },
-                            { name: "unit", label: "房間高度", type: "number", required: true, defaultValue: selectedRoom.unit },
+                            { name: "name", label: "Room名稱", type: "text", required: true, defaultValue: selectedRoom.name },
+                            { name: "unit", label: "Room高度", type: "number", required: true, defaultValue: selectedRoom.unit },
                         ]}
                         mutation={updateRoomMutation}
                         extraData={{ id: selectedRoom.id }}
@@ -444,9 +476,7 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         rack={selectedRack}
                         // Provide all machines for validation, modal can filter if needed internally or use rack.id for context
                         machines={machines.filter((m: Machine) => m.rackId === selectedRack.id)}
-
-
-                        title={editMachine ? "修改Host" : "新增Host"}
+                        title={editMachine ? "修改Machine" : "新增Machine"}
                         editmachine={editMachine || undefined} // Pass undefined if null
                     />
                 )}
