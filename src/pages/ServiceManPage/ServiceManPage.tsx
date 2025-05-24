@@ -12,6 +12,7 @@ import ServiceRackTable from "@/components/ServiceManPage/RackInService";
 import { useGetDataCentersQuery } from "@features/dataCenter/hooks/useDataCenter";
 import { DataCenter } from "@/components/data/datacenter"; // Import DataCenter interface with correct path
 import ServiceModal from "@/components/ServiceManPage/ServiceModal";
+import { Service } from "@/features/service/types";
 
 const service_man = () => {
     const [inputValue, setInputValue] = useState("");
@@ -27,6 +28,7 @@ const service_man = () => {
 
     const handleEdit = (service) => {
         setSelectedService(service);  
+        console.log('service handleEdit!', service)
         setIsModalOpen(true); 
     };        
 
@@ -37,6 +39,7 @@ const service_man = () => {
     
     const handleViewRack = (service) => {
         setSelectedService_rack(service);
+        console.log('service handleViewRack', service)
         setShowRackInfo(true);
     };
 
@@ -44,6 +47,7 @@ const service_man = () => {
     return (
         <>
             <ServiceModal isOpen = {isModalOpen} onClose={closeModal} currentService={selectedService}
+            
             />
             <div className={styles.pageContainer}>
                     <div className={styles.heroSection}>

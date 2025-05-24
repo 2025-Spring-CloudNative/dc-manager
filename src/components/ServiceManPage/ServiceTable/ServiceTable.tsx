@@ -3,10 +3,10 @@ import { useQueries } from '@tanstack/react-query';
 import styles from './ServiceTable.module.scss';
 import ServiceHeader from './ServiceHeader';
 import ServiceRow from './ServiceRow';
-import { useGetServicesQuery, useGetServiceByIdQuery, deleteService } from "@/features/service/hooks/useService";
+import { useGetServicesQuery, useGetServiceByIdQuery,  useDeleteServiceMutation } from "@/features/service/hooks/useService";
 import { useGetDataCentersQuery, useGetDataCenterByIdQuery} from "@/features/dataCenter/hooks/useDataCenter";
 import { useGetRackQuery, useGetRackByIdQuery } from "@/features/Racks/hooks/useRack";
-import { useGetIPPoolsQuery, useIPPoolsWithUtilizations, useGetIPPoolByIdQuery, useExtendIPPoolMutation, useGetIPPoolUtilizationQuery} from "@/features/ipPool/hooks/useIPPool";
+import { useGetIPPoolsQuery, useIPPoolsWithUtilizations, useExtendIPPoolMutation, useGetIPPoolUtilizationQuery} from "@/features/ipPool/hooks/useIPPool";
 import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet";
 import { Rack } from "@/features/Racks/types";
 import { Service } from "@/features/service/types";
@@ -43,10 +43,12 @@ function generateTableData(
 
       return {
         id: service.id!,
+        poolId: service.poolId,
         name: service.name,
         cidr: ipPool?.cidr || "N/A",
         utilization: utilization || 0,
         datacenter: dataCenter?.name || "N/A",
+        DC: dataCenter || "N/A",
       };
     })
   );
@@ -81,10 +83,12 @@ function groupRacksByService(rackData: Rack[], serviceData: Service[]) {
 
 type TableServiceRow = {
   id: number;
+  poolId: number;
   name: string;
   cidr: string;
   utilization: number;
   datacenter: string;
+  DC: DC;
 };
 
 
@@ -96,6 +100,8 @@ export default function ServiceTable({ onEdit, onViewRack}) {
   const { data: dcData, isLoading: isLoadingDC, isError: isErrorDC } = useGetDataCentersQuery();
   const { data: ipPoolData, isLoading: isLoadingipPool, isError: isErroripPool } = useIPPoolsWithUtilizations();
   const { data: subnetData, isLoading: isLoadingSubnet, isError: isErrorSubnet } = useGetSubnetsQuery();
+  const { mutate: extendIPPool } = useExtendIPPoolMutation();
+  const { mutate: deleteService, isLoading: isDeleting } = useDeleteServiceMutation();
   //const { data: pools, isLoading: isLoadingipPoollll, isError: isErroripPoollll } = useIPPoolsWithUtilizations();
 
    
@@ -137,12 +143,16 @@ export default function ServiceTable({ onEdit, onViewRack}) {
   console.log("tableData", services);
 
   const handleDelete = (id: number) => {
-    setServices(prev => prev.filter(s => s.id !== id));
+    //setServices(prev => prev.filter(s => s.id !== id));
+    if (window.confirm("確定要刪除這個服務？")) {
+      deleteService(id);
+    }
   };
 
-  const ExtendIPPool = (id: number) => {
+  const ExtendIPPool = (service: Service) => {
     // setServices(prev => prev.filter(s => s.id !== id));
-    console.log('Extending IP Pool for:', id);
+    console.log('Extending IP Pool for:', service);
+    extendIPPool({ id: service.poolId, cidr: service.cidr });
   };
 
   return (
@@ -152,7 +162,7 @@ export default function ServiceTable({ onEdit, onViewRack}) {
         <ServiceRow 
           key={service.id} service={service} 
           onDelete={() => handleDelete(service.id)} 
-          onExtendIPPool={() => ExtendIPPool(service.id)} 
+          onExtendIPPool={() => ExtendIPPool(service)} 
           onEdit={onEdit}
           onViewRack={onViewRack}
           

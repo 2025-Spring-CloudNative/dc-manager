@@ -40,7 +40,7 @@ export async function createService(data: CreateServiceRequest): Promise<CreateS
 
 
 
-export async function updateService(id: string, data: Service): Promise<Service>  {
+export async function updateService(id: string, data: CreateServiceRequest): Promise<CreateServiceRequest>  {
   try {
     const response = await apiInstance.patch(`/${id}`, data);
     return response.data;

@@ -10,19 +10,18 @@ import {
 } from "@/features/dataCenter/hooks/useDataCenter";
 import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet";
 import { useGetDataCentersQuery } from "@/features/dataCenter/hooks/useDataCenter";
-
+import { useCreateServiceMutation, useUpdateServiceMutation} from "@/features/service/hooks/useService"
+import { CreateServiceRequest } from "@/features/service/types";
+import { Service } from "@/features/service/types";
 
 
 interface CreateServiceModalProps  {
   isOpen: boolean;
   onClose: () => void;
-  currentService?: {
-    id: number;
-    name: string;
-    dc: string;
-    subnetCidr?: string; // optional for backward compatibility
-  } | null;
+  currentService?: Service | null;
 }
+
+
 
 const ServiceModal: React.FC<CreateServiceModalProps> = ({
   isOpen,
@@ -31,74 +30,97 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
 }) => {
   const isEditMode = !!currentService;
 
-  const [form, setForm] = useState({
-    Service: {
-      id: -1,
-      name: "",
-      dc: "",
-      subnetCidr: "",
-    },
-    
+  console.log("currentService", currentService);
+  const [form, setForm] = useState<CreateServiceRequest>({
+    service: { name: "" },
+    dataCenter: { name: "", location: "", subnetId: "" },
+    cidrFromUser: "",
   });
 
-  //const createMutation = useCreateDataCenterMutation();
-  //const updateMutation = useUpdateDataCenterMutation();
+  const createMutation = useCreateServiceMutation();
+  const updateMutation = useUpdateServiceMutation();
   //const { data: subnets, isLoading: isLoadingSubnets } = useGetSubnetsQuery();
   const { data: dc, isLoading: isLoadingDC } = useGetDataCentersQuery();
+  const currentServiceDC =currentService?.DC
+  console.log("currentServiceDC", currentServiceDC);
     
   // initialization
   useEffect(() => {
     if (currentService) {
       setForm({
-        Service: {
+        service: {
           id: currentService.id,
           name: currentService.name,
-          dc: currentService.dc,
-          subnetCidr: currentService.subnetCidr || "",
         },
-        
+        dataCenter: {
+          name: currentService.datacenter,
+          location: currentServiceDC.location,
+          subnetId: currentServiceDC.subnetId,
+        },
+        cidrFromUser: currentService.cidr || "",
       });
     } else {
       setForm({
-        Service: {
-          id: -1,
+        service: {
           name: "",
-          dc: "",
-          subnetCidr: "",
         },
+        dataCenter: {
+          name: "",
+          location: "",
+          subnetId: "",
+        },
+        cidrFromUser:  "",
         
       });
     }
   }, [currentService, isOpen]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    if (name === "id" || name === "name" || name === "dc") {
+  
+    if (name === "service.name") {
       setForm((prev) => ({
         ...prev,
-        Service: {
-          ...prev.Service,
-          [name]: value,
+        service: { ...prev.service, name: value },
+      }));
+    }  else if (name === 'dataCenter.name') {
+      const selectedDC = dc.find((d) => d.name === value);
+  
+      setForm((prevForm) => ({
+        ...prevForm,
+        dataCenter: {
+          name: value,
+          location: selectedDC?.location ?? '',
+          subnetId: selectedDC?.subnetId ?? '',
         },
       }));
-    } else {
-      setForm((prev) => ({ ...prev, [name]: value }));
+    }  else if (name === "cidrFromUser") {
+      setForm((prev) => ({
+        ...prev,
+        cidrFromUser: value,
+      }));
     }
   };
 
   const handleSubmit = async () => {
     try {
+      console.log("form", form)
       if (isEditMode && currentService) {
         await updateMutation.mutateAsync({
-          id: currentService.id.toString(),
-          data: {
-            name: form.Service.name,
-            dc: form.Service.dc,
+          service: {
+            id: currentService.id,
+            name: form.service.name,
           },
+          dataCenter: {
+            name: form.dataCenter.name,
+            location: form.dataCenter.location,
+            subnetId: form.dataCenter.subnetId,
+          },
+          cidrFromUser: form.cidrFromUser || "",
         });
         alert("服務已更新！");
       } else {
-        //await createMutation.mutateAsync(form);
+        await createMutation.mutateAsync(form);
         alert("服務創建成功！");
       }
       onClose();
@@ -136,19 +158,19 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
             <label className={styles.inputFont}>服務名稱</label>
             <Input
               type="text"
-              name="name"
+              name="service.name" 
               placeholder="輸入服務名稱"
               className={styles.inputField}
-              value={form.Service.name}
+              value={form.service.name}
               onChange={handleChange}
             />
 
 
             <label className={styles.inputFont}>選擇綁定資料中心</label>
             <select
-              name="dc"
+              name="dataCenter.name"
               className={styles.subnetSelect}
-              value={form.Service.dc}
+              value={form.dataCenter.name}
               onChange={handleChange}
               disabled={isLoadingDC}
             >
@@ -163,10 +185,10 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
             <label className={styles.inputFont}>CIDR</label>
             <Input
                 type="text"
-                name="location"
+                name="cidrFromUser"   
                 placeholder="輸入CIDR"
                 className={styles.inputField}
-                value={form.Service.subnetCidr}
+                value={form.cidrFromUser}
                 onChange={handleChange}
               />
 
@@ -176,14 +198,14 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
         <div className={styles.modalActions}>
           <Button
             className={styles.saveButton}
-            //onClick={handleSubmit}
-            //disabled={createMutation.isLoading || updateMutation.isLoading}
+            onClick={handleSubmit}
+            disabled={createMutation.isLoading || updateMutation.isLoading}
           >
-            {/*{(createMutation.isLoading || updateMutation.isLoading)
+            {(createMutation.isLoading || updateMutation.isLoading)
               ? "儲存中..."
               : isEditMode
               ? "確認修改"
-              : "確認創建"}*/}
+              : "確認創建"}
           </Button>
         </div>
       </div>

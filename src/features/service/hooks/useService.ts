@@ -50,7 +50,7 @@ export function useUpdateServiceMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: Service) => updateService( data.id, data),
+    mutationFn: (data: CreateServiceRequest) => updateService( data.service.id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["service"] });
     },

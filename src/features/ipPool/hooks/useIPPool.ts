@@ -92,7 +92,7 @@ export function useExtendIPPoolMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => extendIPPool(id),
+    mutationFn: ({ id, cidr }: { id: string; cidr: string }) => extendIPPool(id, cidr),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ip-pool"] });
     },

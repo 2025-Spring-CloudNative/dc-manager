@@ -76,9 +76,9 @@ export async function getIPPoolUtilization(id: string) {
 
 
 
-export async function extendIPPool(id: string) {
+export async function extendIPPool(id: string, cidr: string) {
   try {
-    const response = await apiInstance.patch(`/extend/${id}`);
+    const response = await apiInstance.patch(`/extend/${id}`,  cidr );
     return response.data;
   } catch (error) {
     console.error("Error extending ip pool by ID:", error);
