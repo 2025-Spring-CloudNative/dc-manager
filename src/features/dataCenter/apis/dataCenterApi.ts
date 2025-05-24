@@ -1,8 +1,15 @@
-import api from "@lib/axios"
+import axios from "axios";
+import { DataCenter } from "../types";
+const apiInstance = axios.create({
+    baseURL: "http://140.112.90.36:4000/data-center",
+    headers: {
+        "Content-Type": "application/json",
+    },
+});
 
 export async function getDataCenters() {
     try {
-        const response = await api.get("/data-center")
+        const response = await apiInstance.get("/")
         return response.data
     } catch (error) {
         console.error("Error fetching data center data:", error)
@@ -12,7 +19,7 @@ export async function getDataCenters() {
 
 export async function getDataCenterById(id: number) {
     try {
-        const response = await api.get(`/data-center/${id}`)
+        const response = await apiInstance.get(`/${id}`)
         return response.data
     } catch (error) {
         console.error("Error fetching data center by ID:", error)
@@ -22,7 +29,7 @@ export async function getDataCenterById(id: number) {
 
 export async function getDataCenterBySubnetID(subnetId: number) {
     try {
-        const response = await api.get(`/data-center?subnetId=${subnetId}`)
+        const response = await apiInstance.get(`/?subnetId=${subnetId}`)
         console.log("Data center by subnet ID:", response.data, subnetId)
         return response.data
     } catch (error) {
@@ -31,32 +38,29 @@ export async function getDataCenterBySubnetID(subnetId: number) {
     }
 }
 
-export async function createDataCenter(data: {
-    dataCenter: { name: string; location: string }
-    subnetCidr: string
-}) {
+export async function createDataCenter(data: DataCenter): Promise<DataCenter> {
     try {
-        const response = await api.post("/data-center", data)
-        return response.data
+        const response = await apiInstance.post("/", data);
+        return response.data;
     } catch (error) {
-        console.error("Error creating data center:", error)
-        throw error
+        console.error("Error creating data center:", error);
+        throw error;
     }
 }
 
-export async function updateDataCenter(id: string, data: { name: string; location: string }) {
+export async function updateDataCenter(id: string, data: DataCenter): Promise<DataCenter> {
     try {
-        const response = await api.patch(`/data-center/${id}`, data)
-        return response.data
+        const response = await apiInstance.patch(`/${id}`, data);
+        return response.data;
     } catch (error) {
-        console.error("Error updating data center:", error)
-        throw error
+        console.error("Error updating data center:", error);
+        throw error;
     }
 }
 
 export async function deleteDataCenter(id: number) {
     try {
-        const response = await api.delete(`/data-center/${id}`)
+        const response = await apiInstance.delete(`/${id}`)
         return response.data
     } catch (error) {
         console.error("Error deleting data center:", error)

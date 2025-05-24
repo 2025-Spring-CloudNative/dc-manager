@@ -15,13 +15,13 @@
   background-color: #fff;
   border-radius: 16px;
   padding: 32px;
-  width: 55%; /* Adjust width as needed */
+  width: 70%; /* Adjust width as needed */
   max-width: 90%; /* Ensure it doesn't get too wide */
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   // display: flex;
   flex-direction: column; /* Stack title, then input/table */
   gap: 24px;
-  // overflow: scroll;
+  overflow: scroll;
   max-height: 90vh;
 }
 
@@ -40,7 +40,7 @@
   width: 70%; /* Adjust width for table container */
   // max-height: 500px; /* Set a max height for the table */
   // overflow-x: scroll;
-  // overflow-y: scroll;
+  overflow-y: scroll;
   margin: 0 auto; /* This centers the container horizontally */
 }
 
@@ -120,7 +120,7 @@
 .rightSeparator {
   position: absolute;
   top: 45px;
-  width: 25%;
+  width: 200px;
   height: 5px;
   background-color: #a2e1e4;
 }
@@ -164,37 +164,4 @@
   padding-left: 8px;
   padding-right: 8px;
   text-align: left;
-}
-.inputField {
-
-  padding: 0.5rem;
-  border: 1px solid #b4e0e0;
-  background-color: #e6fafa;
-  margin-bottom: 1.5rem;
-  // border-radius: 8px;
-}
-.inputFont{
-    font-family: "Noto Sans";
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: #333;
-  width: 100%;
-  text-align: center;
-}
-
-.subnetSelect {
-  width: 100%;
-  padding: 0.5rem;
-  border-radius: 30px;
-  border: 1px solid #b4e0e0;
-  background-color: #e6fafa;
-  font-size: 1.25rem;
-  margin-bottom: 1.5rem;
-  letter-spacing: 2px;
-  height: 49px;
-  color: #333;
-  backdrop-filter: blur(6.6px);
-  appearance: none;
-  // overflow-y: auto;
-  // max-height: 160px;
 }
