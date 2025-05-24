@@ -62,7 +62,7 @@ export async function deleteIPPool(id: string): Promise<void>   {
     throw error;
   }
 }
-/*
+
 export async function getIPPoolUtilization(id: string) {
   try {
     const response = await apiInstance.get(`/util/${id}`);
@@ -71,7 +71,7 @@ export async function getIPPoolUtilization(id: string) {
     console.error("Error fetching ip pool utilization by ID:", error);
     throw error;
   }
-}*/
+}
 
 
 

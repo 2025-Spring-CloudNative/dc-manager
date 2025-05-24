@@ -6,25 +6,26 @@ import ServiceRow from './ServiceRow';
 import { useGetServicesQuery, useGetServiceByIdQuery, deleteService } from "@/features/service/hooks/useService";
 import { useGetDataCentersQuery, useGetDataCenterByIdQuery} from "@/features/dataCenter/hooks/useDataCenter";
 import { useGetRackQuery, useGetRackByIdQuery } from "@/features/Racks/hooks/useRack";
-import { useGetIPPoolsQuery, useGetIPPoolByIdQuery, useExtendIPPoolMutation, useGetIPPoolUtilizationQuery, getIPPoolUtilization} from "@/features/ipPool/hooks/useIPPool";
+import { useGetIPPoolsQuery, useIPPoolsWithUtilizations, useGetIPPoolByIdQuery, useExtendIPPoolMutation, useGetIPPoolUtilizationQuery} from "@/features/ipPool/hooks/useIPPool";
 import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet";
 import { Rack } from "@/features/Racks/types";
 import { Service } from "@/features/service/types";
-import { IPPool} from "@/features/ipPool/types";
+import { IPPool, IPPoolWithUtilization} from "@/features/ipPool/types";
 import { DC } from "@/features/dataCenter/types";
 import { Subnet } from "@/features/subnet/types";
 
+/*
 const initialServices = [
   { id: 1, name: 'Web Service', datacenter: 'data_center_A', cidr: '192.168.1.0/24', utilization: 35 },
   { id: 2, name: 'Service B', datacenter: 'DC-B', cidr: '192.168.2.0/24', utilization: 45 },
   { id: 3, name: 'Service C', datacenter: 'DC-B-bb', cidr: '192.168.2.0/24', utilization: 80 },
   { id: 4, name: 'Service D', datacenter: 'DC-ddddd', cidr: '192.168.2.0/24', utilization: 100 },
-];
+];*/
 
 
 function generateTableData(
   services: Service[],
-  ipPools: IPPool[],
+  ipPools: IPPoolWithUtilization[],
   subnets: Subnet[],
   dataCenters: DC[]
 ): Promise<TableServiceRow[]> {
@@ -36,23 +37,15 @@ function generateTableData(
       const ipPool = ipPools.find((p) => p.id === service.poolId);
       const subnet = ipPool ? subnets.find((s) => s.id === ipPool.subnetId) : undefined;
       console.log('subnet!', subnet.id)
+      console.log('ipPool!', ipPool.utilization.utilization)
       const dataCenter = subnet ? dataCenters.find((d) => d.subnetId === subnet.id) : undefined;
-
-      //let utilization = -1;
-      //if (ipPool) {
-       // try {
-        //const { data } = await useGetIPPoolUtilizationQuery(ipPool.id.toString());
-          //utilization = data?.utilization ?? -1;
-       // } catch (err) {
-        //  console.error(`Failed to fetch utilization for poolID=${ipPool.id}`, err);
-       // }
-     // }
+      const utilization = ipPool.utilization.utilization;
 
       return {
         id: service.id!,
         name: service.name,
         cidr: ipPool?.cidr || "N/A",
-        utilization: 100,
+        utilization: utilization || 0,
         datacenter: dataCenter?.name || "N/A",
       };
     })
@@ -101,17 +94,22 @@ export default function ServiceTable({ onEdit, onViewRack}) {
   const { data: serviceData, isLoading: isLoadingServices, isError: isErrorServices } = useGetServicesQuery();
   const { data: rackData, isLoading: isLoadingRack, isError: isErrorRack } = useGetRackQuery();
   const { data: dcData, isLoading: isLoadingDC, isError: isErrorDC } = useGetDataCentersQuery();
-  const { data: ipPoolData, isLoading: isLoadingipPool, isError: isErroripPool } = useGetIPPoolsQuery();
+  const { data: ipPoolData, isLoading: isLoadingipPool, isError: isErroripPool } = useIPPoolsWithUtilizations();
   const { data: subnetData, isLoading: isLoadingSubnet, isError: isErrorSubnet } = useGetSubnetsQuery();
+  //const { data: pools, isLoading: isLoadingipPoollll, isError: isErroripPoollll } = useIPPoolsWithUtilizations();
 
    
 
   //console.log("ipPoolData", ipPoolData);
 
   if (isLoadingRack || isLoadingServices || isLoadingDC || isLoadingipPool || isLoadingSubnet ||
-     !rackData || !serviceData || !dcData || !ipPoolData || !subnetData) {
+
+     !rackData || !serviceData || !dcData || !ipPoolData || !subnetData ) {
     return <div>Loading...</div>;
   }
+
+  //console.log("pools", pools);
+  console.log("ipPoolData", ipPoolData);
 
   //const utilizationQueries = useMultipleIPPoolsUtilization(ipPoolData);
 

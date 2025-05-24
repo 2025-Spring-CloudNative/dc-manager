@@ -6,4 +6,7 @@ export type IPPool = {
   subnetId: number;
 }  
 
+export type IPPoolWithUtilization = IPPool & {
+  utilization?: number;
+};
 
