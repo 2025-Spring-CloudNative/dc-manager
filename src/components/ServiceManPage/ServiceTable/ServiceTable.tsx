@@ -127,7 +127,11 @@ export default function ServiceTable({ onEdit, onViewRack}) {
   //console.log("racksByService", racksByService);
 
   //console.log("ipPoolData", ipPoolData);
-  const services = generateTableData(serviceData, ipPoolData, subnetData, dcData);
+  //const services = generateTableData(serviceData, ipPoolData, subnetData, dcData);
+  const services = useMemo(() => {
+    if (!serviceData || !ipPoolData || !subnetData || !dcData) return [];
+    return generateTableData(serviceData, ipPoolData, subnetData, dcData);
+  }, [serviceData, ipPoolData, subnetData, dcData]);
   
   const handleDelete = (id: number) => {
     //setServices(prev => prev.filter(s => s.id !== id));
