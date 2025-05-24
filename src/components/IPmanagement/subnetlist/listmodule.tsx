@@ -4,7 +4,7 @@ import Button from "@/components/shared/Button";
 import { useState } from 'react';
 import { PoolModule } from "@/components/IPmanagement/poollist/poollist";
 import { IP } from "@/features/IPPool/types";
-import { DataCenter } from '@/components/data/datacenter';
+import { DataCenter } from '@features/dataCenter/types';
 import { useGetIPPoolbysubnetIdQuery } from "@/features/IPPool/hooks/IPPool";
 import { useGetDataCenterBySubnetIDQuery } from "@/features/dataCenter/hooks/useDataCenter";
 
@@ -17,7 +17,7 @@ interface Props {
     // onToggle: (id: number) => void;
 }
 
-export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, id}) => {
+export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, id }) => {
 
     const { data: allIPs } = useGetIPPoolbysubnetIdQuery(id!) as { data: IP };
     const { data: dcArr } = useGetDataCenterBySubnetIDQuery(id!) as { data: DataCenter[] };
@@ -33,10 +33,10 @@ export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, id}) => {
         <div className={styles.listBlock} >
             <div className={styles.wrapper}>
                 <Button
-                className={styles.icon}
-                onClick={() => toggleAccordion(id!)}
+                    className={styles.icon}
+                    onClick={() => toggleAccordion(id!)}
                 >
-                {expandedId ? "-" : "+"}
+                    {expandedId ? "-" : "+"}
                 </Button>
 
                 <div className={styles.frame}>

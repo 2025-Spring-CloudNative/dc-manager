@@ -1,4 +1,11 @@
-import api from "@lib/axios"
+import axios from "axios";
+import { DataCenter } from "../types";
+const apiInstance = axios.create({
+    baseURL: "http://140.112.90.36:4000/data-center",
+    headers: {
+        "Content-Type": "application/json",
+    },
+});
 
 export async function getDataCenters() {
     try {
@@ -31,26 +38,23 @@ export async function getDataCenterBySubnetID(subnetId: number) {
     }
 }
 
-export async function createDataCenter(data: {
-    dataCenter: { name: string; location: string }
-    subnetCidr: string
-}) {
+export async function createDataCenter(data: DataCenter): Promise<DataCenter> {
     try {
-        const response = await api.post("/data-center", data)
-        return response.data
+        const response = await apiInstance.post("/", data);
+        return response.data;
     } catch (error) {
-        console.error("Error creating data center:", error)
-        throw error
+        console.error("Error creating data center:", error);
+        throw error;
     }
 }
 
-export async function updateDataCenter(id: string, data: { name: string; location: string }) {
+export async function updateDataCenter(id: string, data: DataCenter): Promise<DataCenter> {
     try {
-        const response = await api.patch(`/data-center/${id}`, data)
-        return response.data
+        const response = await apiInstance.patch(`/${id}`, data);
+        return response.data;
     } catch (error) {
-        console.error("Error updating data center:", error)
-        throw error
+        console.error("Error updating data center:", error);
+        throw error;
     }
 }
 

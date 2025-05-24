@@ -2,14 +2,14 @@
 import { XIcon } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/shared/Input/Input";
-import DataCenterComponentSection from "@/components/DataCenterPage/FavoriteRackMap";
+import PinnedDataCenters from "@/components/DataCenterPage/PinnedDataCenters";
 import RackSummaryTable from "@/components/DataCenterPage/RackSummaryTable";
 import FilterButton from "@/components/DataCenterPage/FilterButton/FilterButton";
 import styles from "./DataCenterPage.module.scss";
 import searchicon from "@/assets/search.png";
 
 import { useGetDataCentersQuery } from "@features/dataCenter/hooks/useDataCenter";
-import { DataCenter } from "@/components/data/datacenter"; // Import DataCenter interface with correct path
+import { DataCenter } from "@/features/dataCenter/types"; // Import DataCenter interface with correct path
 
 const data_center = () => {
     const [inputValue, setInputValue] = useState("");
@@ -61,8 +61,7 @@ const data_center = () => {
 
                 {/* Combined Favorite Tables */}
                 <div className={styles.favoriteTablesContainer}>
-                    <h3>常用資料中心</h3>
-                    <DataCenterComponentSection
+                    <PinnedDataCenters
                         dataCenters={{
                             left: selectedLeftDC ? [selectedLeftDC] : [],
                             right: selectedRightDC ? [selectedRightDC] : [],

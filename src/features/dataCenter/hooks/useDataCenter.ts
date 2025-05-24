@@ -26,11 +26,17 @@ export function useGetDataCentersQuery() {
 
 // Get by ID
 export function useGetDataCenterByIdQuery(id: number) {
-  return useQuery({
+  const { data, isLoading, isError, isSuccess, error } = useQuery({
     queryKey: ["dataCenter", id],
     queryFn: () => getDataCenterById(id),
-    enabled: !!id,
   });
+  return {
+    data,
+    isLoading,
+    isError,
+    isSuccess,
+    error,
+  };
 }
 
 // Get by Subnet ID
@@ -49,8 +55,11 @@ export function useCreateDataCenterMutation() {
   return useMutation({
     mutationFn: (data: {
       dataCenter: { name: string; location: string };
-      subnetCidr: string;
-    }) => createDataCenter(data),
+      subnetId?: string;
+    }) => createDataCenter({
+      dataCenter: data.dataCenter,
+      subnetId: data.subnetId ?? ""
+    }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["dataCenter"] });
     },
