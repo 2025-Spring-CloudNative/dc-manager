@@ -65,3 +65,18 @@ export function useDeleteSubnetMutation() {
     },
   });
 }
+
+export function getSubnetbyID(ID: number) {
+    const { data: allSubnets, isLoading, isError, isSuccess, error } = useGetSubnetsQuery();
+
+    const data = allSubnets?.filter((subnet: Subnet) => subnet.id === ID);
+
+    return {
+      data,
+      isLoading,
+      isError,
+      isSuccess,
+      error,
+    }
+}
+

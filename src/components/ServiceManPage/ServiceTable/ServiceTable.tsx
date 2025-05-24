@@ -39,7 +39,7 @@ function generateTableData(
       //console.log('subnet!', subnet.id)
       //console.log('ipPool!', ipPool.utilization.utilization)
       const dataCenter = subnet ? dataCenters.find((d) => d.subnetId === subnet.id) : undefined;
-      const utilization = ipPool.utilization.utilization;
+      const utilization = ipPool?.utilization?.utilization ?? 0;
 
       return {
         id: service.id!,
@@ -128,20 +128,7 @@ export default function ServiceTable({ onEdit, onViewRack}) {
 
   //console.log("ipPoolData", ipPoolData);
   const services = generateTableData(serviceData, ipPoolData, subnetData, dcData);
-  /*
-  useEffect(() => {
-    const fetchTableData = async () => {
-      const data = await generateTableData(serviceData, ipPoolData, subnetData, dcData);
-      setTableData(data);
-    };
-    if (serviceData && ipPoolData && subnetData && dcData) {
-      fetchTableData();
-    }
-  }, [serviceData, ipPoolData, subnetData, dcData]);
-  */
-  //console.log('dcdata:', dcData)
-  //console.log("tableData", services);
-
+  
   const handleDelete = (id: number) => {
     //setServices(prev => prev.filter(s => s.id !== id));
     if (window.confirm("確定要刪除這個服務？")) {

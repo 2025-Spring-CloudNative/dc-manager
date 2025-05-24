@@ -15,7 +15,7 @@ export default function ServiceRow({ service, onDelete, onEdit, onViewRack, onEx
         className={`${styles.utilFill} ${service.utilization >= 0.8 ? styles.utilHigh : ''}`} />
         <span>{service.utilization}%</span>
       </div>
-      <button onClick={onExtendIPPool} className={styles.extendIPPool}>[+] IP Pool</button>
+      <button onClick={onExtendIPPool} className={styles.extendIPPool}>Extend IP Pool</button>
       <button onClick={() => onViewRack(service)} className={styles.viewRackBtn}>查看Rack</button>
       <button onClick={() => onEdit(service)} className={styles.editBtn}>編輯</button>
       <button onClick={onDelete} className={styles.deleteBtn}>刪除</button>

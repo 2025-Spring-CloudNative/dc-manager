@@ -8,7 +8,7 @@ import {
   useCreateDataCenterMutation,
   useUpdateDataCenterMutation,
 } from "@/features/dataCenter/hooks/useDataCenter";
-import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet";
+import { useGetSubnetsQuery , getSubnetbyID, useGetSubnetByIdQuery } from "@/features/subnet/hooks/useSubnet";
 import { useGetDataCentersQuery } from "@/features/dataCenter/hooks/useDataCenter";
 import { useCreateServiceMutation, useUpdateServiceMutation} from "@/features/service/hooks/useService"
 import { CreateServiceRequest } from "@/features/service/types";
@@ -36,12 +36,19 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
     dataCenter: { name: "", location: "", subnetId: "" },
     cidrFromUser: "",
   });
+  
 
   const createMutation = useCreateServiceMutation();
   const updateMutation = useUpdateServiceMutation();
+  
   //const { data: subnets, isLoading: isLoadingSubnets } = useGetSubnetsQuery();
   const { data: dc, isLoading: isLoadingDC } = useGetDataCentersQuery();
   const currentServiceDC =currentService?.DC
+  const selectedDC = dc?.find((item) => item.name === form.dataCenter.name);
+  const { data: DcSubnet, isLoading: isLoadingSubnet } = useGetSubnetByIdQuery(
+    selectedDC?.subnetId,
+  );
+ 
   //console.log("currentServiceDC", currentServiceDC);
     
   // initialization
@@ -85,7 +92,6 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
       }));
     }  else if (name === 'dataCenter.name') {
       const selectedDC = dc.find((d) => d.name === value);
-  
       setForm((prevForm) => ({
         ...prevForm,
         dataCenter: {
@@ -181,6 +187,17 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
                 </option>
               ))}
             </select>
+            {selectedDC && (
+              <div>
+                {isLoadingSubnet ? (
+                  <p>Loading...</p>
+                ) : DcSubnet ? (
+                  <p>DC subnet：{DcSubnet.cidr}</p>
+                ) : (
+                  <p>get dc subnet failed</p>
+                )}
+              </div>
+            )}
 
             <label className={styles.inputFont}>CIDR</label>
             <Input

@@ -31,10 +31,10 @@ const ServiceModal_edit: React.FC<CreateServiceModalProps> = ({
   const isEditMode = !!currentService;
 
   //console.log("currentService", currentService);
-  const [form, setForm] = useState<CreateServiceRequest>({
-    service: { name: "" },
-    dataCenter: { name: "", location: "", subnetId: "" },
-    cidrFromUser: "",
+  const [form, setForm] = useState<Service>({
+     id: -1,
+     name: "", 
+     poolId: -1 ,
   });
 
   const createMutation = useCreateServiceMutation();
@@ -48,29 +48,14 @@ const ServiceModal_edit: React.FC<CreateServiceModalProps> = ({
   useEffect(() => {
     if (currentService) {
       setForm({
-        service: {
           id: currentService.id,
           name: currentService.name,
-        },
-        dataCenter: {
-          name: currentService.datacenter,
-          location: currentServiceDC.location,
-          subnetId: currentServiceDC.subnetId,
-        },
-        cidrFromUser: currentService.cidr || "",
+          poolId: currentService.poolId,
       });
     } else {
       setForm({
-        service: {
-          name: "",
-        },
-        dataCenter: {
-          name: "",
-          location: "",
-          subnetId: "",
-        },
-        cidrFromUser:  "",
-        
+        name: "",
+        poolId: -1,
       });
     }
   }, [currentService, isOpen]);
@@ -78,28 +63,10 @@ const ServiceModal_edit: React.FC<CreateServiceModalProps> = ({
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
   
-    if (name === "service.name") {
-      setForm((prev) => ({
-        ...prev,
-        service: { ...prev.service, name: value },
-      }));
-    }  else if (name === 'dataCenter.name') {
-      const selectedDC = dc.find((d) => d.name === value);
-  
-      setForm((prevForm) => ({
-        ...prevForm,
-        dataCenter: {
-          name: value,
-          location: selectedDC?.location ?? '',
-          subnetId: selectedDC?.subnetId ?? '',
-        },
-      }));
-    }  else if (name === "cidrFromUser") {
-      setForm((prev) => ({
-        ...prev,
-        cidrFromUser: value,
-      }));
-    }
+    setForm((prev) => ({
+      ...prev,
+      [name]: name === "poolId" ? parseInt(value, 10) : value,
+    }));
   };
 
   const handleSubmit = async () => {
@@ -107,22 +74,13 @@ const ServiceModal_edit: React.FC<CreateServiceModalProps> = ({
       console.log("form", form)
       if (isEditMode && currentService) {
         await updateMutation.mutateAsync({
-          service: {
-            id: currentService.id,
-            name: form.service.name,
-          },
-          dataCenter: {
-            name: form.dataCenter.name,
-            location: form.dataCenter.location,
-            subnetId: form.dataCenter.subnetId,
-          },
-          cidrFromUser: form.cidrFromUser || "",
+          id: currentService.id,
+          name: form.name,
+          poolId: form.poolId,
         });
-        alert("服務已更新！");
-      } else {
-        await createMutation.mutateAsync(form);
-        alert("服務創建成功！");
       }
+        alert("服務已更新！");
+      
       onClose();
     } catch (error) {
       console.error("儲存失敗", error);
@@ -158,10 +116,10 @@ const ServiceModal_edit: React.FC<CreateServiceModalProps> = ({
             <label className={styles.inputFont}>服務名稱</label>
             <Input
               type="text"
-              name="service.name" 
+              name="name" 
               placeholder="輸入服務名稱"
               className={styles.inputField}
-              value={form.service.name}
+              value={form.name}
               onChange={handleChange}
             />
 
@@ -171,10 +129,10 @@ const ServiceModal_edit: React.FC<CreateServiceModalProps> = ({
             <label className={styles.inputFont}>IPPool ID</label>
             <Input
                 type="text"
-                name="cidrFromUser"   
+                name="poolId"   
                 placeholder="輸入IPPool ID"
                 className={styles.inputField}
-                value={form.cidrFromUser}
+                value={form.poolId!.toString()}
                 onChange={handleChange}
               />
 
