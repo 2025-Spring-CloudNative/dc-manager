@@ -21,7 +21,7 @@ export async function getSubnets() {
 // GET a single subnet by ID
 export async function getSubnetById(id: number) {
   try {
-    const response = await api.get(`/subnet/${id}`)
+    const response = await apiInstance.get(`/${id}`)
     return response.data
   } catch (error) {
     console.error("Error fetching subnet by ID:", error)

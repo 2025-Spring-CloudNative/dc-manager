@@ -9,7 +9,7 @@ const apiInstance = axios.create({
 
 export async function getDataCenters() {
     try {
-        const response = await api.get("/data-center")
+        const response = await apiInstance.get("/")
         return response.data
     } catch (error) {
         console.error("Error fetching data center data:", error)
@@ -19,7 +19,7 @@ export async function getDataCenters() {
 
 export async function getDataCenterById(id: number) {
     try {
-        const response = await api.get(`/data-center/${id}`)
+        const response = await apiInstance.get(`/${id}`)
         return response.data
     } catch (error) {
         console.error("Error fetching data center by ID:", error)
@@ -29,7 +29,7 @@ export async function getDataCenterById(id: number) {
 
 export async function getDataCenterBySubnetID(subnetId: number) {
     try {
-        const response = await api.get(`/data-center?subnetId=${subnetId}`)
+        const response = await apiInstance.get(`/?subnetId=${subnetId}`)
         console.log("Data center by subnet ID:", response.data, subnetId)
         return response.data
     } catch (error) {
@@ -60,7 +60,7 @@ export async function updateDataCenter(id: string, data: DataCenter): Promise<Da
 
 export async function deleteDataCenter(id: number) {
     try {
-        const response = await api.delete(`/data-center/${id}`)
+        const response = await apiInstance.delete(`/${id}`)
         return response.data
     } catch (error) {
         console.error("Error deleting data center:", error)
