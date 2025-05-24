@@ -32,12 +32,12 @@ function generateTableData(
   const tableRows = (
     services.map((service) => {
 
-      console.log('subnet', subnets)
-      console.log('dataCenters', dataCenters)
+      //console.log('subnet', subnets)
+      //console.log('dataCenters', dataCenters)
       const ipPool = ipPools.find((p) => p.id === service.poolId);
       const subnet = ipPool ? subnets.find((s) => s.id === ipPool.subnetId) : undefined;
-      console.log('subnet!', subnet.id)
-      console.log('ipPool!', ipPool.utilization.utilization)
+      //console.log('subnet!', subnet.id)
+      //console.log('ipPool!', ipPool.utilization.utilization)
       const dataCenter = subnet ? dataCenters.find((d) => d.subnetId === subnet.id) : undefined;
       const utilization = ipPool.utilization.utilization;
 
@@ -68,7 +68,7 @@ function useMultipleIPPoolsUtilization(ipPools: IPPool[]) {
 
   return useQueries({ queries });
 }?*/
-
+/*
 function groupRacksByService(rackData: Rack[], serviceData: Service[]) {
   const serviceMap: Record<number, Rack[]> = {};
   for (const rack of rackData) {
@@ -79,7 +79,7 @@ function groupRacksByService(rackData: Rack[], serviceData: Service[]) {
     serviceMap[serviceId].push(rack);
   }
   return serviceMap;
-}
+}*/
 
 type TableServiceRow = {
   id: number;
@@ -96,7 +96,7 @@ export default function ServiceTable({ onEdit, onViewRack}) {
   //const [services, setServices] = useState(initialServices);
   ///const [tableData, setTableData] = useState<TableServiceRow[]>([]);
   const { data: serviceData, isLoading: isLoadingServices, isError: isErrorServices } = useGetServicesQuery();
-  const { data: rackData, isLoading: isLoadingRack, isError: isErrorRack } = useGetRackQuery();
+  //const { data: rackData, isLoading: isLoadingRack, isError: isErrorRack } = useGetRackQuery();
   const { data: dcData, isLoading: isLoadingDC, isError: isErrorDC } = useGetDataCentersQuery();
   const { data: ipPoolData, isLoading: isLoadingipPool, isError: isErroripPool } = useIPPoolsWithUtilizations();
   const { data: subnetData, isLoading: isLoadingSubnet, isError: isErrorSubnet } = useGetSubnetsQuery();
@@ -108,9 +108,9 @@ export default function ServiceTable({ onEdit, onViewRack}) {
 
   //console.log("ipPoolData", ipPoolData);
 
-  if (isLoadingRack || isLoadingServices || isLoadingDC || isLoadingipPool || isLoadingSubnet ||
+  if ( isLoadingServices || isLoadingDC || isLoadingipPool || isLoadingSubnet ||
 
-     !rackData || !serviceData || !dcData || !ipPoolData || !subnetData ) {
+     !serviceData || !dcData || !ipPoolData || !subnetData ) {
     return <div>Loading...</div>;
   }
 
@@ -123,8 +123,8 @@ export default function ServiceTable({ onEdit, onViewRack}) {
   //console.log('Rackdata:', rackData);
   //console.log('subnetData:', subnetData);
 
-  const racksByService = groupRacksByService(rackData, serviceData);
-  console.log("racksByService", racksByService);
+  //const racksByService = groupRacksByService(rackData, serviceData);
+  //console.log("racksByService", racksByService);
 
   //console.log("ipPoolData", ipPoolData);
   const services = generateTableData(serviceData, ipPoolData, subnetData, dcData);
@@ -139,8 +139,8 @@ export default function ServiceTable({ onEdit, onViewRack}) {
     }
   }, [serviceData, ipPoolData, subnetData, dcData]);
   */
-  console.log('dcdata:', dcData)
-  console.log("tableData", services);
+  //console.log('dcdata:', dcData)
+  //console.log("tableData", services);
 
   const handleDelete = (id: number) => {
     //setServices(prev => prev.filter(s => s.id !== id));

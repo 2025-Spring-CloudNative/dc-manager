@@ -23,7 +23,7 @@ interface CreateServiceModalProps  {
 
 
 
-const ServiceModal: React.FC<CreateServiceModalProps> = ({
+const ServiceModal_edit: React.FC<CreateServiceModalProps> = ({
   isOpen,
   onClose,
   currentService,
@@ -166,27 +166,13 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
             />
 
 
-            <label className={styles.inputFont}>選擇綁定資料中心</label>
-            <select
-              name="dataCenter.name"
-              className={styles.subnetSelect}
-              value={form.dataCenter.name}
-              onChange={handleChange}
-              disabled={isLoadingDC}
-            >
-              <option value="">自動分配</option>
-              {dc?.map((dc) => (
-                <option key={dc.id} value={dc.name}>
-                  {dc.name}
-                </option>
-              ))}
-            </select>
+            
 
-            <label className={styles.inputFont}>CIDR</label>
+            <label className={styles.inputFont}>IPPool ID</label>
             <Input
                 type="text"
                 name="cidrFromUser"   
-                placeholder="輸入CIDR"
+                placeholder="輸入IPPool ID"
                 className={styles.inputField}
                 value={form.cidrFromUser}
                 onChange={handleChange}
@@ -213,4 +199,4 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
   );
 };
 
-export {ServiceModal};
+export {ServiceModal_edit};

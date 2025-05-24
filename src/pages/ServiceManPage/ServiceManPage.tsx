@@ -11,7 +11,7 @@ import ServiceTable from "@/components/ServiceManPage/ServiceTable";
 import ServiceRackTable from "@/components/ServiceManPage/RackInService";
 import { useGetDataCentersQuery } from "@features/dataCenter/hooks/useDataCenter";
 import { DataCenter } from "@/components/data/datacenter"; // Import DataCenter interface with correct path
-import ServiceModal from "@/components/ServiceManPage/ServiceModal";
+import {ServiceModal, ServiceModal_edit} from "@/components/ServiceManPage/ServiceModal";
 import { Service } from "@/features/service/types";
 
 const service_man = () => {
@@ -21,15 +21,17 @@ const service_man = () => {
     const [showEditModal, setShowEditModal] = useState(false);
     const [showRackInfo, setShowRackInfo] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpen_edit, setIsModalOpen_edit] = useState(false);
 
 
 
     const closeModal = () => setIsModalOpen(false);
+    const closeModal_edit = () => setIsModalOpen_edit(false);
 
     const handleEdit = (service) => {
         setSelectedService(service);  
-        console.log('service handleEdit!', service)
-        setIsModalOpen(true); 
+        //console.log('service handleEdit!', service)
+        setIsModalOpen_edit(true); 
     };        
 
     const handleCreate = () => {
@@ -39,16 +41,16 @@ const service_man = () => {
     
     const handleViewRack = (service) => {
         setSelectedService_rack(service);
-        console.log('service handleViewRack', service)
+        //console.log('service handleViewRack', service)
         setShowRackInfo(true);
     };
 
 
     return (
         <>
-            <ServiceModal isOpen = {isModalOpen} onClose={closeModal} currentService={selectedService}
-            
-            />
+            <ServiceModal isOpen = {isModalOpen} onClose={closeModal} currentService={selectedService} />
+            <ServiceModal_edit isOpen = {isModalOpen_edit} onClose={closeModal_edit} currentService={selectedService} />
+
             <div className={styles.pageContainer}>
                     <div className={styles.heroSection}>
                         {/* <NvBar /> */}
