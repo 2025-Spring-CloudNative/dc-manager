@@ -118,6 +118,7 @@
 
 /* Room Header */
 .roomHeader {
+  min-width: 10rem; /* w-40 */
   width: 10rem; /* w-40 */
   background-color: #cde9ec;
   height: 2.5rem;
@@ -207,7 +208,8 @@
 }
 
 .unitHeader {
-  width: 80px;
+  // min-width: 10rem;
+  width: 5rem; /* w-40 */
   background-color: #effdff;
   height: 2.5rem;
   border: 1px solid #c1d5d7;

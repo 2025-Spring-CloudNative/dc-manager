@@ -77,6 +77,12 @@ const DataCenterModal: React.FC<DataCenterModalProps> = ({
   };
 
   const handleSubmit = async () => {
+    const name = form.dataCenter.name.trim();
+    const loc = form.dataCenter.location.trim();
+    if (!name || !loc) {
+      alert("請完整填寫表單！");
+      return;
+    }
     try {
       if (isEditMode && currentDataCenter) {
         await updateMutation.mutateAsync({
@@ -143,22 +149,22 @@ const DataCenterModal: React.FC<DataCenterModalProps> = ({
               onChange={handleChange}
             />
 
-          <label className={styles.inputFont}>DC Subnet CIDR</label>
-          <div className={styles.subnetSelectContainer}>
-          <select
-            name="subnetId"
-            className={styles.subnetSelect}
-            value={form.subnetId}
-            onChange={handleChange}
-            disabled={isLoadingSubnets}
-          >
-            <option value="">自動分配</option>
-            {subnets?.map((subnet) => (
-              <option key={subnet.id} value={subnet.cidr}>
-                id = {subnet.id}, cidr = {subnet.cidr}
-              </option>
-            ))}
-          </select>
+            <label className={styles.inputFont}>DC Subnet CIDR</label>
+            <div className={styles.subnetSelectContainer}>
+              <select
+                name="subnetId"
+                className={styles.subnetSelect}
+                value={form.subnetId}
+                onChange={handleChange}
+                disabled={isLoadingSubnets}
+              >
+                <option value="">自動分配</option>
+                {subnets?.map((subnet) => (
+                  <option key={subnet.id} value={subnet.cidr}>
+                    id = {subnet.id}, cidr = {subnet.cidr}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
@@ -172,8 +178,8 @@ const DataCenterModal: React.FC<DataCenterModalProps> = ({
             {(createMutation.isLoading || updateMutation.isLoading)
               ? "儲存中..."
               : isEditMode
-              ? "確認修改"
-              : "確認創建"}
+                ? "確認修改"
+                : "確認創建"}
           </Button>
         </div>
       </div>

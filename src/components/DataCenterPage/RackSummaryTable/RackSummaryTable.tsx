@@ -16,6 +16,8 @@ import CreateDCmodal from "@/components/DataCenterPage/DCmodal";
 import { useGetRoomQuery } from "@/features/Rooms/hooks/useRoom";
 import { useGetRackQuery } from "@/features/Racks/hooks/useRack";
 import { useGetSubnetsQuery, useGetSubnetByIdQuery } from "@/features/subnet/hooks/useSubnet";
+import { useSession } from "@features/user/hooks/useUser"
+import { can } from "@lib/rbac"
 
 import { AxiosError } from 'axios';
 import { DataCenter } from "@/features/dataCenter/types";
@@ -102,16 +104,18 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
       deleteDC(id);
     }
   };
-
+  const { data: user, isLoggedIn } = useSession()
+  const canOerate = (can(user, "update", "DataCenter") || can(user, "delete", "DataCenter"))
   return (<div>
     <Card className={styles.dataCenterCard}>
       <div className={styles.tableWrapper}>
-        <div className={styles.buttonWrapper}>
-          <Button className={styles.addDCButton} onClick={handleOpenCreateModal}>
-            [+]dataCenter
-          </Button>
+        {can(user, "create", "DataCenter") &&
+          (<div className={styles.buttonWrapper}>
+            <Button className={styles.addDCButton} onClick={handleOpenCreateModal}>
+              [+]dataCenter
+            </Button>
 
-        </div>
+          </div>)}
         <Table>
           <TableHeader>
             <TableRow>
@@ -121,7 +125,8 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
               <TableHead>Room 數量</TableHead>
               <TableHead>Rack 數量</TableHead>
               <TableHead>釘選/加到常用</TableHead>
-              <TableHead>操作</TableHead>
+              {canOerate &&
+                <TableHead>操作</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -163,26 +168,28 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({ onAddToLeft, onAddT
                       </Button>
                     </div>
                   </TableCell>
-                  <TableCell>
+                  {canOerate && <TableCell>
                     <div className={styles.favoriteGroup}>
-                      <Button
-                        className={`${styles.infoButton} ${styles.editButton}`}
-                        onClick={() => {
-                          setSelectedDC(dc);       // 設定要編輯的資料中心
-                          setCreateModalOpen(true); // 開啟 modal
-                        }}
-                      >
-                        編輯
-                      </Button>
-                      <Button
-                        className={`${styles.infoButton} ${styles.deleteButton}`}
-                        onClick={() => handleDelete(dc.id.toString())}
-                        disabled={isDeleting}
-                      >
-                        刪除
-                      </Button>
+                      {can(user, "update", "DataCenter") &&
+                        <Button
+                          className={`${styles.infoButton} ${styles.editButton}`}
+                          onClick={() => {
+                            setSelectedDC(dc);       // 設定要編輯的資料中心
+                            setCreateModalOpen(true); // 開啟 modal
+                          }}
+                        >
+                          編輯
+                        </Button>}
+                      {can(user, "delete", "DataCenter") &&
+                        <Button
+                          className={`${styles.infoButton} ${styles.deleteButton}`}
+                          onClick={() => handleDelete(dc.id.toString())}
+                          disabled={isDeleting}
+                        >
+                          刪除
+                        </Button>}
                     </div>
-                  </TableCell>
+                  </TableCell>}
                 </TableRow>
               )
             })

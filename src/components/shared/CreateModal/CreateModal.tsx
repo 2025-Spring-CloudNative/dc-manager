@@ -54,7 +54,7 @@ const CreateModal: React.FC<CreateModalProps> = ({
     const hasEmptyRequired = fields.some(
       (f) => f.required && (form[f.name] === "" || form[f.name] === undefined)
     );
-    if (hasEmptyRequired) return alert("請完整填寫表單");
+    if (hasEmptyRequired) return alert("請完整填寫表單！");
 
     try {
       await mutation.mutateAsync({
