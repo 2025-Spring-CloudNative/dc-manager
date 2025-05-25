@@ -16,7 +16,7 @@ export default function ServiceRackRow({rack, onToggle, isExpanded, rackUtilizat
       <div className={styles.utilBar}>
         <div style={{ width: `${(rackUtilization.utilization) * 150}px` }} 
         className={`${styles.utilFill} ${rackUtilization.utilization >= 0.8 ? styles.utilHigh : ''}`} />
-        <span>{rackUtilization.utilization}%</span>
+        <span>{(rackUtilization.utilization * 100).toFixed(2)}%</span>
       </div>
     </div>
   );
