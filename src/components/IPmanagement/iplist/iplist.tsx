@@ -2,7 +2,7 @@
 import React from "react";
 import styles from "./iplist.module.scss";
 import Button from "@/components/shared/Button";
-import { useGetMachineByIdQuery } from "@/features/machine/hooks/useMachine";
+import { useGetMachineByIdQuery } from "@/features/Machine/hooks/useMachine";
 import { Machine } from "@/components/data/machine";
 
 export interface Props {
@@ -18,7 +18,7 @@ export interface Props {
 }
 
 export const IpModule: React.FC<Props> = ({ id, machineId, address, status, createdAt, updatedAt, allocatedAt, releasedAt }) => {
-  const { data: machine } = useGetMachineByIdQuery(String(machineId)) as { data: Machine };
+  const { data: machine } = useGetMachineByIdQuery(machineId) as { data: Machine };
   return (
    <div className={styles.wrapper}>  
       {/* <Button 

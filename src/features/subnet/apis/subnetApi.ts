@@ -29,6 +29,18 @@ export async function getSubnetById(id: number) {
   }
 }
 
+// Get subnet utilization by ID
+export async function getSubnetUtilization(id: number) {
+  try {
+    const response = await apiInstance.get(`/util/${id}`);
+    console.log("Subnet Utilization Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching ip pool utilization by ID:", error);
+    throw error;
+  }
+}
+
 // CREATE a subnet
 export async function createSubnet(data: Subnet): Promise<Subnet> {
   try {

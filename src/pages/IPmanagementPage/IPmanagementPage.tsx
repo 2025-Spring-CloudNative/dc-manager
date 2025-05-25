@@ -31,14 +31,14 @@ const IPmanagementPage = () => {
                 <Card className={styles.IPCard}>
                     <div className={styles.pageHeader}>
                         <h1 className={styles.pageTitle}>IP Management</h1>
-                        {canCreateSubnet ?? (
+                        {canCreateSubnet ? (
                             <Button
                                 className={`${styles.createButton}`}
                                 onClick={handleOpenCreateModal}
                             >
                                 創建 Subnet
                             </Button>
-                        )}
+                        ): null}
                     </div>
 
                     <CreateSubnet isOpen={isCreateModalOpen} onClose={handleCloseCreateModal} />
