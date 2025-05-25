@@ -193,11 +193,11 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
             {selectedDC && (
               <div>
                 {isLoadingSubnet ? (
-                  <p>Loading...</p>
+                  <div>Loading...</div>
                 ) : DcSubnet ? (
-                  <p>DC subnet：{DcSubnet.cidr}</p>
+                  <div>DC subnet：{DcSubnet.cidr}</div>
                 ) : (
-                  <p>get dc subnet failed</p>
+                  <div>get dc subnet failed</div>
                 )}
               </div>
             )}
