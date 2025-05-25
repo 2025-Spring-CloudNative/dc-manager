@@ -4,6 +4,7 @@ import styles from './ServiceTable.module.scss';
 export default function ServiceRow({ service, onDelete, onEdit, onViewRack, onExtendIPPool }) {
   return (
     <div className={styles.row}>
+      <div className={`${styles.squareBox} ${styles.green}`}></div>
       <div className={styles.tableRowText} style={{ width: '135px' }}>{service.name}</div>
       <div className={styles.sepLine}></div>
       <div className={styles.tableRowText} style={{ width: '135px' }}>{service.datacenter}</div>

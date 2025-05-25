@@ -37,6 +37,30 @@
 
 }
 
+.squareBox {
+  width: 20px;
+  height: 20px;
+  margin-top: -6.36px;
+  margin-bottom: -6.36px;
+  margin-right: 10px;
+  position: relative;
+  border-radius: 20px; 
+  transition: background-color 0.3s ease;
+  background-color: #aaaaaa;
+
+  &.red {
+    background-color: #E28789;
+  }
+
+  &.yellow {
+    background-color: #faad14;
+  }
+
+  &.green {
+    background-color: green;
+  }
+}
+
 .tableHeaderText {
   color: #ffffff;
   font-family: "Noto Sans-DisplayBold", Helvetica;
