@@ -89,6 +89,8 @@ export async function getIPPoolUtilization(id: string) {
   return response.data;
 }*/
 
+
+/*
 export function useExtendIPPoolMutation() {
   const queryClient = useQueryClient();
 
@@ -98,6 +100,17 @@ export function useExtendIPPoolMutation() {
       queryClient.invalidateQueries({ queryKey: ["ip-pool"] });
     },
   });
+}*/
+
+export const useExtendIPPoolMutation = () => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+      mutationFn: extendIPPool,
+      onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["ip-pool"] }) // refresh session data
+      },
+  })
 }
 
 

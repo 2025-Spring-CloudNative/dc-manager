@@ -87,8 +87,11 @@ const ServiceModal_extend: React.FC<CreateServiceModalProps> = ({
       
       onClose();
     } catch (error) {
-      console.error("儲存失敗", error);
-      alert("儲存失敗，請檢查資料");
+      if (error.response){
+        console.error("儲存失敗", error.response.data);
+        alert(`儲存失敗: ${error.response.data.message}`);
+      }
+      
     }
   };
 

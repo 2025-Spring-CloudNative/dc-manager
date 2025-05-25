@@ -1,6 +1,6 @@
 import axios from "axios";
-import { axiosInstance } from "axios";
 import { IPPool } from "../types"
+import api from "@lib/axios"
 
 const apiInstance = axios.create({
   baseURL: "http://140.112.90.36:4000/ip-pool",
@@ -75,17 +75,34 @@ export async function getIPPoolUtilization(id: string) {
 
 
 
-
+/*
 export async function extendIPPool(id: string, cidr: string) {
 
   try {
-    const response = await apiInstance.patch(`/extend/${id}`, {cidr})
-    //const response = await apiInstance.patch(`/extend/${id}`, cidr, {
-    //  headers: { 'Content-Type': 'text/plain' }
-    //}); 
+    const response = await apiInstance.patch(`/extend/${id}`, cidr)
+    
     return response.data;
   } catch (error) {
     console.error("Error extending ip pool by ID:", error);
     throw error;
+  }
+}
+*/
+
+type ExtendIPPoolVariables = {
+  id: number
+  cidr: string
+}
+
+export async function extendIPPool({
+  id,
+  cidr,
+}: ExtendIPPoolVariables) {
+  try {
+    const response = await api.patch(`/ip-pool/extend/${id}`, {cidr})
+    return response.data
+  } catch (error) {
+    console.error("Error extending ip pool by ID:", error)
+    throw error
   }
 }
