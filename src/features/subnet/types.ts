@@ -7,5 +7,5 @@ export type Subnet =
 }
 
 export type SubnetWithUtilization = Subnet & {
-  utilization?: number;
+  utilization: number;
 };

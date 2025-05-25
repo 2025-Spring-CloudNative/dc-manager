@@ -33,7 +33,7 @@ export async function getSubnetById(id: number) {
 export async function getSubnetUtilization(id: number) {
   try {
     const response = await apiInstance.get(`/util/${id}`);
-    console.log("Subnet Utilization Response:", response.data);
+    // console.log("Subnet Utilization Response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching ip pool utilization by ID:", error);

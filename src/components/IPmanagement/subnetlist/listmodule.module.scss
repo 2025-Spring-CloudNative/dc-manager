@@ -80,3 +80,44 @@
   transition: all 0.3s ease;
   position: relative;  
 }
+
+//utilization button and bar
+.squareBox {
+  width: 20px;
+  height: 20px;
+  margin-top: -6.36px;
+  margin-bottom: -6.36px;
+  margin-right: 10px;
+  position: relative;
+  border-radius: 20px; 
+  transition: background-color 0.3s ease;
+  background-color: #aaaaaa;
+
+  &.red {
+    background-color: #E28789;
+  }
+
+  &.yellow {
+    background-color: #faad14;
+  }
+
+  &.green {
+    background-color: green;
+  }
+}
+
+.utilBar {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .utilFill {
+    height: 8px;
+    background-color: #49c7ce;
+    border-radius: 4px;
+  }
+  .utilHigh {
+    background-color: #E28789;
+  }
+}
