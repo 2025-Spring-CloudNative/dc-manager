@@ -77,8 +77,15 @@ export async function getIPPoolUtilization(id: string) {
 
 
 export async function extendIPPool(id: string, cidr: string) {
+  if (!/^\d{1,3}(\.\d{1,3}){3}\/\d{1,2}$/.test(cidr)) {
+    throw new Error("CIDR 格式不正確: " + cidr);
+  }
+
   try {
-    const response = await apiInstance.patch(`/extend/${id}`,  cidr );
+    //const response = await apiInstance.patch(`/extend/${id}`, cidr)
+    const response = await apiInstance.patch(`/extend/${id}`, cidr, {
+      headers: { 'Content-Type': 'text/plain' }
+    }); // 用物件方式傳
     return response.data;
   } catch (error) {
     console.error("Error extending ip pool by ID:", error);

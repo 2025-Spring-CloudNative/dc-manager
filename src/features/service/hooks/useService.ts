@@ -10,7 +10,7 @@ import { Service, CreateServiceRequest } from "../types"
 
 // Get all
 export function useGetServicesQuery() {
-  const { data, isLoading, isError, isSuccess, error } = useQuery({
+  const { data, isLoading, isError, isSuccess, error, refetch } = useQuery({
     queryKey: ["service"],
     queryFn: getService,
   });
@@ -21,6 +21,7 @@ export function useGetServicesQuery() {
     isError,
     isSuccess,
     error,
+    refetch,
   };
 }
 

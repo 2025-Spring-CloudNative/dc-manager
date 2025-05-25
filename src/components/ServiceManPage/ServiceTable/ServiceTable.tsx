@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import styles from './ServiceTable.module.scss';
 import ServiceHeader from './ServiceHeader';
@@ -31,9 +31,11 @@ function generateTableData(
 ): Promise<TableServiceRow[]> {
   const tableRows = (
     services.map((service) => {
-
-      //console.log('subnet', subnets)
-      //console.log('dataCenters', dataCenters)
+      
+      console.log('service', service)
+      console.log('subnet', subnets)
+      console.log('dataCenters', dataCenters)
+      
       const ipPool = ipPools.find((p) => p.id === service.poolId);
       const subnet = ipPool ? subnets.find((s) => s.id === ipPool.subnetId) : undefined;
       //console.log('subnet!', subnet.id)
@@ -56,30 +58,6 @@ function generateTableData(
   return tableRows;
 }
 
-/*
-function useMultipleIPPoolsUtilization(ipPools: IPPool[]) {
-  const queries = useMemo(() => {
-    return ipPools.map(pool => ({
-      queryKey: ['ip-pool-utilization', pool.id],
-      queryFn: () => getIPPoolUtilization(pool.id.toString()),
-      enabled: !!pool.id,
-    }));
-  }, [ipPools]);
-
-  return useQueries({ queries });
-}?*/
-/*
-function groupRacksByService(rackData: Rack[], serviceData: Service[]) {
-  const serviceMap: Record<number, Rack[]> = {};
-  for (const rack of rackData) {
-    const serviceId = rack.serviceId;
-    if (!serviceMap[serviceId]) {
-      serviceMap[serviceId] = [];
-    }
-    serviceMap[serviceId].push(rack);
-  }
-  return serviceMap;
-}*/
 
 type TableServiceRow = {
   id: number;
@@ -92,19 +70,70 @@ type TableServiceRow = {
 };
 
 
-export default function ServiceTable({ onEdit, onViewRack}) {
+export default function ServiceTable({ onEdit, onViewRack, onExtendIPPoolClick, refetchTrigger }) {
   //const [services, setServices] = useState(initialServices);
   ///const [tableData, setTableData] = useState<TableServiceRow[]>([]);
-  const { data: serviceData, isLoading: isLoadingServices, isError: isErrorServices } = useGetServicesQuery();
+  const servicesRef = useRef<TableServiceRow[]>([]);
+  
+  const [deleteTrigger, setDeleteTrigger] = useState(0);
+  const [refreshFlag, setRefreshFlag] = useState(0);
+  const { data: serviceData, isLoading: isLoadingServices, isError: isErrorServices, refetch: refetchServices} = useGetServicesQuery();
   //const { data: rackData, isLoading: isLoadingRack, isError: isErrorRack } = useGetRackQuery();
   const { data: dcData, isLoading: isLoadingDC, isError: isErrorDC } = useGetDataCentersQuery();
-  const { data: ipPoolData, isLoading: isLoadingipPool, isError: isErroripPool } = useIPPoolsWithUtilizations();
-  const { data: subnetData, isLoading: isLoadingSubnet, isError: isErrorSubnet } = useGetSubnetsQuery();
+  const { data: ipPoolData, isLoading: isLoadingipPool, isError: isErroripPool, refetch: refetchIPPool } = useIPPoolsWithUtilizations();
+  const { data: subnetData, isLoading: isLoadingSubnet, isError: isErrorSubnet, refetch: refetchSubnet } = useGetSubnetsQuery();
   const { mutate: extendIPPool } = useExtendIPPoolMutation();
   const { mutate: deleteService, isLoading: isDeleting } = useDeleteServiceMutation();
   //const { data: pools, isLoading: isLoadingipPoollll, isError: isErroripPoollll } = useIPPoolsWithUtilizations();
+  
+  
 
-   
+  const firstRun = useRef(true);
+
+  useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false;
+      return;
+    }
+  
+    if (!dcData) {
+      console.log("DC 資料尚未載入，跳過 refetch");
+      return;
+    }
+  
+    // 先用 Promise.all 串起 refetchIPPool() 和 refetchSubnet()，等待完成後再執行 refetchServices
+    Promise.all([
+      refetchIPPool(),
+      refetchSubnet(),
+    ])
+    .then(() => {
+      if (!ipPoolData || !subnetData) {
+        console.log("IP Pool 或 Subnet 資料尚未完整，跳過 refetch");
+        return;
+      }
+  
+      console.log("🔁 refetchTrigger changed, will refetch services");
+      return refetchServices();
+    })
+    .then((result) => {
+      if (
+        result?.data &&
+        ipPoolData &&
+        subnetData &&
+        dcData
+      ) {
+        servicesRef.current = generateTableData(result.data, ipPoolData, subnetData, dcData);
+  
+        console.log("✅ Regenerated servicesRef:", servicesRef.current);
+        setRefreshFlag(f => f + 1);
+      } else {
+        console.warn("缺少資料，無法生成 tableData", { resultData: result?.data, ipPoolData, subnetData, dcData });
+      }
+    })
+    .catch((err) => {
+      console.error("Refetch 發生錯誤:", err);
+    });
+  }, [refetchTrigger, deleteTrigger]);
 
   //console.log("ipPoolData", ipPoolData);
 
@@ -114,8 +143,21 @@ export default function ServiceTable({ onEdit, onViewRack}) {
     return <div>Loading...</div>;
   }
 
+  if (
+    !servicesRef.current.length &&
+    serviceData &&
+    ipPoolData &&
+    subnetData &&
+    dcData
+  ) {
+    servicesRef.current = generateTableData(serviceData, ipPoolData, subnetData, dcData);
+  }
+
+  //useEffect(() => {refetchServices();}, [refetchTrigger]);
+  
+
   //console.log("pools", pools);
-  console.log("ipPoolData", ipPoolData);
+  //console.log("ipPoolData", ipPoolData);
 
   //const utilizationQueries = useMultipleIPPoolsUtilization(ipPoolData);
 
@@ -127,23 +169,24 @@ export default function ServiceTable({ onEdit, onViewRack}) {
   //console.log("racksByService", racksByService);
 
   //console.log("ipPoolData", ipPoolData);
-  //const services = generateTableData(serviceData, ipPoolData, subnetData, dcData);
-  const services = useMemo(() => {
-    if (!serviceData || !ipPoolData || !subnetData || !dcData) return [];
-    return generateTableData(serviceData, ipPoolData, subnetData, dcData);
-  }, [serviceData, ipPoolData, subnetData, dcData]);
-  
+
+  const services = generateTableData(serviceData, ipPoolData, subnetData, dcData);
+  //const services = servicesRef.current;
+  console.log('services', services);
+
   const handleDelete = (id: number) => {
     //setServices(prev => prev.filter(s => s.id !== id));
     if (window.confirm("確定要刪除這個服務？")) {
       deleteService(id);
+      //setDeleteTrigger(prev => prev + 1);
     }
   };
 
   const ExtendIPPool = (service: Service) => {
     // setServices(prev => prev.filter(s => s.id !== id));
     console.log('Extending IP Pool for:', service);
-    extendIPPool({ id: service.poolId, cidr: service.cidr });
+    //extendIPPool({ id: service.poolId, cidr: service.cidr });
+    onExtendIPPoolClick?.(service); 
   };
 
   return (

@@ -11,7 +11,7 @@ import ServiceTable from "@/components/ServiceManPage/ServiceTable";
 import ServiceRackTable from "@/components/ServiceManPage/RackInService";
 import { useGetDataCentersQuery } from "@features/dataCenter/hooks/useDataCenter";
 import { DataCenter } from "@/components/data/datacenter"; // Import DataCenter interface with correct path
-import {ServiceModal, ServiceModal_edit} from "@/components/ServiceManPage/ServiceModal";
+import {ServiceModal, ServiceModal_edit, ServiceModal_extend} from "@/components/ServiceManPage/ServiceModal";
 import { Service } from "@/features/service/types";
 
 const service_man = () => {
@@ -22,11 +22,24 @@ const service_man = () => {
     const [showRackInfo, setShowRackInfo] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalOpen_edit, setIsModalOpen_edit] = useState(false);
+    const [refetchFlag, setRefetchFlag] = useState(false);
+    const [showExtendModal, setShowExtendModal] = useState(false);
 
+    const handleOpenExtendModal = (service: Service) => {
+    setSelectedService(service);
+    setShowExtendModal(true);
+    };
 
+    
+
+    const triggerTableRefetch = () => {
+        setRefetchFlag((prev) => !prev); // 改變值讓 useEffect 被觸發
+      };
+      
 
     const closeModal = () => setIsModalOpen(false);
     const closeModal_edit = () => setIsModalOpen_edit(false);
+    const closeModal_extend = () => setShowExtendModal(false);
 
     const handleEdit = (service) => {
         setSelectedService(service);  
@@ -48,8 +61,15 @@ const service_man = () => {
 
     return (
         <>
-            <ServiceModal isOpen = {isModalOpen} onClose={closeModal} currentService={selectedService} />
+            <ServiceModal isOpen = {isModalOpen} onClose={closeModal} currentService={selectedService} onServiceUpdated={triggerTableRefetch}/>
             <ServiceModal_edit isOpen = {isModalOpen_edit} onClose={closeModal_edit} currentService={selectedService} />
+            {showExtendModal && (
+                <ServiceModal_extend 
+                    isOpen={showExtendModal} 
+                    onClose={closeModal_extend} 
+                    currentService={selectedService} 
+                />
+            )}
 
             <div className={styles.pageContainer}>
                     <div className={styles.heroSection}>
@@ -84,6 +104,8 @@ const service_man = () => {
                                 <ServiceTable 
                                     onEdit={handleEdit}
                                     onViewRack={handleViewRack}
+                                    onExtendIPPoolClick={handleOpenExtendModal}
+                                    refetchTrigger={refetchFlag}
                                 />
                             </div>
                         </Card>

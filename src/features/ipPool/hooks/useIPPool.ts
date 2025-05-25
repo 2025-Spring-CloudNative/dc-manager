@@ -14,7 +14,7 @@ import { useMemo } from "react";
 
 // Get all
 export function useGetIPPoolsQuery() {
-  const { data, isLoading, isError, isSuccess, error } = useQuery({
+  const { data, isLoading, isError, isSuccess, error, refetch } = useQuery({
     queryKey: ["ip-pool"],
     queryFn: getIPPool,
   });
@@ -25,6 +25,7 @@ export function useGetIPPoolsQuery() {
     isError,
     isSuccess,
     error,
+    refetch,
   };
 }
 
@@ -105,9 +106,9 @@ export function useIPPoolsWithUtilizations() {
     data: allIPPools,
     isLoading: poolsLoading,
     isError: poolsError,
+    refetch: refetchPools,
   } = useGetIPPoolsQuery();
 
-  // 對每個 IP Pool 呼叫 useQuery 取得 utilization
   const utilizationQueries = useQueries({
     queries:
       (allIPPools ?? []).map((pool) => ({
@@ -117,7 +118,6 @@ export function useIPPoolsWithUtilizations() {
       })) ?? [],
   });
 
-  // 將每個 pool 與對應的 utilization 整合起來
   const poolsWithUtilization = allIPPools?.map((pool, index) => ({
     ...pool,
     utilization: utilizationQueries[index]?.data,
@@ -128,9 +128,21 @@ export function useIPPoolsWithUtilizations() {
   const isUtilLoading = utilizationQueries.some((q) => q.isLoading);
   const isUtilError = utilizationQueries.some((q) => q.isError);
 
+  // 收集所有 utilization queries 的 refetch
+  const refetchUtilizations = () => {
+    return Promise.all(utilizationQueries.map(q => q.refetch()));
+  };
+
+  // 這裡回傳一個 function 可用來 refresh 整體資料
+  const refetchAll = async () => {
+    await refetchPools();
+    await refetchUtilizations();
+  };
+
   return {
     data: poolsWithUtilization,
     isLoading: poolsLoading || isUtilLoading,
     isError: poolsError || isUtilError,
+    refetch: refetchAll,
   };
 }

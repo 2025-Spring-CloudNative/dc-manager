@@ -19,6 +19,7 @@ interface CreateServiceModalProps  {
   isOpen: boolean;
   onClose: () => void;
   currentService?: Service | null;
+  onServiceUpdated?: () => void;
 }
 
 
@@ -27,6 +28,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
   isOpen,
   onClose,
   currentService,
+  onServiceUpdated,
 }) => {
   const isEditMode = !!currentService;
 
@@ -127,6 +129,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
         alert("服務已更新！");
       } else {
         await createMutation.mutateAsync(form);
+        onServiceUpdated?.();
         alert("服務創建成功！");
       }
       onClose();

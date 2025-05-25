@@ -10,7 +10,7 @@ import { Subnet } from "@/features/subnet/types";
 
 // All
 export function useGetSubnetsQuery() {
-    const { data, isLoading, isError, isSuccess, error } = useQuery({
+    const { data, isLoading, isError, isSuccess, error, refetch } = useQuery({
         queryKey: ["subnet"],
         queryFn: getSubnets,
     })
@@ -21,6 +21,7 @@ export function useGetSubnetsQuery() {
         isError,
         isSuccess,
         error,
+        refetch,
     }
 }
 
