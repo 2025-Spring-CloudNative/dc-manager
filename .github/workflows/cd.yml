@@ -26,7 +26,7 @@ jobs:
             - name: Create .env file
               run: |
                   touch .env
-                  echo "VITE_API_URL=${{ secrets.VITE_API_URL }} > .env
+                  echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" > .env
                   
             - name: Configure Docker to use gcloud
               run: gcloud auth configure-docker asia-east1-docker.pkg.dev
