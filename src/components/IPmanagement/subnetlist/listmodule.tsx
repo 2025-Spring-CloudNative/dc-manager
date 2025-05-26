@@ -29,7 +29,9 @@ export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, id }) => {
     const { data: subnet } = useGetSubnetUtilizationQuery(id!) as {
         data: SubnetWithUtilization
     }
+    if (subnet?.utilization !== undefined) {
     console.log("Subnet Utilization Data:", subnet.utilization)
+}
 
     const [expandedId, setExpandedId] = useState<number | null>(null)
 
