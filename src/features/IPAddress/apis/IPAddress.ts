@@ -22,3 +22,13 @@ export async function getIPAddressbypoolId(poolId: number) {
         throw error
     }
 }
+
+export async function getIPAddressbymachineId(machineId: number) {
+    try {
+        const response = await api.get(`/ip-address/?machineId=${machineId}`)
+        return response.data
+    } catch (error) {
+        console.error("Error fetching IP data:", error)
+        throw error
+    }
+}

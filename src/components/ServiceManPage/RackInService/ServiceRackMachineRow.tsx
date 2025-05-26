@@ -1,12 +1,12 @@
 import React from 'react';
 import styles from './ServiceRackTable.module.scss';
-import { getlocalIPAddressbyMachineID} from "@/features/IPAddress/hooks/IPAddress";
+import { getlocalIPAddressbyMachineID, useGetIPAddressbymachineIdQuery} from "@/features/IPAddress/hooks/IPAddress";
 import { getRoombyid} from "@/features/Rooms/hooks/useRoom"
 import { getDCbyId} from "@/features/dataCenter/hooks/useDataCenter"
 
 export default function ServiceRackMachineRow({machine, rack}) {
-
-  const { data: IPaddress, isLoading: isLoadingIPAddress} = getlocalIPAddressbyMachineID(machine.id);
+  const { data: IPaddress, isLoading: isLoadingIPAddress } = useGetIPAddressbymachineIdQuery(machine.id);
+  // const { data: IPaddress, isLoading: isLoadingIPAddress} = getlocalIPAddressbyMachineID(machine.id);
   const { data: RoomData, isLoading: isLoadingRoom} = getRoombyid(rack.roomId);
 
   const r = RoomData?.[0];
