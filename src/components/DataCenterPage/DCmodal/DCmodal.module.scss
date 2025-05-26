@@ -195,6 +195,10 @@
   color: #333;
   backdrop-filter: blur(6.6px);
   appearance: none;
-  // overflow-y: auto;
+  overflow-y: scroll;
   // max-height: 160px;
+}
+.subnetSelectContainer
+{
+  height: 90px;
 }

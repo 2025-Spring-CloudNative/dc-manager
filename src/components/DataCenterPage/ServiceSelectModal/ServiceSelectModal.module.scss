@@ -1,0 +1,167 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  // left: 0;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Center vertically as well */
+  z-index: 1000;
+}
+
+.modalContent {
+  background-color: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  width: 70%; /* Adjust width as needed */
+  max-width: 90%; /* Ensure it doesn't get too wide */
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  // display: flex;
+  flex-direction: column; /* Stack title, then input/table */
+  gap: 24px;
+  overflow: scroll;
+  max-height: 90vh;
+}
+
+.modalTitle {
+  font-size: 32px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 24px;
+  color: #333;
+  width: 100%; /* Title spans full width */
+}
+
+
+
+.tableContainer {
+  width: 70%; /* Adjust width for table container */
+  // max-height: 500px; /* Set a max height for the table */
+  // overflow-x: scroll;
+  overflow-y: scroll;
+  margin: 0 auto; /* This centers the container horizontally */
+}
+
+/* Table Header DC-B */
+.dcHeader {
+  background-color: #46a4ad;
+  border: 1px solid #c1d5d7;
+  height: 2.5rem; /* h-10 */
+  text-align: center;
+}
+
+.dcTitle {
+  font-weight: bold;
+  color: #ffffff;
+  // font-size: 1rem; /* text-base = 16px */
+  letter-spacing: 2px;
+}
+
+
+.unitHeader {
+  min-width: 10rem;
+  background-color: var(--layout-100);
+  height: 2.5rem;
+  border: 1px solid #c1d5d7;
+  text-align: center;
+  white-space: nowrap;
+  padding: 0;
+}
+
+.unitTitle {
+  font-weight: 500;
+  // font-size: 1rem; /* text-base = 16px */
+  color: #000000;
+}
+
+
+
+.unitCell {
+  min-width: 10rem;
+  background-color: var(--layout-100);
+  height: 2.5rem;
+  border: 1px solid #c1d5d7;
+  padding: 0;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
+}
+
+.clickedCell {
+  background-color: #a2e1e4 !important;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: center;
+  
+  margin-top: 24px;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.titleWrapper {
+  position: relative;
+  width: 100%;
+  max-width: 684px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.leftSeparator,
+.rightSeparator {
+  position: absolute;
+  top: 45px;
+  width: 200px;
+  height: 5px;
+  background-color: #a2e1e4;
+}
+
+  .leftSeparator {
+    left: 0;
+  }
+  
+  .rightSeparator {
+    right: 0;
+  }
+  .saveButton {
+  width: 170px;
+  height: 50px;
+  border-radius: 54px;
+  border: 3px solid #a2e1e4;
+  background-color: #46a4ad;
+  font-size: 1.25rem;
+  font-family: "Noto Sans", Helvetica, sans-serif;
+  letter-spacing: 2px;
+  font-weight: 400;
+  color: #ffffff;
+  backdrop-filter: blur(6.6px) brightness(100%);
+  -webkit-backdrop-filter: blur(6.6px) brightness(100%);
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.clearButton {
+  margin-left: auto;
+  display: flex;
+  z-index: 10;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.checkboxcell {
+  transform: scale(1.5);
+  cursor: pointer;
+  width: 40px;
+  padding-left: 8px;
+  padding-right: 8px;
+  text-align: left;
+}

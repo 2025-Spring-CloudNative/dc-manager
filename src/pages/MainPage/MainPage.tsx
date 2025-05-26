@@ -4,12 +4,22 @@ import { Card, CardContent } from "@/components/Mainpage/Card/Card"
 import mainpageTitleImg from "@/assets/mainpage-title.png"
 import styles from "./MainPage.module.scss"
 
+import { useSession } from "@features/user/hooks/useUser"
+
+const unloggedInCardItems = [
+    { text: "登入系統", href: "/login" },
+    { text: "註冊帳號", href: "/register" },
+]
+const loggedInCardItems = [
+    { text: "資料中心", href: "/DataCenterPage" },
+    { text: "網路設定", href: "/IPmanagementPage" },
+    { text: "服務管理", href: "/service" },
+]
+
 const MainPage = () => {
-    const cardItems = [
-        { text: "資料中心", href: "/DataCenterPage" },
-        { text: "網路設定", href: "/network" },
-        { text: "服務管理", href: "/service" },
-    ]
+    const { isLoggedIn } = useSession()
+
+    const cardItems = isLoggedIn ? loggedInCardItems : unloggedInCardItems
 
     const [hoveredCardIndex, setHoveredCardIndex] = useState<number | null>(null)
 

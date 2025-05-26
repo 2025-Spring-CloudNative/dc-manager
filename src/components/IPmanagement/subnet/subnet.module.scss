@@ -1,0 +1,36 @@
+.component {
+  background-color: #ffffff;
+  border: 2px solid #6bb7be;
+  width: 950px;
+  
+  position: relative;
+  flex-direction: column;
+  display: block;
+
+  height: auto;         
+  min-height: 45px;    
+}
+
+
+.moduleContainer {
+  display: block;
+}
+
+// .scrollContainer {
+//   max-height: 600px;       // 🔧 adjust height as needed
+//   overflow-y: auto;
+//   padding-right: 8px;      // ✅ avoid scrollbar overlap
+//   scroll-behavior: smooth; // optional for smoother scroll
+// }
+.scrollContainer {
+  width: 80%;
+  max-height: 600px;
+  max-width: 950px;
+  overflow-y: auto;
+  overflow-x: auto;
+  padding-right: 8px;
+  scroll-behavior: smooth;
+  margin-left: 10%;
+  margin: 0 auto;           /* Center the container */
+  box-sizing: border-box;  /* Includes padding in width calculation */
+}

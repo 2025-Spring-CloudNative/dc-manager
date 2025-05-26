@@ -1,0 +1,69 @@
+/* Container ---------------------------------------------------------- */
+.bar {
+    display: grid;
+    grid-template-columns: 1fr repeat(3, auto);
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.05);
+
+    /* stack vertically on small screens */
+    @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Shared field look -------------------------------------------------- */
+.input,
+.select {
+    width: 100%;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    background-color: #fff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    &:disabled {
+        background-color: #f3f4f6;
+        border-color: #d1d5db;
+        color: #9ca3af;
+        cursor: not-allowed;
+    }
+
+    &:focus {
+        outline: none;
+        border-color: #5ac1bb;
+        box-shadow: 0 0 0 3px rgba(90, 193, 187, 0.25);
+    }
+}
+
+/* Search text field -------------------------------------------------- */
+.input {
+    font-weight: 500;
+}
+
+/* Selects use a custom chevron -------------------------------------- */
+.select {
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='7' viewBox='0 0 10 7' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236b7280' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 10px 7px;
+    appearance: none; /* Chrome & Safari */
+    -moz-appearance: none; /* Firefox */
+    -webkit-appearance: none;
+    -ms-expand: none; /* IE */
+}
+
+/* Label layout ------------------------------------------------------- */
+.label {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #374151;
+    gap: 0.35rem;
+}

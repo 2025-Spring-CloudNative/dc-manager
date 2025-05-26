@@ -1,0 +1,73 @@
+/* Nav related */
+.navLink {
+    display: flex; /* was inline by default */
+    align-items: center; /* vertical centering */
+    color: white;
+    font-size: 2.5vh;
+    font-weight: 400;
+    letter-spacing: 0.5vw;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* ───── dropdown ───── */
+/* trigger + wrapper */
+.dropdown {
+    position: relative;
+    display: inline-flex; /* keeps trigger sized to its text */
+
+    /* reveal menu on hover */
+    &:hover .dropdownContent {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translate(
+            -50%,
+            0
+        ); /* slide-down finishes at Y-0, still centered */
+    }
+}
+
+/* the menu */
+.dropdownContent {
+    position: absolute;
+    left: 50%; /* center horizontally */
+    top: calc(100%); /* 4 px gap below trigger */
+    transform: translate(-50%, -8px); /* start 8 px above for the slide-in */
+    min-width: max-content; /* at least as wide as longest item (modern) */
+    min-width: 100%; /* fallback: never narrower than trigger */
+    white-space: nowrap; /* keep each item on one line */
+
+    background: #49b7a2;
+    padding: 0.5rem 0;
+    border-radius: 0.5rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 10;
+}
+
+/* links & button look consistent */
+.dropdownLink,
+.dropdownButton {
+    display: block;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    font-size: 2.5vh;
+    font-weight: 400;
+    background: transparent;
+    border: none;
+    color: white; /* gray-700 */
+    cursor: pointer;
+    text-decoration: none;
+
+    &:hover {
+        background: #22beb6; /* gray-100 */
+    }
+}
+
+/* ensure button resets its default */
+.dropdownButton {
+    font-family: inherit;
+}
