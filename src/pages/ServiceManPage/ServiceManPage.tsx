@@ -1,10 +1,8 @@
 // ManagementPage.tsx
-import { XIcon } from "lucide-react";
+
 import { useState } from "react";
-import { Input } from "@/components/shared/Input/Input";
 import Button from "@/components/shared/Button";
 import styles from "./ServiceManPage.module.scss";
-import searchicon from "@/assets/search.png";
 import Card from "@/components/ServiceManPage/Card";
 import ServiceTable from "@/components/ServiceManPage/ServiceTable";
 import ServiceRackTable from "@/components/ServiceManPage/RackInService";
@@ -12,7 +10,6 @@ import {ServiceModal, ServiceModal_edit, ServiceModal_extend} from "@/components
 import { TableServiceRow } from "@/features/service/types";
 
 const Service_man = () => {
-    const [inputValue, setInputValue] = useState("");
     const [selectedService, setSelectedService] = useState<TableServiceRow>();
     const [selectedService_rack, setSelectedService_rack] = useState({name:"", datacenter: "", cidr: "", utilization:0});
     //const [showEditModal, setShowEditModal] = useState(false);
