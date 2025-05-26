@@ -49,14 +49,14 @@ function generateTableData(
 
         const ipPool = ipPools.find((p) => p.id === service.poolId)
         const subnet = ipPool
-            ? subnets.find((s) => s.id === ipPool.subnet_id)
+            ? subnets.find((s) => s.id === ipPool.subnetId)
             : undefined
         //console.log('subnet!', subnet.id)
         //console.log('ipPool!', ipPool.utilization.utilization)
         const dataCenter = subnet
             ? dataCenters.find((d) => d.subnetId === subnet.id)
             : undefined
-        const utilization = ipPool?.utilization ?? 0
+        const utilization = ipPool?.utilization.utilization ?? 0
 
         return {
             id: service.id!,
