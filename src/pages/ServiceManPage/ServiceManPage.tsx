@@ -3,45 +3,42 @@ import { XIcon } from "lucide-react";
 import { useState } from "react";
 import { Input } from "@/components/shared/Input/Input";
 import Button from "@/components/shared/Button";
-import FilterButton from "@/components/DataCenterPage/FilterButton/FilterButton";
 import styles from "./ServiceManPage.module.scss";
 import searchicon from "@/assets/search.png";
 import Card from "@/components/ServiceManPage/Card";
 import ServiceTable from "@/components/ServiceManPage/ServiceTable";
 import ServiceRackTable from "@/components/ServiceManPage/RackInService";
-import { useGetDataCentersQuery } from "@features/dataCenter/hooks/useDataCenter";
-import { DataCenter } from "@/components/data/datacenter"; // Import DataCenter interface with correct path
 import {ServiceModal, ServiceModal_edit, ServiceModal_extend} from "@/components/ServiceManPage/ServiceModal";
-import { Service } from "@/features/service/types";
+import { TableServiceRow } from "@/features/service/types";
 
-const service_man = () => {
+const Service_man = () => {
     const [inputValue, setInputValue] = useState("");
-    const [selectedService, setSelectedService] = useState(null);
-    const [selectedService_rack, setSelectedService_rack] = useState(null);
-    const [showEditModal, setShowEditModal] = useState(false);
+    const [selectedService, setSelectedService] = useState<TableServiceRow|null>(null);
+    const [selectedService_rack, setSelectedService_rack] = useState<TableServiceRow|null>(null);
+    //const [showEditModal, setShowEditModal] = useState(false);
     const [showRackInfo, setShowRackInfo] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isModalOpen_edit, setIsModalOpen_edit] = useState(false);
-    const [refetchFlag, setRefetchFlag] = useState(false);
+    //const [refetchFlag, setRefetchFlag] = useState(false);
     const [showExtendModal, setShowExtendModal] = useState(false);
 
-    const handleOpenExtendModal = (service: Service) => {
+    const handleOpenExtendModal = (service: TableServiceRow) => {
     setSelectedService(service);
     setShowExtendModal(true);
     };
 
     
 
-    const triggerTableRefetch = () => {
-        setRefetchFlag((prev) => !prev); // 改變值讓 useEffect 被觸發
-      };
+    //const triggerTableRefetch = () => {
+    //    setRefetchFlag((prev) => !prev); // 改變值讓 useEffect 被觸發
+    //  };
       
 
     const closeModal = () => setIsModalOpen(false);
     const closeModal_edit = () => setIsModalOpen_edit(false);
     const closeModal_extend = () => setShowExtendModal(false);
 
-    const handleEdit = (service) => {
+    const handleEdit = (service:TableServiceRow) => {
         setSelectedService(service);  
         //console.log('service handleEdit!', service)
         setIsModalOpen_edit(true); 
@@ -52,7 +49,7 @@ const service_man = () => {
         setIsModalOpen(true);     
       };
     
-    const handleViewRack = (service) => {
+    const handleViewRack = (service: TableServiceRow) => {
         setSelectedService_rack(service);
         //console.log('service handleViewRack', service)
         setShowRackInfo(true);
@@ -105,7 +102,6 @@ const service_man = () => {
                                     onEdit={handleEdit}
                                     onViewRack={handleViewRack}
                                     onExtendIPPoolClick={handleOpenExtendModal}
-                                    refetchTrigger={refetchFlag}
                                 />
                             </div>
                         </Card>
@@ -128,4 +124,4 @@ const service_man = () => {
     );
 };
 
-export default service_man;
+export default Service_man;

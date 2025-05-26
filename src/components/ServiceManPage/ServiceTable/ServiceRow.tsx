@@ -1,5 +1,7 @@
 import React from 'react';
 import styles from './ServiceTable.module.scss';
+import { TableServiceRow } from "@/features/service/types";
+
 
 export default function ServiceRow({ service, onDelete, onEdit, onViewRack, onExtendIPPool }) {
   return (

@@ -17,3 +17,13 @@ export type CreateServiceRequest = {
   dataCenter: DataCenter;
   cidrFromUser: string;
 }
+
+export type TableServiceRow = {
+    id: number
+    poolId: number
+    name: string
+    cidr: string
+    utilization: number
+    datacenter: string
+    DC: DataCenter | null
+}

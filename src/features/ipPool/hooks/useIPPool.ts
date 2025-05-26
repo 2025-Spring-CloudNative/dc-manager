@@ -141,7 +141,7 @@ export function useIPPoolsWithUtilizations() {
 
   const poolsWithUtilization = allIPPools?.map((pool, index) => ({
     ...pool,
-    utilization: utilizationQueries[index]?.data,
+    utilization: utilizationQueries[index]?.data ?? 0,
     isLoading: utilizationQueries[index]?.isLoading,
     isError: utilizationQueries[index]?.isError,
   }));

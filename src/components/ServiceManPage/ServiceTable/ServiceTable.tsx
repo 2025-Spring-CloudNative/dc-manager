@@ -1,46 +1,30 @@
-import React, { useState, useEffect, useMemo, useRef } from "react"
-import { useQueries } from "@tanstack/react-query"
+import {  useRef } from "react"
 import styles from "./ServiceTable.module.scss"
 import ServiceHeader from "./ServiceHeader"
 import ServiceRow from "./ServiceRow"
 import {
     useGetServicesQuery,
-    useGetServiceByIdQuery,
     useDeleteServiceMutation,
 } from "@/features/service/hooks/useService"
 import {
     useGetDataCentersQuery,
-    useGetDataCenterByIdQuery,
 } from "@/features/dataCenter/hooks/useDataCenter"
+
 import {
-    useGetRackQuery,
-    useGetRackByIdQuery,
-} from "@/features/Racks/hooks/useRack"
-import {
-    // useGetIPPoolsQuery,
     useIPPoolsWithUtilizations,
-    // useExtendIPPoolMutation,
-    // useGetIPPoolUtilizationQuery,
 } from "@/features/ipPool/hooks/useIPPool"
 import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet"
 import { Service } from "@/features/service/types"
 import { IPPoolWithUtilization } from "@/features/ipPool/types"
-import { DC } from "@/features/dataCenter/types"
+import { DataCenter } from "@/features/dataCenter/types"
 import { Subnet } from "@/features/subnet/types"
 
-/*
-const initialServices = [
-  { id: 1, name: 'Web Service', datacenter: 'data_center_A', cidr: '192.168.1.0/24', utilization: 35 },
-  { id: 2, name: 'Service B', datacenter: 'DC-B', cidr: '192.168.2.0/24', utilization: 45 },
-  { id: 3, name: 'Service C', datacenter: 'DC-B-bb', cidr: '192.168.2.0/24', utilization: 80 },
-  { id: 4, name: 'Service D', datacenter: 'DC-ddddd', cidr: '192.168.2.0/24', utilization: 100 },
-];*/
 
 function generateTableData(
     services: Service[],
     ipPools: IPPoolWithUtilization[],
     subnets: Subnet[],
-    dataCenters: DC[]
+    dataCenters: DataCenter[]
 ): TableServiceRow[] {
     const tableRows = services.map((service) => {
         console.log("service", service)
@@ -52,7 +36,7 @@ function generateTableData(
             ? subnets.find((s) => s.id === ipPool.subnetId)
             : undefined
         //console.log('subnet!', subnet.id)
-        //console.log('ipPool!', ipPool.utilization.utilization)
+        console.log('ipPool!', ipPool)
         const dataCenter = subnet
             ? dataCenters.find((d) => d.subnetId === subnet.id)
             : undefined
@@ -60,12 +44,12 @@ function generateTableData(
 
         return {
             id: service.id!,
-            poolId: service.poolId,
+            poolId: service.poolId!,
             name: service.name,
             cidr: ipPool?.cidr || "N/A",
             utilization: utilization || 0,
             datacenter: dataCenter?.name || "N/A",
-            DC: dataCenter || "N/A",
+            DC: dataCenter || null,
         }
     })
 
@@ -79,26 +63,25 @@ type TableServiceRow = {
     cidr: string
     utilization: number
     datacenter: string
-    DC: DC
+    DC: DataCenter | null
 }
 
 export default function ServiceTable({
     onEdit,
     onViewRack,
     onExtendIPPoolClick,
-    refetchTrigger,
 }) {
     //const [services, setServices] = useState(initialServices);
     ///const [tableData, setTableData] = useState<TableServiceRow[]>([]);
     const servicesRef = useRef<TableServiceRow[]>([])
 
-    const [deleteTrigger, setDeleteTrigger] = useState(0)
-    const [refreshFlag, setRefreshFlag] = useState(0)
+    //const [deleteTrigger, setDeleteTrigger] = useState(0)
+    //const [refreshFlag, setRefreshFlag] = useState(0)
     const {
         data: serviceData,
         isLoading: isLoadingServices,
         // isError: isErrorServices,
-        refetch: refetchServices,
+        //refetch: refetchServices,
     } = useGetServicesQuery()
     //const { data: rackData, isLoading: isLoadingRack, isError: isErrorRack } = useGetRackQuery();
     const {
@@ -110,21 +93,21 @@ export default function ServiceTable({
         data: ipPoolData,
         isLoading: isLoadingipPool,
         // isError: isErroripPool,
-        refetch: refetchIPPool,
+        //refetch: refetchIPPool,
     } = useIPPoolsWithUtilizations()
     const {
         data: subnetData,
         isLoading: isLoadingSubnet,
         // isError: isErrorSubnet,
-        refetch: refetchSubnet,
+        //refetch: refetchSubnet,
     } = useGetSubnetsQuery()
     // const { mutate: extendIPPool } = useExtendIPPoolMutation()
     const { mutate: deleteService } = useDeleteServiceMutation()
     //const { data: pools, isLoading: isLoadingipPoollll, isError: isErroripPoollll } = useIPPoolsWithUtilizations();
 
-    const firstRun = useRef(true)
 
-    useEffect(() => {
+
+    /*useEffect(() => {
         if (firstRun.current) {
             firstRun.current = false
             return
@@ -159,7 +142,7 @@ export default function ServiceTable({
                         "✅ Regenerated servicesRef:",
                         servicesRef.current
                     )
-                    setRefreshFlag((f) => f + 1)
+                    //setRefreshFlag((f) => f + 1)
                 } else {
                     console.warn("缺少資料，無法生成 tableData", {
                         resultData: result?.data,
@@ -172,7 +155,8 @@ export default function ServiceTable({
             .catch((err) => {
                 console.error("Refetch 發生錯誤:", err)
             })
-    }, [refetchTrigger, deleteTrigger])
+    }, [refetchTrigger])
+    */
 
     //console.log("ipPoolData", ipPoolData);
 
