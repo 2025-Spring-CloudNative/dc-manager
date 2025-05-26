@@ -21,3 +21,101 @@ export async function getIPPoolbysubnetId(subnetId: number) {
         throw error
     }
 }
+
+
+// add 
+export async function getIPPool() {
+  try {
+    const response = await apiInstance.get("/");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching ip pool data:", error);
+    throw error;
+  }
+}
+
+export async function getIPPoolById(id: string) {
+  try {
+    const response = await apiInstance.get(`/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching ip pool by ID:", error);
+    throw error;
+  }
+}
+
+export async function createIPPool(data: IPPool): Promise<IPPool> {
+  try {
+    const response = await apiInstance.post("/", data);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating ip pool:", error);
+    throw error;
+  }
+}
+
+
+
+export async function updateIPPool(id: string, data: IPPool): Promise<IPPool>  {
+  try {
+    const response = await apiInstance.patch(`/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating ip pool:", error);
+    throw error;
+  }
+}
+
+export async function deleteIPPool(id: string): Promise<void>   {
+  try {
+    const response = await apiInstance.delete(`/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting ip pool:", error);
+    throw error;
+  }
+}
+
+export async function getIPPoolUtilization(id: string) {
+  try {
+    const response = await apiInstance.get(`/util/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching ip pool utilization by ID:", error);
+    throw error;
+  }
+}
+
+
+
+/*
+export async function extendIPPool(id: string, cidr: string) {
+
+  try {
+    const response = await apiInstance.patch(`/extend/${id}`, cidr)
+    
+    return response.data;
+  } catch (error) {
+    console.error("Error extending ip pool by ID:", error);
+    throw error;
+  }
+}
+*/
+
+type ExtendIPPoolVariables = {
+  id: number
+  cidr: string
+}
+
+export async function extendIPPool({
+  id,
+  cidr,
+}: ExtendIPPoolVariables) {
+  try {
+    const response = await api.patch(`/ip-pool/extend/${id}`, {cidr})
+    return response.data
+  } catch (error) {
+    console.error("Error extending ip pool by ID:", error)
+    throw error
+  }
+}
