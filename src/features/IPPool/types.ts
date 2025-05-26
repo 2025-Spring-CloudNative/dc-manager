@@ -1,4 +1,4 @@
-export type IP = 
+export type IPPool = 
 {
   id: number,
   name: string,
@@ -8,3 +8,7 @@ export type IP =
   updatedAt: Date,
   subnet_id: number,
 }
+
+export type IPPoolWithUtilization = IPPool & {
+  utilization?: number;
+};

@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getSubnets,
   getSubnetById,
+  getSubnetUtilization,
   createSubnet,
   updateSubnet,
   deleteSubnet,
@@ -63,5 +64,14 @@ export function useDeleteSubnetMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["subnet"] });
     },
+  });
+}
+
+// Get subnet utilization
+export function useGetSubnetUtilizationQuery(id: number) {
+  return useQuery({
+    queryKey: ["subnetUtilization", id],
+    queryFn: () => getSubnetUtilization(id),
+    enabled: Number.isInteger(id),
   });
 }

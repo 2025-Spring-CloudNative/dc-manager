@@ -3,11 +3,12 @@ import styles from './listmodule.module.scss';
 import Button from "@/components/shared/Button";
 import { useState } from 'react';
 import { PoolModule } from "@/components/IPmanagement/poollist/poollist";
-import { IP } from "@/features/IPPool/types";
+import { IPPool, IPPoolWithUtilization } from "@/features/IPPool/types";
+import { SubnetWithUtilization } from "@/features/subnet/types";
 import { DataCenter } from '@features/dataCenter/types';
 import { useGetIPPoolbysubnetIdQuery } from "@/features/IPPool/hooks/IPPool";
 import { useGetDataCenterBySubnetIDQuery } from "@/features/dataCenter/hooks/useDataCenter";
-
+import { useGetSubnetUtilizationQuery } from "@/features/subnet/hooks/useSubnet";
 interface Props {
     CIDR?: string;
     NETMASK?: string;
@@ -19,10 +20,12 @@ interface Props {
 
 export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, id }) => {
 
-    const { data: allIPs } = useGetIPPoolbysubnetIdQuery(id!) as { data: IP };
+    const { data: allIPs } = useGetIPPoolbysubnetIdQuery(id!) as { data: IPPool };
     const { data: dcArr } = useGetDataCenterBySubnetIDQuery(id!) as { data: DataCenter[] };
     const dc = Array.isArray(dcArr) && dcArr.length > 0 ? dcArr[0] : null;
-
+    const { data: subnet } = useGetSubnetUtilizationQuery(id!) as { data: SubnetWithUtilization };
+    console.log("Subnet Utilization Data:", subnet.utilization);
+    
     const [expandedId, setExpandedId] = useState<number | null>(null);
 
     const toggleAccordion = (id: number) => {
@@ -40,6 +43,12 @@ export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, id }) => {
                 </Button>
 
                 <div className={styles.frame}>
+                    <div className={`${styles.squareBox} ${
+                        subnet?.utilization === 1 ? styles.red :
+                        subnet?.utilization >= 0.8 ? styles.yellow :
+                        styles.green
+                    }`}></div>
+                    {/* <div className={`${styles.squareBox} ${styles.yellow}`}></div> */}
                     <div className={styles.text}>Subnet {id}</div>
                     <div className={styles.divider} />
                     <p className={styles.item}>
@@ -61,10 +70,19 @@ export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, id }) => {
                         <span className={styles.label}>DC:</span>
                         <span className={styles.value}>{dc ? dc.id : "Null"}</span>
                     </p>
+                    <div className={styles.utilBar}>
+                        {subnet?.utilization !== undefined && (
+                            <>
+                                <div style={{ width: `${(subnet.utilization) * 150}px` }} 
+                                className={`${styles.utilFill} ${subnet.utilization >= 0.8 ? styles.utilHigh : ''}`} />
+                                <span>{subnet.utilization}%</span>
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
 
-            {expandedId && allIPs && Array.isArray(allIPs) && allIPs.map((ip: IP) => (
+            {expandedId && allIPs && Array.isArray(allIPs) && allIPs.map((ip: IPPool) => (
                 <div key={'pool' + ip.id} className={styles.honeycombWrapper} >
                     <PoolModule
                         id={ip.id}

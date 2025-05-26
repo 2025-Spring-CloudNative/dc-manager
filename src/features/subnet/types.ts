@@ -5,3 +5,7 @@ export type Subnet =
   netmask: string,
   gateway: string
 }
+
+export type SubnetWithUtilization = Subnet & {
+  utilization: number;
+};

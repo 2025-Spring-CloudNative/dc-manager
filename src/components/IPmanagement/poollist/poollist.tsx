@@ -18,8 +18,8 @@ export interface Props {
 }
 
 export const PoolModule: React.FC<Props> = ({ id, name, type, cidr, created_at, updated_at }) => {
-  const { data: IPaddress } = getlocalIPAddressbypoolID(id) as { data: IPAdress };
-  // const { data: IPaddress } = useGetIPAddressbypoolIdQuery(id) as { data: IPAdress };
+  // const { data: IPaddress } = getlocalIPAddressbypoolID(id) as { data: IPAdress };
+  const { data: IPaddress } = useGetIPAddressbypoolIdQuery(id) as { data: IPAdress };
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const toggleAccordion = (id: number) => {
