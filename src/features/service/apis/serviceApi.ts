@@ -1,16 +1,11 @@
-import axios from "axios"
+import api from "@/lib/axios"
 import { Service, CreateServiceRequest } from "../types"
 
-const apiInstance = axios.create({
-    baseURL: "http://140.112.90.36:4000/service",
-    headers: {
-        "Content-Type": "application/json",
-    },
-})
+
 
 export async function getService() {
     try {
-        const response = await apiInstance.get("/")
+        const response = await api.get("/service")
         return response.data
     } catch (error) {
         console.error("Error fetching service data:", error)
@@ -20,7 +15,7 @@ export async function getService() {
 
 export async function getServiceById(id: string) {
     try {
-        const response = await apiInstance.get(`/${id}`)
+        const response = await api.get(`/service/${id}`)
         return response.data
     } catch (error) {
         console.error("Error fetching service by ID:", error)
@@ -32,7 +27,7 @@ export async function createService(
     data: CreateServiceRequest
 ): Promise<CreateServiceRequest> {
     try {
-        const response = await apiInstance.post("/", data)
+        const response = await api.post("/service", data)
         return response.data
     } catch (error) {
         console.error("Error creating service:", error)
@@ -45,7 +40,7 @@ export async function updateService(
     data: Service
 ): Promise<Service> {
     try {
-        const response = await apiInstance.patch(`/${id}`, data)
+        const response = await api.patch(`/service/${id}`, data)
         return response.data
     } catch (error) {
         console.error("Error updating service:", error)
@@ -55,7 +50,7 @@ export async function updateService(
 
 export async function deleteService(id: number): Promise<void> {
     try {
-        const response = await apiInstance.delete(`/${id}`)
+        const response = await api.delete(`/service/${id}`)
         return response.data
     } catch (error) {
         console.error("Error deleting service:", error)

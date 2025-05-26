@@ -13,7 +13,7 @@ const unloggedInCardItems = [
 const loggedInCardItems = [
     { text: "資料中心", href: "/DataCenterPage" },
     { text: "網路設定", href: "/IPmanagementPage" },
-    { text: "服務管理", href: "/service" },
+    { text: "服務管理", href: "/ServicePage" },
 ]
 
 const MainPage = () => {
