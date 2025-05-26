@@ -410,12 +410,14 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                                                                 // Apply 'machineSelectedForMenu' class if this cell's machine is the target of the open menu
                                                                 actionMenuState.type ===
                                                                     "Machine" &&
-                                                                    actionMenuState
-                                                                        .target
+                                                                    (
+                                                                        actionMenuState.target as Machine
+                                                                    )
                                                                         ?.rackId ===
                                                                         rack.id &&
-                                                                    actionMenuState
-                                                                        .target
+                                                                    (
+                                                                        actionMenuState.target as Machine
+                                                                    )
                                                                         ?.startUnit ===
                                                                         unitNum &&
                                                                     styles.machineSelectedForMenu
@@ -489,12 +491,12 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                                     actionMenuState.type === "Room" &&
                                     actionMenuState.target
                                 ) {
-                                    deleteRoombyID(actionMenuState.target.id)
+                                    deleteRoombyID(actionMenuState.target.id!)
                                 } else if (
                                     actionMenuState.type === "Rack" &&
                                     actionMenuState.target
                                 ) {
-                                    deleteRackbyID(actionMenuState.target.id)
+                                    deleteRackbyID(actionMenuState.target.id!)
                                 }
                                 setActionMenuState({
                                     type: null,

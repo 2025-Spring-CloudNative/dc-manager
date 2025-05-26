@@ -15,24 +15,18 @@ import { useDeleteDataCenterMutation } from "@/features/dataCenter/hooks/useData
 import CreateDCmodal from "@/components/DataCenterPage/DCmodal"
 import { useGetRoomQuery } from "@/features/Rooms/hooks/useRoom"
 import { useGetRackQuery } from "@/features/Racks/hooks/useRack"
-import {
-    useGetSubnetsQuery,
-    useGetSubnetByIdQuery,
-} from "@/features/subnet/hooks/useSubnet"
+import { useGetSubnetByIdQuery } from "@/features/subnet/hooks/useSubnet"
 import { useSession } from "@features/user/hooks/useUser"
 import { can } from "@lib/rbac"
 
-import { AxiosError } from "axios"
 import { DataCenter } from "@/features/dataCenter/types"
-import { Room } from "@/features/Rooms/types"
-import { Rack } from "@/features/Racks/types"
 
 interface RoomCountCellProps {
     dcId: number
 }
 
 const RoomCountCell: React.FC<RoomCountCellProps> = ({ dcId }) => {
-    const { data, isLoading, isError } = useGetRoomQuery()
+    const { data: rooms, isLoading, isError } = useGetRoomQuery()
     const {
         data: rack,
         isLoading: isLoading_rack,
@@ -54,15 +48,15 @@ const RoomCountCell: React.FC<RoomCountCellProps> = ({ dcId }) => {
             </>
         )
 
-    const roomData = data.filter((room: Room) => room.dataCenterId === dcId)
-    const rackData = rack.filter((rack: Rack) =>
-        roomData.some((room: Room) => room.id === rack.roomId)
+    const roomData = rooms?.filter((room) => room.dataCenterId === dcId)
+    const rackData = rack?.filter((rack) =>
+        roomData?.some((room) => room.id === rack.roomId)
     )
 
     return (
         <>
-            <TableCell>{roomData.length}</TableCell>
-            <TableCell>{rackData.length}</TableCell>
+            <TableCell>{roomData?.length ?? "N/A"}</TableCell>
+            <TableCell>{rackData?.length ?? "N/A"}</TableCell>
         </>
     )
 }
@@ -98,10 +92,8 @@ const RackSummaryTable: React.FC<RackSummaryTableProps> = ({
     dataCenters = [],
     onAddToLeft,
     onAddToRight,
-    onEditDataCenter,
+    // onEditDataCenter,
 }) => {
-    const { data: subnets } = useGetSubnetsQuery()
-
     const [isCreateModalOpen, setCreateModalOpen] = useState(false)
     const [selectedDC, setSelectedDC] = useState<DataCenter>() // optional, for editing
 

@@ -7,10 +7,7 @@ import {
     deleteDataCenter,
     getDataCenterBySubnetID,
 } from "../apis/dataCenterApi"
-import type {
-    DataCenterFilters,
-    UpdateDataCenterData,
-} from "../apis/dataCenterApi"
+import type { DataCenterFilters } from "../apis/dataCenterApi"
 
 // Get all
 export function useGetDataCentersQuery(filters: DataCenterFilters = {}) {

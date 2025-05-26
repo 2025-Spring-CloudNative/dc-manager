@@ -36,7 +36,10 @@ export async function createRoom(data: Room): Promise<Room> {
         throw error
     }
 }
-export async function updateRoom(id: string, data: Room): Promise<Room> {
+export async function updateRoom(
+    id: number,
+    data: Partial<Room>
+): Promise<Room> {
     try {
         const response = await apiInstance.patch(`/${id}`, data)
         return response.data
@@ -45,7 +48,7 @@ export async function updateRoom(id: string, data: Room): Promise<Room> {
         throw error
     }
 }
-export async function deleteRoom(id: string): Promise<void> {
+export async function deleteRoom(id: number): Promise<void> {
     try {
         await apiInstance.delete(`/${id}`)
     } catch (error) {

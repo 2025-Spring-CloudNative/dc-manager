@@ -37,7 +37,10 @@ export async function createRack(data: Rack): Promise<Rack> {
     }
 }
 
-export async function updateRack(id: number, data: Rack): Promise<Rack> {
+export async function updateRack(
+    id: number,
+    data: Partial<Rack>
+): Promise<Rack> {
     try {
         const response = await apiInstance.patch(`/${id}`, data)
         return response.data

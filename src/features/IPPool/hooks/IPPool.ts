@@ -1,14 +1,12 @@
-import { useQuery} from "@tanstack/react-query";
-import {
-  getIPs,
-  getIPPoolbysubnetId
-} from "../apis/IPPoolApi";
-import { IP } from "@/features/IPPool/types";
+import { useQuery } from "@tanstack/react-query"
+import { getIPPools, getIPPoolbysubnetId } from "../apis/IPPoolApi"
+import { IPPool } from "../types"
+
 // All
 export function useGetIPPoolQuery() {
     const { data, isLoading, isError, isSuccess, error } = useQuery({
         queryKey: ["ip-pool"],
-        queryFn: getIPs,
+        queryFn: getIPPools,
     })
 
     return {
@@ -35,19 +33,23 @@ export function useGetIPPoolbysubnetIdQuery(subnetId: number) {
     }
 }
 
-
 // filter on all IPs by subnetId
 export function getlocalIPPoolbysubnetId(subnetId: number) {
-    const { data: allIPs, isLoading, isError, isSuccess, error } = useGetIPPoolQuery();
+    const {
+        data: allIPs,
+        isLoading,
+        isError,
+        isSuccess,
+        error,
+    } = useGetIPPoolQuery()
 
-    const data = allIPs?.filter((ip: IP) => ip.subnet_id === subnetId);
+    const data = allIPs?.filter((ip: IPPool) => ip.subnet_id === subnetId)
 
     return {
-      data,
-      isLoading,
-      isError,
-      isSuccess,
-      error,
+        data,
+        isLoading,
+        isError,
+        isSuccess,
+        error,
     }
 }
-

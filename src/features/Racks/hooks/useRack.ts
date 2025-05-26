@@ -1,5 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { getRacks, getRackById, createRack, updateRack, deleteRack } from "../apis/rack"
+import {
+    getRacks,
+    getRackById,
+    createRack,
+    updateRack,
+    deleteRack,
+} from "../apis/rack"
 import { Rack } from "../types"
 export function useGetRackQuery() {
     const { data, isLoading, isError, isSuccess, error } = useQuery({
@@ -41,14 +47,14 @@ export function useAddRackMutation() {
     })
 }
 export function useUpdateRackMutation() {
-    const queryClient = useQueryClient();
+    const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: (data: Partial<Rack>) => updateRack(data.id, data),
+        mutationFn: (data: Partial<Rack>) => updateRack(data.id!, data),
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["rack"] });
+            queryClient.invalidateQueries({ queryKey: ["rack"] })
         },
-    });
+    })
 }
 
 export function useDeleteRackMutation() {
