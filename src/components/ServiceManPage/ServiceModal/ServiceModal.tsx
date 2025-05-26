@@ -9,7 +9,7 @@ import { useGetDataCentersQuery } from "@/features/dataCenter/hooks/useDataCente
 import { useCreateServiceMutation, useUpdateServiceMutation} from "@/features/service/hooks/useService"
 import { CreateServiceRequest } from "@/features/service/types";
 import { TableServiceRow } from "@/features/service/types";
-
+import { DataCenter } from "@/features/dataCenter/types";
 
 interface CreateServiceModalProps  {
   isOpen: boolean;
@@ -42,7 +42,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
   //const { data: subnets, isLoading: isLoadingSubnets } = useGetSubnetsQuery();
   const { data: dc, isLoading: isLoadingDC } = useGetDataCentersQuery();
   const currentServiceDC =currentService?.DC
-  const selectedDC = dc?.find((item) => item.name === form.dataCenter.name);
+  const selectedDC = dc?.find((item: DataCenter) => item.name === form.dataCenter.name);
   const { data: DcSubnet, isLoading: isLoadingSubnet } = useGetSubnetByIdQuery(
     selectedDC?.subnetId,
   );
@@ -89,7 +89,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
         service: { ...prev.service, name: value },
       }));
     }  else if (name === 'dataCenter.name') {
-      const selectedDC = dc.find((d) => d.name === value);
+      const selectedDC = dc.find((d: DataCenter) => d.name === value);
       setForm((prevForm) => ({
         ...prevForm,
         dataCenter: {
@@ -111,16 +111,8 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
       console.log("form", form)
       if (isEditMode && currentService) {
         await updateMutation.mutateAsync({
-          service: {
             id: currentService.id,
             name: form.service.name,
-          },
-          dataCenter: {
-            name: form.dataCenter.name,
-            location: form.dataCenter.location,
-            subnetId: form.dataCenter.subnetId,
-          },
-          cidrFromUser: form.cidrFromUser || "",
         });
         alert("服務已更新！");
       } else {
@@ -180,7 +172,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
               disabled={isLoadingDC}
             >
               <option value="">自動分配</option>
-              {dc?.map((dc) => (
+              {dc?.map((dc: DataCenter) => (
                 <option key={dc.id} value={dc.name}>
                   {dc.name}
                 </option>
@@ -215,9 +207,9 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
           <Button
             className={styles.saveButton}
             onClick={handleSubmit}
-            disabled={createMutation.isLoading || updateMutation.isLoading}
+            disabled={createMutation.isPending || updateMutation.isPending}
           >
-            {(createMutation.isLoading || updateMutation.isLoading)
+            {(createMutation.isPending || updateMutation.isPending)
               ? "儲存中..."
               : isEditMode
               ? "確認修改"
