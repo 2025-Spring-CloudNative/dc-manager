@@ -12,7 +12,13 @@ export default function ServiceRow({ service, onDelete, onEdit, onViewRack, onEx
 }) {
   return (
     <div className={styles.row}>
-      <div className={`${styles.squareBox} ${styles.green}`}></div>
+      <div className={`${styles.squareBox} ${
+                            service?.utilization === 0.1
+                                ? styles.red
+                                : service?.utilization > 0.1
+                                ? styles.yellow
+                                : styles.green
+                        }`}></div>
       <div className={styles.tableRowText} style={{ width: '135px' }}>{service.name}</div>
       <div className={styles.sepLine}></div>
       <div className={styles.tableRowText} style={{ width: '135px' }}>{service.datacenter}</div>

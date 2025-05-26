@@ -17,7 +17,13 @@ export default function ServiceRackRow({rack, onToggle, isExpanded, rackUtilizat
         className={`${styles.showBtn} ${isExpanded ? styles.minusIcon : styles.plusIcon}`}
         onClick={() => onToggle(rack.id!)}
       />
-      <div className={`${styles.squareBox} ${styles.yellow}`}></div>
+      <div className={`${styles.squareBox} ${
+                            rackUtilization?.utilization === 0.1
+                                ? styles.red
+                                : rackUtilization?.utilization > 0.1
+                                ? styles.yellow
+                                : styles.green
+                        }`}></div>
       <div className={styles.tableRowText} style={{ width: '135px' }}>{rack.name}</div>
       <div className={styles.sepLine}></div>
       <div className={styles.utilBar}>
