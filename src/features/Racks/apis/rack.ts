@@ -8,7 +8,7 @@ const apiInstance = axios.create({
     },
 })
 
-export async function getRacks() {
+export async function getRacks(): Promise<Rack[]> {
     try {
         const response = await apiInstance.get("/")
         return response.data
