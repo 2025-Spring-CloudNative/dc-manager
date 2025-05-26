@@ -1,15 +1,10 @@
 import axios from "axios"
 import { Machine } from "../types"
-const apiInstance = axios.create({
-    baseURL: "http://140.112.90.36:4000/machine",
-    headers: {
-        "Content-Type": "application/json",
-    },
-})
+import api  from "@/lib/axios"
 
 export async function getMachines(): Promise<Machine[]> {
     try {
-        const response = await apiInstance.get("/")
+        const response = await api.get("/machine")
         return response.data
     } catch (error) {
         console.error("Error fetching machine data:", error)
@@ -18,7 +13,7 @@ export async function getMachines(): Promise<Machine[]> {
 }
 export async function getMachineById(id: number) {
     try {
-        const response = await apiInstance.get(`/${id}`)
+        const response = await api.get(`/machine/${id}`)
         return response.data
     } catch (error) {
         console.error("Error fetching machine by ID:", error)
@@ -28,7 +23,7 @@ export async function getMachineById(id: number) {
 export async function createMachine(data: Machine): Promise<Machine> {
     try {
         console.log("Creating machine with data:", data)
-        const response = await apiInstance.post("/", data)
+        const response = await api.post("/machine", data)
         return response.data
     } catch (error) {
         console.error("Error creating machine:", error)
@@ -43,7 +38,7 @@ export async function updateMachine(
         console.log("Updating machine with ID:", id, "and data:", data)
         delete data.id // Remove id from data to avoid sending it in the body
         delete data.createdAt // Remove createdAt from data to avoid sending it in the body
-        const response = await apiInstance.patch(`/${id}`, data)
+        const response = await api.patch(`/machine/${id}`, data)
         return response.data
     } catch (error) {
         console.error("Error updating machine:", error)
@@ -52,7 +47,7 @@ export async function updateMachine(
 }
 export async function deleteMachine(id: number) {
     try {
-        const response = await apiInstance.delete(`/${id}`)
+        const response = await api.delete(`/machine/${id}`)
         return response.data
     } catch (error) {
         console.error("Error deleting machine:", error)
