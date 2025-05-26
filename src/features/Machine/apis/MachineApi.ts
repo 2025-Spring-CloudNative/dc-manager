@@ -1,6 +1,5 @@
-import axios from "axios"
 import { Machine } from "../types"
-import api  from "@/lib/axios"
+import api from "@/lib/axios"
 
 export async function getMachines(): Promise<Machine[]> {
     try {

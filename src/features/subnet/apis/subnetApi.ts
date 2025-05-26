@@ -1,4 +1,3 @@
-import axios from "axios"
 import { Subnet } from "@/features/subnet/types"
 import api from "@/lib/axios"
 
@@ -26,14 +25,14 @@ export async function getSubnetById(id: number) {
 
 // Get subnet utilization by ID
 export async function getSubnetUtilization(id: number) {
-  try {
-    const response = await api.get(`/subnet/util/${id}`);
-    // console.log("Subnet Utilization Response:", response.data);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching ip pool utilization by ID:", error);
-    throw error;
-  }
+    try {
+        const response = await api.get(`/subnet/util/${id}`)
+        // console.log("Subnet Utilization Response:", response.data);
+        return response.data
+    } catch (error) {
+        console.error("Error fetching ip pool utilization by ID:", error)
+        throw error
+    }
 }
 
 // CREATE a subnet

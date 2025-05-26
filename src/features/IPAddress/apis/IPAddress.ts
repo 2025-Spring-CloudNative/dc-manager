@@ -1,4 +1,3 @@
-import axios from "axios"
 import { IPAddress } from "../types"
 // import { IPAdress } from "@/features/IPAddress/types";
 import api from "@/lib/axios"

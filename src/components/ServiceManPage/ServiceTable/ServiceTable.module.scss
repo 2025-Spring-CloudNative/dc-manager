@@ -1,0 +1,143 @@
+.tableContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  width: 95%;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-bottom: 2px solid #6bb7be;
+  background-color: #6bb7be;
+  width: 100%
+}
+
+.row {
+  margin-top: -2px;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border: 2px solid #6bb7be;
+  background-color: #ffffff;
+  width: 100%
+}
+
+
+.sepLine {
+  height: 29.78px;
+  margin-bottom: -6.36px;
+  margin-top: -6.36px;
+  position: relative;
+  width: 2.5px;
+  background-color: #a2e1e4;
+  margin-left: 10px;   
+  margin-right: 10px; 
+
+}
+
+.squareBox {
+  width: 20px;
+  height: 20px;
+  margin-top: -6.36px;
+  margin-bottom: -6.36px;
+  margin-right: 10px;
+  position: relative;
+  border-radius: 20px; 
+  transition: background-color 0.3s ease;
+  background-color: #aaaaaa;
+
+  &.red {
+    background-color: #E28789;
+  }
+
+  &.yellow {
+    background-color: #faad14;
+  }
+
+  &.green {
+    background-color: green;
+  }
+}
+
+.tableHeaderText {
+  color: #ffffff;
+  font-family: "Noto Sans-DisplayBold", Helvetica;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-align: left;
+}
+
+.tableRowText {
+  color: #000000;
+  font-family: "Noto Sans", Helvetica;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-align: left;
+}
+
+
+.utilBar {
+  flex: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .utilFill {
+    height: 8px;
+    background-color: #49c7ce;
+    border-radius: 4px;
+  }
+  .utilHigh {
+    background-color: #E28789;
+  }
+}
+
+.deleteBtn {
+  background-color: #f5caca;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 0px; 
+  font-family: "Noto Sans-Regular", Helvetica;
+  font-size: 16px;
+
+}
+
+.editBtn {
+  background-color: #e5fcff;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 0px; 
+  margin-right: 10px; 
+  font-family: "Noto Sans-Regular", Helvetica;
+  font-size: 16px;
+}
+
+.viewRackBtn {
+  background-color: #b3dfe4;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 0px;
+  margin-right: 10px; 
+  font-family: "Noto Sans-Regular", Helvetica;
+  font-size: 16px;
+}
+
+.extendIPPool {
+  background-color: #ffffff;
+  border: 2px solid #6bb7be;
+  padding: 0.5rem;
+  cursor: pointer;
+  border-radius: 0px;
+  margin-right: 10px; 
+  font-family: "Noto Sans-Regular", Helvetica;
+  font-size: 16px;
+  color: #6bb7be;   
+}
+

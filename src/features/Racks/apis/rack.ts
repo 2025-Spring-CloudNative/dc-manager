@@ -1,7 +1,6 @@
-import axios from "axios"
 import { Rack } from "../types"
 
-import api  from "@/lib/axios"
+import api from "@/lib/axios"
 
 export async function getRacks(): Promise<Rack[]> {
     try {
