@@ -1,5 +1,4 @@
-import axios from "axios"
-import { IPPool } from "@/features/IPPool/types"
+import { IPPool } from "@/features/ipPool/types"
 import api from "@/lib/axios"
 //  GET all IPS
 export async function getIPPools(): Promise<IPPool[]> {

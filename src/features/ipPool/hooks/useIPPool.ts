@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient , useQueries } from "@tanstack/react-query";
-import {axios, AxiosInstance} from "axios";
 import {
   getIPPool,
   getIPPoolById,
