@@ -4,16 +4,20 @@ import Button from "@/components/shared/Button"
 import Input from "@/components/shared/Input/Input"
 import Separator from "@/components/shared/Separator"
 import { XIcon } from "lucide-react"
-import { useCreateSubnetMutation, useUpdateSubnetMutation } from "@/features/subnet/hooks/useSubnet"
-import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet"
-import { Subnet } from "@/features/subnet/types"
+import {
+    useCreateSubnetMutation,
+    useUpdateSubnetMutation,
+} from "@/features/subnet/hooks/useSubnet"
 
 interface SubnetModalProps {
     isOpen: boolean
     onClose: () => void
 }
 
-export const CreateSubnet: React.FC<SubnetModalProps> = ({ isOpen, onClose }) => {
+export const CreateSubnet: React.FC<SubnetModalProps> = ({
+    isOpen,
+    onClose,
+}) => {
     const [form, setForm] = useState({
         Subnet: {
             cidr: "",
@@ -77,7 +81,10 @@ export const CreateSubnet: React.FC<SubnetModalProps> = ({ isOpen, onClose }) =>
     return (
         <div className={styles.modalOverlay}>
             <div className={styles.modalContent}>
-                <button className={styles.clearButton} onClick={handleCloseModal}>
+                <button
+                    className={styles.clearButton}
+                    onClick={handleCloseModal}
+                >
                     <XIcon className="w-5 h-[22px] text-gray-500" />
                 </button>
 
@@ -111,7 +118,9 @@ export const CreateSubnet: React.FC<SubnetModalProps> = ({ isOpen, onClose }) =>
                             onChange={handleChange}
                         />
 
-                        <label className={styles.inputFont}>Subnet Gateway</label>
+                        <label className={styles.inputFont}>
+                            Subnet Gateway
+                        </label>
                         <Input
                             type="text"
                             name="gateway"
@@ -135,7 +144,9 @@ export const CreateSubnet: React.FC<SubnetModalProps> = ({ isOpen, onClose }) =>
                     <Button
                         className={styles.saveButton}
                         onClick={handleSubmit}
-                        disabled={createMutation.isPending || updateMutation.isPending}
+                        disabled={
+                            createMutation.isPending || updateMutation.isPending
+                        }
                     >
                         {createMutation.isPending || updateMutation.isPending
                             ? "儲存中..."

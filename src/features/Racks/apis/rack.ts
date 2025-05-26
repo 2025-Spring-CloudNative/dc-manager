@@ -1,16 +1,10 @@
-import axios from "axios"
 import { Rack } from "../types"
 
-const apiInstance = axios.create({
-    baseURL: "http://140.112.90.36:4000/rack",
-    headers: {
-        "Content-Type": "application/json",
-    },
-})
+import api from "@/lib/axios"
 
-export async function getRacks() {
+export async function getRacks(): Promise<Rack[]> {
     try {
-        const response = await apiInstance.get("/")
+        const response = await api.get("/rack/")
         return response.data
     } catch (error) {
         console.error("Error fetching rack data:", error)
@@ -20,7 +14,7 @@ export async function getRacks() {
 
 export async function getRackById(id: number) {
     try {
-        const response = await apiInstance.get(`/${id}`)
+        const response = await api.get(`/rack/${id}`)
         return response.data
     } catch (error) {
         console.error("Error fetching rack data:", error)
@@ -29,7 +23,7 @@ export async function getRackById(id: number) {
 }
 export async function createRack(data: Rack): Promise<Rack> {
     try {
-        const response = await apiInstance.post("/", data)
+        const response = await api.post("/rack/", data)
         return response.data
     } catch (error) {
         console.error("Error creating rack:", error)
@@ -37,9 +31,12 @@ export async function createRack(data: Rack): Promise<Rack> {
     }
 }
 
-export async function updateRack(id: number, data: Rack): Promise<Rack> {
+export async function updateRack(
+    id: number,
+    data: Partial<Rack>
+): Promise<Rack> {
     try {
-        const response = await apiInstance.patch(`/${id}`, data)
+        const response = await api.patch(`/rack/${id}`, data)
         return response.data
     } catch (error) {
         console.error("Error updating rack:", error)
@@ -48,7 +45,7 @@ export async function updateRack(id: number, data: Rack): Promise<Rack> {
 }
 export async function deleteRack(id: number): Promise<void> {
     try {
-        await apiInstance.delete(`/${id}`)
+        await api.delete(`/rack/${id}`)
     } catch (error) {
         console.error("Error deleting rack:", error)
         throw error

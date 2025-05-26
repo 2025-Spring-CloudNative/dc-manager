@@ -1,10 +1,10 @@
 export type Machine = {
     id?: number;
+    rackId: number;
     name: string;
+    macAddress: string;
     startUnit: number;
     unit: number;
-    macAddress: string;
-    rackId: number;
-    status?: string;
     createdAt?: string;
+    status?: string;
 }

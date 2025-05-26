@@ -8,7 +8,7 @@ import { useSession } from "@features/user/hooks/useUser"
 const loggedInNavItems = [
     { text: "資料中心", href: "/DatacenterPage" },
     { text: "網路設定", href: "/IPmanagementPage" },
-    { text: "服務管理", href: "/service" },
+    { text: "服務管理", href: "/ServicePage" },
 ]
 
 function NvBar() {

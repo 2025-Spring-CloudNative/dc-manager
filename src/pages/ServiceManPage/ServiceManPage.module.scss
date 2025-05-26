@@ -1,0 +1,116 @@
+
+.title_text {
+  font-weight: bold;
+  color: #125359;
+  font-family: "Noto Sans-DisplanBold", Helvetica;
+  font-size: 1.5rem; /* text-base = 16px */
+  letter-spacing: 2.80px;
+  height: 60px;
+  width: 368px;
+  padding-left: 1rem;
+  padding-top: 1rem;
+
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  width: 95%;
+}
+
+
+.tableWrapper {
+  width: 100%; // 讓 table 撐滿
+  display: flex;
+  justify-content: center; // 讓 table 水平置中
+  margin-top: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-top: 1rem;
+}
+
+
+.createServiceButton {
+  height: 43px;
+  width: auto;
+  border-radius: 54px;
+  margin-left: 20px;
+  border: 3px solid #a2e1e4;
+  background-color: #e5fbff;
+  color: #125359;
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 400;
+  letter-spacing: 2px;
+  font-family: 'Noto Sans', Helvetica, sans-serif;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: #d5ebef;
+  }
+}
+
+.pageContainer {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+}
+
+
+.heroSection {
+  position: relative;
+  width: 100%;
+  height: 8vh;
+}
+.innerContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background-color: #dbfaff;
+  min-height: 100vh;
+}
+
+.searchBarContainer {
+  position: relative;
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto 1rem;
+}
+
+.searchBarInner {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  // top: 50%;
+  // transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  z-index: 10;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+.logoImage {
+  width: 11vw;
+  height: 4vh;
+  object-fit: contain;
+}
+.clearButton {
+  position: absolute;
+  right: 1.5rem;
+  z-index: 10;
+  background: none;
+  border: none;
+  cursor: pointer;
+}

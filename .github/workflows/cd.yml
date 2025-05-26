@@ -1,0 +1,46 @@
+name: CD
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v4
+
+            - name: Authenticate to Google Cloud
+              uses: google-github-actions/auth@v2
+              with:
+                  credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+            - name: Set up gcloud CLI
+              uses: google-github-actions/setup-gcloud@v2
+              with:
+                  project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+            - name: Configure Docker to use gcloud
+              run: gcloud auth configure-docker asia-east1-docker.pkg.dev
+
+            - name: Build Docker Image
+              run: |
+                  docker build -t asia-east1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/dc-manager-frontend/dc-manager-frontend-cloud:${{ github.sha }} .
+
+            - name: Push to Artifact Registry
+              run: |
+                  docker push asia-east1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/dc-manager-frontend/dc-manager-frontend-cloud:${{ github.sha }}
+
+            - name: Deploy to Cloud Run
+              uses: google-github-actions/deploy-cloudrun@v2
+              with:
+                  service: dc-manager-frontend
+                  image: asia-east1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/dc-manager-frontend/dc-manager-frontend-cloud:${{ github.sha }}
+                  region: asia-east1
+                  flags: --port=3000 --allow-unauthenticated
+                  env_vars: |
+                      NODE_ENV=prod
+                      VITE_API_URL=${{ secrets.VITE_API_URL}}

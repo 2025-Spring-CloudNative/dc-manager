@@ -8,6 +8,8 @@ import IPmanagementPage from "@/pages/IPmanagementPage"
 import LoginPage from "@pages/LoginPage"
 import RegisterPage from "@pages/RegisterPage"
 import UserProfilePage from "@pages/UserProfilePage"
+import ServiceManPage from "@/pages/ServiceManPage"
+
 import NotFound from "@components/shared/NotFound"
 import RequireLogin from "./RequireLogin"
 
@@ -33,6 +35,7 @@ const routes: RouteObject[] = [
                     { path: "user", element: <UserProfilePage /> },
                     { path: "DataCenterPage", element: <DataCenterPage /> },
                     { path: "IPmanagementPage", element: <IPmanagementPage /> },
+                    { path: "ServicePage", element: <ServiceManPage /> },
                 ],
             },
 

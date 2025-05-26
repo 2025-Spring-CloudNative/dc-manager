@@ -20,6 +20,7 @@ export function useGetMachineByIdQuery(id: number) {
   const { data, isLoading, isError, isSuccess, error } = useQuery({
     queryKey: ["machines", id],
     queryFn: () => getMachineById(id),
+    enabled: !!id,
   });
 
   return {

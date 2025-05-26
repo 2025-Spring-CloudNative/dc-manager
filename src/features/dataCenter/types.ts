@@ -1,7 +1,6 @@
-export type DataCenter =
-  {
-    id?: number,
-    name: string,
+export type DataCenter = {
+    id?: number
+    name: string
     location: string
     subnetId?: number
-  }
+}
