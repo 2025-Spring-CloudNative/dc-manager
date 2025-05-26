@@ -57,7 +57,9 @@ const DataCenterModal: React.FC<DataCenterModalProps> = ({
         }
     }, [currentDataCenter, isOpen])
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
         const { name, value } = e.target
         if (name === "name" || name === "location") {
             setForm((prev) => ({
@@ -82,7 +84,7 @@ const DataCenterModal: React.FC<DataCenterModalProps> = ({
         try {
             if (isEditMode && currentDataCenter) {
                 await updateMutation.mutateAsync({
-                    id: currentDataCenter.id.toString(),
+                    id: currentDataCenter.id!,
                     data: {
                         name: form.dataCenter.name,
                         location: form.dataCenter.location,
@@ -175,10 +177,10 @@ const DataCenterModal: React.FC<DataCenterModalProps> = ({
                         className={styles.saveButton}
                         onClick={handleSubmit}
                         disabled={
-                            createMutation.isLoading || updateMutation.isLoading
+                            createMutation.isPending || updateMutation.isPending
                         }
                     >
-                        {createMutation.isLoading || updateMutation.isLoading
+                        {createMutation.isPending || updateMutation.isPending
                             ? "儲存中..."
                             : isEditMode
                             ? "確認修改"

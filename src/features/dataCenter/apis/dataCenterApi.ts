@@ -46,7 +46,7 @@ export async function getDataCenterBySubnetID(subnetId: number) {
 }
 
 export type CreateDataCenterData = {
-    dataCenter: Partial<DataCenter>
+    dataCenter: Omit<DataCenter, "id">
     subnetId?: number
 }
 
@@ -62,10 +62,15 @@ export async function createDataCenter(
     }
 }
 
-export async function updateDataCenter(
-    id: string,
-    data: DataCenter
-): Promise<DataCenter> {
+export type UpdateDataCenterData = {
+    id: number
+    data: Partial<DataCenter>
+}
+
+export async function updateDataCenter({
+    id,
+    data,
+}: UpdateDataCenterData): Promise<DataCenter> {
     try {
         const response = await api.patch(`/data-center/${id}`, data)
         return response.data

@@ -7,7 +7,10 @@ import {
     deleteDataCenter,
     getDataCenterBySubnetID,
 } from "../apis/dataCenterApi"
-import type { DataCenterFilters } from "../apis/dataCenterApi"
+import type {
+    DataCenterFilters,
+    UpdateDataCenterData,
+} from "../apis/dataCenterApi"
 
 // Get all
 export function useGetDataCentersQuery(filters: DataCenterFilters = {}) {
@@ -73,13 +76,7 @@ export function useUpdateDataCenterMutation() {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: ({
-            id,
-            data,
-        }: {
-            id: string
-            data: { name: string; location: string }
-        }) => updateDataCenter(id, data),
+        mutationFn: updateDataCenter,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["dataCenter"] })
         },

@@ -7,7 +7,7 @@ const apiInstance = axios.create({
     },
 })
 
-export async function getRooms() {
+export async function getRooms(): Promise<Room[]> {
     try {
         const response = await apiInstance.get("/")
         return response.data
