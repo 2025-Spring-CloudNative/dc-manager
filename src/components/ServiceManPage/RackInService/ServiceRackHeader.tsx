@@ -1,4 +1,4 @@
-import React from 'react';
+
 import styles from './ServiceRackTable.module.scss';
 
 export default function ServiceRackHeader() {

@@ -4,7 +4,6 @@ import Button from "@/components/shared/Button";
 import Input from "@/components/shared/Input/Input";
 import Separator from "@/components/shared/Separator";
 import { XIcon } from "lucide-react";
-import { useGetDataCentersQuery } from "@/features/dataCenter/hooks/useDataCenter";
 import { useCreateServiceMutation, useUpdateServiceMutation} from "@/features/service/hooks/useService"
 import { Service } from "@/features/service/types";
 

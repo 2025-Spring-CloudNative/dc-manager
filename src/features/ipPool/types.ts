@@ -10,5 +10,5 @@ export type IPPool =
 }
 
 export type IPPoolWithUtilization = IPPool & {
-  utilization: number;
+  utilization: {utilization:number};
 };

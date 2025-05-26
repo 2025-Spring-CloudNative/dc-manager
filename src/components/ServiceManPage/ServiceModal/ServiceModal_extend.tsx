@@ -14,7 +14,7 @@ import { TableServiceRow } from "@/features/service/types";
 interface CreateServiceModalProps  {
   isOpen: boolean;
   onClose: () => void;
-  currentService: TableServiceRow|null;
+  currentService: TableServiceRow|undefined;
 }
 
 

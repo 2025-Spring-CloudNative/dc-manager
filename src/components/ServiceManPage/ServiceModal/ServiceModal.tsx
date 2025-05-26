@@ -31,7 +31,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
   //console.log("currentService", currentService);
   const [form, setForm] = useState<CreateServiceRequest>({
     service: { name: "" },
-    dataCenter: { name: "", location: "", subnetId: "" },
+    dataCenter: { name: "", location: "", subnetId: 0 },
     cidrFromUser: "",
   });
   
@@ -58,7 +58,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
           name: currentService.name,
         },
         dataCenter: {
-          name: currentService.datacenter,
+          name: currentService.datacenter!,
           location: currentServiceDC!.location,
           subnetId: currentServiceDC!.subnetId,
         },
@@ -72,7 +72,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
         dataCenter: {
           name: "",
           location: "",
-          subnetId: "",
+          subnetId: 0,
         },
         cidrFromUser:  "",
         

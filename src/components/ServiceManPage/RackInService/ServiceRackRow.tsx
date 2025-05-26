@@ -1,4 +1,4 @@
-import React from 'react';
+
 import styles from './ServiceRackTable.module.scss';
 import { Rack  } from "@/features/Racks/types";
 
@@ -6,7 +6,7 @@ export default function ServiceRackRow({rack, onToggle, isExpanded, rackUtilizat
   rack: Rack;
   onToggle: (id: number) => void;
   isExpanded: boolean;
-  rackUtilization: 
+  rackUtilization: {utilization: number};
 })  {
 
 

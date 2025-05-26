@@ -14,7 +14,7 @@ import {
     useIPPoolsWithUtilizations,
 } from "@/features/ipPool/hooks/useIPPool"
 import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet"
-import { Service } from "@/features/service/types"
+import { Service , TableServiceRow} from "@/features/service/types"
 import { IPPoolWithUtilization } from "@/features/ipPool/types"
 import { DataCenter } from "@/features/dataCenter/types"
 import { Subnet } from "@/features/subnet/types"
@@ -49,33 +49,31 @@ function generateTableData(
             cidr: ipPool?.cidr || "N/A",
             utilization: utilization || 0,
             datacenter: dataCenter?.name || "N/A",
-            DC: dataCenter || null,
+            DC: dataCenter,
         }
     })
 
     return tableRows
 }
-
+/*
 type TableServiceRow = {
     id: number
     poolId: number
     name: string
     cidr: string
-    utilization: number
-    datacenter: string
-    DC: DataCenter | null
-}
+    utilization?: number
+    datacenter?: string
+    DC?: DataCenter
+}*/
 
 export default function ServiceTable({
     onEdit,
     onViewRack,
     onExtendIPPoolClick,
  }:{
-    onEdit
-    onViewRack: () => void;
+onViewRack: (service: TableServiceRow) => void;
   onEdit: (service: TableServiceRow) => void;
   onExtendIPPoolClick: (service: TableServiceRow) => void;
-  onExtendIPPool: () => void;
 })
 {
     //const [services, setServices] = useState(initialServices);
@@ -228,7 +226,7 @@ export default function ServiceTable({
         }
     }
 
-    const ExtendIPPool = (service: Service) => {
+    const ExtendIPPool = (service: TableServiceRow) => {
         // setServices(prev => prev.filter(s => s.id !== id));
         console.log("Extending IP Pool for:", service)
         //extendIPPool({ id: service.poolId, cidr: service.cidr });

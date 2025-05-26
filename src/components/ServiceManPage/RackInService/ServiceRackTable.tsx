@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import styles from './ServiceRackTable.module.scss';
 import ServiceRackHeader from './ServiceRackHeader';
 import ServiceRackRow from './ServiceRackRow';
@@ -78,7 +78,7 @@ export default function ServiceRackTable({ selectedServiceRack }: ServiceRackTab
               rack={rack} 
               onToggle={() => toggleRack(rack.id!)} 
               isExpanded={expandedRackId === rack.id}
-              rackUtilization={rackUtil}
+              rackUtilization={rackUtil!}
             />
             {expandedRackId === rack.id && (
               <>

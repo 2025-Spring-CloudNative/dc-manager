@@ -13,8 +13,8 @@ import { TableServiceRow } from "@/features/service/types";
 
 const Service_man = () => {
     const [inputValue, setInputValue] = useState("");
-    const [selectedService, setSelectedService] = useState<TableServiceRow|null>(null);
-    const [selectedService_rack, setSelectedService_rack] = useState<TableServiceRow|null>(null);
+    const [selectedService, setSelectedService] = useState<TableServiceRow>();
+    const [selectedService_rack, setSelectedService_rack] = useState({name:"", datacenter: "", cidr: "", utilization:0});
     //const [showEditModal, setShowEditModal] = useState(false);
     const [showRackInfo, setShowRackInfo] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -45,11 +45,11 @@ const Service_man = () => {
     };        
 
     const handleCreate = () => {
-        setSelectedService(null); 
+        setSelectedService(undefined);
         setIsModalOpen(true);     
       };
     
-    const handleViewRack = (service: TableServiceRow) => {
+    const handleViewRack = (service:  {name:string, datacenter: string, cidr: string, utilization: number}) => {
         setSelectedService_rack(service);
         //console.log('service handleViewRack', service)
         setShowRackInfo(true);
