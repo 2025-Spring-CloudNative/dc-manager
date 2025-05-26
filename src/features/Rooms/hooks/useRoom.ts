@@ -74,3 +74,18 @@ export function useDeleteRoomMutation() {
         },
     })
 }
+
+//add
+export function getRoombyid(id: number) {
+    const { data: allIPs, isLoading, isError, isSuccess, error } = useGetRoomQuery();
+
+    const data = allIPs?.filter((room: Room) => room.id === id);
+
+    return {
+      data,
+      isLoading,
+      isError,
+      isSuccess,
+      error,
+    }
+}
