@@ -53,3 +53,19 @@ export function getlocalIPAddressbypoolID(poolID: number) {
         error,
     }
 }
+
+//add
+export function getlocalIPAddressbyMachineID(machineID: number) {
+    const { data: allIPs, isLoading, isError, isSuccess, error } = useGetIPAddressQuery();
+
+    const data = allIPs?.filter((ip: IPAdress) => ip.machineId === machineID);
+
+    return {
+      data,
+      isLoading,
+      isError,
+      isSuccess,
+      error,
+    }
+}
+
