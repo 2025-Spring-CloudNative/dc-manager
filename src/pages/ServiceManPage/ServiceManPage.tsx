@@ -74,6 +74,7 @@ const Service_man = () => {
                     </div>
                     <div className={styles.innerContainer}>
                         {/* Search Bar */}
+                        {/*
                         <div className={styles.searchBarContainer}>
                             <div className={styles.searchBarInner}>
                                 <div className={styles.searchIcon}>
@@ -88,7 +89,9 @@ const Service_man = () => {
                                     <XIcon className="w-5 h-[22px] text-gray-500" />
                                 </button>
                             </div>
+                            
                         </div>
+                        */}
                         <Card className={styles.cardContainer}>
                             <div className={styles.headerRow}>
                                 <div className={styles.title_text}>Service Management</div>

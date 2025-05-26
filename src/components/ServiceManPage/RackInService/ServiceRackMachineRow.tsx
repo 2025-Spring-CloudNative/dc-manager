@@ -35,7 +35,7 @@ export default function ServiceRackMachineRow({
       <div className={styles.tableRowText} style={{ width: '135px' }}>{IPaddress[0].address}</div>
       <div className={styles.sepLine}></div>
       <div className={styles.tableRowText} style={{ flex: 1 }}>
-          {dcData[0].name} / {RoomData[0].name} / {rack.name} / Unit {machine.startUnit}-{machine.startUnit + machine.unit}
+          {dcData[0]?.name} / {RoomData[0]?.name} / {rack?.name} / Unit {machine.startUnit}-{machine.startUnit + machine.unit}
       </div>
       
     </div>
