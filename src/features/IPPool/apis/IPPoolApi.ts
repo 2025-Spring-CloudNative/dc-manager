@@ -1,17 +1,10 @@
 import axios from "axios"
 import { IPPool } from "@/features/IPPool/types"
-const apiInstance = axios.create({
-    baseURL: "http://140.112.90.36:4000/ip-pool",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    withCredentials: true,
-})
-
+import api from "@/lib/axios"
 //  GET all IPS
 export async function getIPPools(): Promise<IPPool[]> {
     try {
-        const response = await apiInstance.get("/")
+        const response = await api.get("/ip-pool")
         return response.data
     } catch (error) {
         console.error("Error fetching IP data:", error)
@@ -21,7 +14,7 @@ export async function getIPPools(): Promise<IPPool[]> {
 
 export async function getIPPoolbysubnetId(subnetId: number) {
     try {
-        const response = await apiInstance.get(`/?subnetId=${subnetId}`)
+        const response = await api.get(`/ip-pool/?subnetId=${subnetId}`)
         return response.data
     } catch (error) {
         console.error("Error fetching IP data:", error)

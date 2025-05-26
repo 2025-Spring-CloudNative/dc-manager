@@ -1,18 +1,12 @@
 import axios from "axios"
 import { IPAddress } from "../types"
 // import { IPAdress } from "@/features/IPAddress/types";
-const apiInstance = axios.create({
-    baseURL: "http://140.112.90.36:4000/ip-address",
-    headers: {
-        "Content-Type": "application/json",
-    },
-    withCredentials: true,
-})
+import api from "@/lib/axios"
 
 //  GET all IPS
 export async function getIPAddress(): Promise<IPAddress[]> {
     try {
-        const response = await apiInstance.get("/")
+        const response = await api.get("/ip-address")
         return response.data
     } catch (error) {
         console.error("Error fetching IP data:", error)
@@ -22,7 +16,7 @@ export async function getIPAddress(): Promise<IPAddress[]> {
 
 export async function getIPAddressbypoolId(poolId: number) {
     try {
-        const response = await apiInstance.get(`/?poolId=${poolId}`)
+        const response = await api.get(`/ip-address/?poolId=${poolId}`)
         return response.data
     } catch (error) {
         console.error("Error fetching IP data:", error)
