@@ -6,6 +6,7 @@ on:
             - main
 
 jobs:
+    
     deploy:
         runs-on: ubuntu-latest
 
@@ -22,7 +23,11 @@ jobs:
               uses: google-github-actions/setup-gcloud@v2
               with:
                   project_id: ${{ secrets.GCP_PROJECT_ID }}
-
+            - name: Create .env file
+              run: |
+                  touch .env
+                  echo "VITE_API_URL=${{ secrets.VITE_API_URL }} > .env
+                  
             - name: Configure Docker to use gcloud
               run: gcloud auth configure-docker asia-east1-docker.pkg.dev
 
