@@ -30,7 +30,7 @@ export function useGetIPPoolsQuery() {
 }
 
 // Get by ID
-export function useGetIPPoolByIdQuery(id: string) {
+export function useGetIPPoolByIdQuery(id: number) {
   return useQuery({
     queryKey: ["ip-pool", id],
     queryFn: () => getIPPoolById(id),
@@ -67,7 +67,7 @@ export function useDeleteIPPoolMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (id: string) => deleteIPPool(id),
+    mutationFn: (id: number) => deleteIPPool(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ip-pool"] });
     },
@@ -75,7 +75,7 @@ export function useDeleteIPPoolMutation() {
 }
 
 
-export function useGetIPPoolUtilizationQuery(id: string) {
+export function useGetIPPoolUtilizationQuery(id: number) {
   return useQuery({
     queryKey: ["ip-pool", id],
     queryFn: () => getIPPoolUtilization(id),

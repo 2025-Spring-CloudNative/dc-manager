@@ -286,7 +286,9 @@ const DataCenterComponentSection: React.FC<DataCenterComponentSectionProps> = ({
                         <TableRow>
                             <TableHead
                                 className={styles.unitHeader}
-                            ></TableHead>
+                            >
+                                 <img src="public/data_center.png" alt="icon" className={styles.icon} />
+                            </TableHead>
                             {filterRoomsByDataCenterId(dc.id).map((room) =>
                                 renderHeader(room, "Room")
                             )}

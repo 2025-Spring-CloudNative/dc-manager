@@ -3,10 +3,10 @@ import styles from "./listmodule.module.scss"
 import Button from "@/components/shared/Button"
 import { useState } from "react"
 import { PoolModule } from "@/components/IPmanagement/poollist/poollist"
-import { IPPool /* IPPoolWithUtilization */ } from "@/features/IPPool/types"
+import { IPPool /* IPPoolWithUtilization */ } from "@/features/ipPool/types"
 import { SubnetWithUtilization } from "@/features/subnet/types"
 import { DataCenter } from "@features/dataCenter/types"
-import { useGetIPPoolbysubnetIdQuery } from "@/features/IPPool/hooks/IPPool"
+import {useGetIPPoolUtilizationQuery} from "@/features/ipPool/hooks/useIPPool"
 import { useGetDataCenterBySubnetIDQuery } from "@/features/dataCenter/hooks/useDataCenter"
 import { useGetSubnetUtilizationQuery } from "@/features/subnet/hooks/useSubnet"
 interface Props {
@@ -19,7 +19,7 @@ interface Props {
 }
 
 export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, id }) => {
-    const { data: allIPs } = useGetIPPoolbysubnetIdQuery(id!) as {
+    const { data: allIPs } = useGetIPPoolUtilizationQuery(id!) as {
         data: IPPool
     }
     const { data: dcArr } = useGetDataCenterBySubnetIDQuery(id!) as {

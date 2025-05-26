@@ -14,7 +14,7 @@ export async function getIPPools(): Promise<IPPool[]> {
 
 export async function getIPPoolbysubnetId(subnetId: number) {
     try {
-        const response = await api.get(`/ip-pool/?subnetId=${subnetId}`)
+        const response = await api.get(`ip-pool/?subnetId=${subnetId}`)
         return response.data
     } catch (error) {
         console.error("Error fetching IP data:", error)
@@ -26,7 +26,7 @@ export async function getIPPoolbysubnetId(subnetId: number) {
 // add 
 export async function getIPPool() {
   try {
-    const response = await apiInstance.get("/");
+    const response = await api.get("/ip-pool");
     return response.data;
   } catch (error) {
     console.error("Error fetching ip pool data:", error);
@@ -34,9 +34,9 @@ export async function getIPPool() {
   }
 }
 
-export async function getIPPoolById(id: string) {
+export async function getIPPoolById(id: number) {
   try {
-    const response = await apiInstance.get(`/${id}`);
+    const response = await api.get(`/ip-pool/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching ip pool by ID:", error);
@@ -46,7 +46,7 @@ export async function getIPPoolById(id: string) {
 
 export async function createIPPool(data: IPPool): Promise<IPPool> {
   try {
-    const response = await apiInstance.post("/", data);
+    const response = await api.post("/ip-pool", data);
     return response.data;
   } catch (error) {
     console.error("Error creating ip pool:", error);
@@ -56,9 +56,9 @@ export async function createIPPool(data: IPPool): Promise<IPPool> {
 
 
 
-export async function updateIPPool(id: string, data: IPPool): Promise<IPPool>  {
+export async function updateIPPool(id: number, data: IPPool): Promise<IPPool>  {
   try {
-    const response = await apiInstance.patch(`/${id}`, data);
+    const response = await api.patch(`/${id}`, data);
     return response.data;
   } catch (error) {
     console.error("Error updating ip pool:", error);
@@ -66,9 +66,9 @@ export async function updateIPPool(id: string, data: IPPool): Promise<IPPool>  {
   }
 }
 
-export async function deleteIPPool(id: string): Promise<void>   {
+export async function deleteIPPool(id: number): Promise<void>   {
   try {
-    const response = await apiInstance.delete(`/${id}`);
+    const response = await api.delete(`/ip-pool/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error deleting ip pool:", error);
@@ -76,9 +76,9 @@ export async function deleteIPPool(id: string): Promise<void>   {
   }
 }
 
-export async function getIPPoolUtilization(id: string) {
+export async function getIPPoolUtilization(id: number) {
   try {
-    const response = await apiInstance.get(`/util/${id}`);
+    const response = await api.get(`ip-pool/util/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching ip pool utilization by ID:", error);
@@ -89,7 +89,7 @@ export async function getIPPoolUtilization(id: string) {
 
 
 /*
-export async function extendIPPool(id: string, cidr: string) {
+export async function extendIPPool(id: number, cidr: string) {
 
   try {
     const response = await apiInstance.patch(`/extend/${id}`, cidr)
