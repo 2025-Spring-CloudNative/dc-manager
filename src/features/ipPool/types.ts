@@ -6,7 +6,7 @@ export type IPPool =
   cidr: string,
   createdAt: Date,
   updatedAt: Date,
-  subnet_id: number,
+  subnetId: number,
 }
 
 export type IPPoolWithUtilization = IPPool & {

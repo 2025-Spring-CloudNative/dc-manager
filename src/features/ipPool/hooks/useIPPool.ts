@@ -3,6 +3,7 @@ import {axios, AxiosInstance} from "axios";
 import {
   getIPPool,
   getIPPoolById,
+  getIPPoolbysubnetId,
   createIPPool,
   updateIPPool,
   deleteIPPool,
@@ -10,7 +11,6 @@ import {
   getIPPoolUtilization
 } from "../apis/ipPoolApi";
 import { IPPool } from "../types"
-import { useMemo } from "react";
 
 // Get all
 export function useGetIPPoolsQuery() {
@@ -35,6 +35,15 @@ export function useGetIPPoolByIdQuery(id: number) {
     queryKey: ["ip-pool", id],
     queryFn: () => getIPPoolById(id),
     enabled: !!id,
+  });
+}
+
+// Get by subnet ID
+export function useGetIPPoolsBySubnetIdQuery(subnetId: number) {
+  return useQuery({
+    queryKey: ["ip-pool", "subnet", subnetId],
+    queryFn: () => getIPPoolbysubnetId(subnetId),
+    enabled: !!subnetId,
   });
 }
 

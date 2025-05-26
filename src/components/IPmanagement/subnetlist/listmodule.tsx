@@ -6,7 +6,7 @@ import { PoolModule } from "@/components/IPmanagement/poollist/poollist"
 import { IPPool /* IPPoolWithUtilization */ } from "@/features/ipPool/types"
 import { SubnetWithUtilization } from "@/features/subnet/types"
 import { DataCenter } from "@features/dataCenter/types"
-import {useGetIPPoolUtilizationQuery} from "@/features/ipPool/hooks/useIPPool"
+import {useGetIPPoolsBySubnetIdQuery} from "@/features/ipPool/hooks/useIPPool"
 import { useGetDataCenterBySubnetIDQuery } from "@/features/dataCenter/hooks/useDataCenter"
 import { useGetSubnetUtilizationQuery } from "@/features/subnet/hooks/useSubnet"
 interface Props {
@@ -19,9 +19,10 @@ interface Props {
 }
 
 export const ListModule: React.FC<Props> = ({ CIDR, NETMASK, GATEWAY, id }) => {
-    const { data: allIPs } = useGetIPPoolUtilizationQuery(id!) as {
+    const { data: allIPs } = useGetIPPoolsBySubnetIdQuery(id!) as {
         data: IPPool
     }
+    console.log("All IPs Data:", allIPs)
     const { data: dcArr } = useGetDataCenterBySubnetIDQuery(id!) as {
         data: DataCenter[]
     }
