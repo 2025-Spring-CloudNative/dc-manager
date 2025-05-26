@@ -2,7 +2,6 @@
 import React from "react"
 import styles from "./iplist.module.scss"
 import { useGetMachineByIdQuery } from "@/features/Machine/hooks/useMachine"
-import { Machine } from "@/components/data/machine"
 
 export interface Props {
     id?: number
