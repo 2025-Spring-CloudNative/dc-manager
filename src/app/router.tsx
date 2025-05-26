@@ -3,16 +3,13 @@ import { createBrowserRouter } from "react-router-dom"
 
 import AppLayout from "@app/AppLayout"
 import MainPage from "@pages/MainPage"
-<<<<<<< HEAD
-import DataCenterPage from "@/pages/DataCenterPage"
-import ServiceManPage from "@/pages/ServiceManPage"
-=======
 import DataCenterPage from "@pages/DataCenterPage"
 import IPmanagementPage from "@/pages/IPmanagementPage"
 import LoginPage from "@pages/LoginPage"
 import RegisterPage from "@pages/RegisterPage"
 import UserProfilePage from "@pages/UserProfilePage"
->>>>>>> dev
+import ServiceManPage from "@/pages/ServiceManPage"
+
 import NotFound from "@components/shared/NotFound"
 import RequireLogin from "./RequireLogin"
 
@@ -28,10 +25,6 @@ const routes: RouteObject[] = [
         children: [
             // public routes
             { index: true, element: <MainPage /> },
-<<<<<<< HEAD
-            { path: "DataCenterPage", element: <DataCenterPage /> },
-            { path: "service", element: <ServiceManPage /> },
-=======
             { path: "login", element: <LoginPage /> },
             { path: "register", element: <RegisterPage /> },
 
@@ -42,9 +35,9 @@ const routes: RouteObject[] = [
                     { path: "user", element: <UserProfilePage /> },
                     { path: "DataCenterPage", element: <DataCenterPage /> },
                     { path: "IPmanagementPage", element: <IPmanagementPage /> },
+                    { path: "ServicePage", element: <ServiceManPage /> },
                 ],
             },
->>>>>>> dev
 
             // any unmatched child goes to 404
             { path: "*", element: <NotFound /> },
