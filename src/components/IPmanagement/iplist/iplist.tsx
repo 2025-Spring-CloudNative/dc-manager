@@ -26,9 +26,8 @@ export const IpModule: React.FC<Props> = ({
     allocatedAt,
     releasedAt,
 }) => {
-    const { data: machine } = useGetMachineByIdQuery(machineId) as {
-        data: Machine
-    }
+    const { data: machine, isSuccess } = useGetMachineByIdQuery(machineId)
+    console.log("Machine Data:", machine)
     return (
         <div className={styles.wrapper}>
             {/* <Button 
@@ -42,7 +41,10 @@ export const IpModule: React.FC<Props> = ({
                 <div className={styles.machineInfo}>
                     <div className={styles.address}>{address}</div>
                     <div className={styles.machineId}>
-                        {machineId ? `machine-${machineId}` : "No machine"}
+                        {isSuccess
+                            ? `${machine.name}`
+                            : "No machine name"}
+                        {/* {machineId ? `machine-${machineId}` : "No machine"} */}
                     </div>
                 </div>
                 <div className={styles.divider} />
