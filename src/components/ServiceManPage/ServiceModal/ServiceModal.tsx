@@ -11,7 +11,6 @@ import { CreateServiceRequest} from "@/features/service/types";
 import { TableServiceRow } from "@/features/service/types";
 import { DataCenter } from "@/features/dataCenter/types";
 
-
 interface CreateServiceModalProps  {
   isOpen: boolean;
   onClose: () => void;
@@ -43,7 +42,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
   //const { data: subnets, isLoading: isLoadingSubnets } = useGetSubnetsQuery();
   const { data: dc, isLoading: isLoadingDC } = useGetDataCentersQuery();
   const currentServiceDC =currentService?.DC
-  const selectedDC = dc?.find((item:DataCenter) => item.name === form.dataCenter.name);
+  const selectedDC = dc?.find((item: DataCenter) => item.name === form.dataCenter.name);
   const { data: DcSubnet, isLoading: isLoadingSubnet } = useGetSubnetByIdQuery(
     selectedDC?.subnetId,
   );
@@ -90,7 +89,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
         service: { ...prev.service, name: value },
       }));
     }  else if (name === 'dataCenter.name') {
-      const selectedDC = dc.find((d:DataCenter) => d.name === value);
+      const selectedDC = dc.find((d: DataCenter) => d.name === value);
       setForm((prevForm) => ({
         ...prevForm,
         dataCenter: {
@@ -110,7 +109,13 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
   const handleSubmit = async () => {
     try {
       console.log("form", form)
-      {
+      if (isEditMode && currentService) {
+        await updateMutation.mutateAsync({
+            id: currentService.id,
+            name: form.service.name,
+        });
+        alert("服務已更新！");
+      } else {
         await createMutation.mutateAsync(form);
         //onServiceUpdated?.();
         alert("服務創建成功！");
@@ -202,9 +207,9 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
           <Button
             className={styles.saveButton}
             onClick={handleSubmit}
-            disabled={createMutation.isLoading || updateMutation.isLoading}
+            disabled={createMutation.isPending || updateMutation.isPending}
           >
-            {(createMutation.isLoading || updateMutation.isLoading)
+            {(createMutation.isPending || updateMutation.isPending)
               ? "儲存中..."
               : isEditMode
               ? "確認修改"

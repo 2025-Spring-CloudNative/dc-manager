@@ -135,9 +135,9 @@ const ServiceModal_extend: React.FC<CreateServiceModalProps> = ({
           <Button
             className={styles.saveButton}
             onClick={handleSubmit}
-            disabled={createMutation.isLoading || extendMutation.isLoading}
+            disabled={createMutation.isPending || extendMutation.isPending}
           >
-            {(createMutation.isLoading || extendMutation.isLoading)
+            {(createMutation.isPending || extendMutation.isPending)
               ? "儲存中..."
               : isEditMode
               ? "確認修改"
