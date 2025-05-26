@@ -3,11 +3,19 @@ import styles from './ServiceRackTable.module.scss';
 import { getlocalIPAddressbyMachineID} from "@/features/IPAddress/hooks/IPAddress";
 import { getRoombyid} from "@/features/Rooms/hooks/useRoom"
 import { getDCbyId} from "@/features/dataCenter/hooks/useDataCenter"
+import { Rack  } from "@/features/Racks/types";
+import { Machine} from "@/features/Machine/types"
 
-export default function ServiceRackMachineRow({machine, rack}) {
+export default function ServiceRackMachineRow({
+  machine,
+  rack,
+}: {
+  machine: Machine;
+  rack: Rack;
+})  {
 
-  const { data: IPaddress, isLoading: isLoadingIPAddress} = getlocalIPAddressbyMachineID(machine.id);
-  const { data: RoomData, isLoading: isLoadingRoom} = getRoombyid(rack.roomId);
+  const { data: IPaddress, isLoading: isLoadingIPAddress} = getlocalIPAddressbyMachineID(machine.id!);
+  const { data: RoomData, isLoading: isLoadingRoom} = getRoombyid(rack.roomId!);
 
   const r = RoomData?.[0];
   const dcId = r?.dataCenterId ?? 0;

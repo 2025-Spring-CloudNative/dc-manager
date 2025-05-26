@@ -7,8 +7,9 @@ import { XIcon } from "lucide-react";
 import { useGetSubnetByIdQuery } from "@/features/subnet/hooks/useSubnet";
 import { useGetDataCentersQuery } from "@/features/dataCenter/hooks/useDataCenter";
 import { useCreateServiceMutation, useUpdateServiceMutation} from "@/features/service/hooks/useService"
-import { CreateServiceRequest } from "@/features/service/types";
+import { CreateServiceRequest} from "@/features/service/types";
 import { TableServiceRow } from "@/features/service/types";
+import { DataCenter } from "@/features/dataCenter/types";
 
 
 interface CreateServiceModalProps  {
@@ -42,7 +43,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
   //const { data: subnets, isLoading: isLoadingSubnets } = useGetSubnetsQuery();
   const { data: dc, isLoading: isLoadingDC } = useGetDataCentersQuery();
   const currentServiceDC =currentService?.DC
-  const selectedDC = dc?.find((item) => item.name === form.dataCenter.name);
+  const selectedDC = dc?.find((item:DataCenter) => item.name === form.dataCenter.name);
   const { data: DcSubnet, isLoading: isLoadingSubnet } = useGetSubnetByIdQuery(
     selectedDC?.subnetId,
   );
@@ -89,7 +90,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
         service: { ...prev.service, name: value },
       }));
     }  else if (name === 'dataCenter.name') {
-      const selectedDC = dc.find((d) => d.name === value);
+      const selectedDC = dc.find((d:DataCenter) => d.name === value);
       setForm((prevForm) => ({
         ...prevForm,
         dataCenter: {
@@ -109,21 +110,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
   const handleSubmit = async () => {
     try {
       console.log("form", form)
-      if (isEditMode && currentService) {
-        await updateMutation.mutateAsync({
-          service: {
-            id: currentService.id,
-            name: form.service.name,
-          },
-          dataCenter: {
-            name: form.dataCenter.name,
-            location: form.dataCenter.location,
-            subnetId: form.dataCenter.subnetId,
-          },
-          cidrFromUser: form.cidrFromUser || "",
-        });
-        alert("服務已更新！");
-      } else {
+      {
         await createMutation.mutateAsync(form);
         //onServiceUpdated?.();
         alert("服務創建成功！");
@@ -180,7 +167,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
               disabled={isLoadingDC}
             >
               <option value="">自動分配</option>
-              {dc?.map((dc) => (
+              {dc?.map((dc:DataCenter) => (
                 <option key={dc.id} value={dc.name}>
                   {dc.name}
                 </option>

@@ -4,14 +4,7 @@ import Button from "@/components/shared/Button";
 import Input from "@/components/shared/Input/Input";
 import Separator from "@/components/shared/Separator";
 import { XIcon } from "lucide-react";
-import {
-  useCreateDataCenterMutation,
-  useUpdateDataCenterMutation,
-} from "@/features/dataCenter/hooks/useDataCenter";
-import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet";
-import { useGetDataCentersQuery } from "@/features/dataCenter/hooks/useDataCenter";
 import { useCreateServiceMutation, useUpdateServiceMutation} from "@/features/service/hooks/useService"
-import { CreateServiceRequest } from "@/features/service/types";
 import { Service } from "@/features/service/types";
 
 
@@ -40,8 +33,7 @@ const ServiceModal_edit: React.FC<CreateServiceModalProps> = ({
   const createMutation = useCreateServiceMutation();
   const updateMutation = useUpdateServiceMutation();
   //const { data: subnets, isLoading: isLoadingSubnets } = useGetSubnetsQuery();
-  const { data: dc, isLoading: isLoadingDC } = useGetDataCentersQuery();
-  const currentServiceDC =currentService?.DC
+ 
   //console.log("currentServiceDC", currentServiceDC);
     
   // initialization

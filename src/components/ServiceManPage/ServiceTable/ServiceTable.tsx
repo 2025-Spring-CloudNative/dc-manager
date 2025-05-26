@@ -70,7 +70,14 @@ export default function ServiceTable({
     onEdit,
     onViewRack,
     onExtendIPPoolClick,
-}) {
+ }:{
+    onEdit
+    onViewRack: () => void;
+  onEdit: (service: TableServiceRow) => void;
+  onExtendIPPoolClick: (service: TableServiceRow) => void;
+  onExtendIPPool: () => void;
+})
+{
     //const [services, setServices] = useState(initialServices);
     ///const [tableData, setTableData] = useState<TableServiceRow[]>([]);
     const servicesRef = useRef<TableServiceRow[]>([])

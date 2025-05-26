@@ -3,7 +3,14 @@ import styles from './ServiceTable.module.scss';
 import { TableServiceRow } from "@/features/service/types";
 
 
-export default function ServiceRow({ service, onDelete, onEdit, onViewRack, onExtendIPPool }) {
+export default function ServiceRow({ service, onDelete, onEdit, onViewRack, onExtendIPPool 
+}:  {
+  service: any;
+  onDelete: () => void;
+  onEdit: (service: TableServiceRow) => void;
+  onViewRack: (service: TableServiceRow) => void;
+  onExtendIPPool: () => void;
+}) {
   return (
     <div className={styles.row}>
       <div className={`${styles.squareBox} ${styles.green}`}></div>
