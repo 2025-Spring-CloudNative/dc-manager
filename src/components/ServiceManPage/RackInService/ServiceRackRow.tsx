@@ -1,16 +1,29 @@
-import React from 'react';
-import styles from './ServiceRackTable.module.scss';
 
-export default function ServiceRackRow({rack, onToggle, isExpanded, rackUtilization}) {
+import styles from './ServiceRackTable.module.scss';
+import { Rack  } from "@/features/Racks/types";
+
+export default function ServiceRackRow({rack, onToggle, isExpanded, rackUtilization}: {
+  rack: Rack;
+  onToggle: (id: number) => void;
+  isExpanded: boolean;
+  rackUtilization: {utilization: number};
+})  {
+
 
   console.log("Rack Utilizations:", rackUtilization.utilization);
   return (
     <div className={styles.row}>
       <button
         className={`${styles.showBtn} ${isExpanded ? styles.minusIcon : styles.plusIcon}`}
-        onClick={onToggle}
+        onClick={() => onToggle(rack.id!)}
       />
-      <div className={`${styles.squareBox} ${styles.yellow}`}></div>
+      <div className={`${styles.squareBox} ${
+                            rackUtilization?.utilization === 0.1
+                                ? styles.red
+                                : rackUtilization?.utilization > 0.1
+                                ? styles.yellow
+                                : styles.green
+                        }`}></div>
       <div className={styles.tableRowText} style={{ width: '135px' }}>{rack.name}</div>
       <div className={styles.sepLine}></div>
       <div className={styles.utilBar}>

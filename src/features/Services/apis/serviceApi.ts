@@ -1,4 +1,4 @@
-import axios from "axios"
+
 import type { Service } from "../types"
 import api from "@/lib/axios"
 

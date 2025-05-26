@@ -132,16 +132,16 @@ export function useIPPoolsWithUtilizations() {
 
   const utilizationQueries = useQueries({
     queries:
-      (allIPPools ?? []).map((pool) => ({
+      (allIPPools ?? []).map((pool:IPPool) => ({
         queryKey: ["ip-pool", pool.id],
         queryFn: () => getIPPoolUtilization(pool.id),
         enabled: !!pool.id,
       })) ?? [],
   });
 
-  const poolsWithUtilization = allIPPools?.map((pool, index) => ({
+  const poolsWithUtilization = allIPPools?.map((pool:IPPool, index:number) => ({
     ...pool,
-    utilization: utilizationQueries[index]?.data,
+    utilization: utilizationQueries[index]?.data ?? 0,
     isLoading: utilizationQueries[index]?.isLoading,
     isError: utilizationQueries[index]?.isError,
   }));

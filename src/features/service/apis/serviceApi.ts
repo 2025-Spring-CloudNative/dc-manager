@@ -36,7 +36,7 @@ export async function createService(
 }
 
 export async function updateService(
-    id: string,
+    id: number,
     data: Service
 ): Promise<Service> {
     try {

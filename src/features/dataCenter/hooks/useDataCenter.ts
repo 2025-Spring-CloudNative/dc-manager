@@ -93,16 +93,4 @@ export function useDeleteDataCenterMutation() {
 }
 
 //add
-export function getDCbyId(id: number) {
-    const { data: allDCs, isLoading, isError, isSuccess, error } = useGetDataCentersQuery();
 
-    const data = allDCs?.filter((dc: DC) => dc.id === id);
-
-    return {
-      data,
-      isLoading,
-      isError,
-      isSuccess,
-      error,
-    }
-}

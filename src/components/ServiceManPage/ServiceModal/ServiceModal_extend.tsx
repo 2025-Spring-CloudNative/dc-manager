@@ -4,22 +4,17 @@ import Button from "@/components/shared/Button";
 import Input from "@/components/shared/Input/Input";
 import Separator from "@/components/shared/Separator";
 import { XIcon } from "lucide-react";
-import {
-  useCreateDataCenterMutation,
-  useUpdateDataCenterMutation,
-} from "@/features/dataCenter/hooks/useDataCenter";
-import { useGetSubnetsQuery, useGetSubnetByIdQuery } from "@/features/subnet/hooks/useSubnet";
-import { useGetDataCentersQuery } from "@/features/dataCenter/hooks/useDataCenter";
+import {  useGetSubnetByIdQuery } from "@/features/subnet/hooks/useSubnet";
 import { useGetIPPoolByIdQuery, useExtendIPPoolMutation } from "@/features/ipPool/hooks/useIPPool"
-import { useCreateServiceMutation, useUpdateServiceMutation} from "@/features/service/hooks/useService"
-import { CreateServiceRequest } from "@/features/service/types";
-import { Service } from "@/features/service/types";
+import { useCreateServiceMutation} from "@/features/service/hooks/useService"
+import axios from "axios";
+import { TableServiceRow } from "@/features/service/types";
 
 
 interface CreateServiceModalProps  {
   isOpen: boolean;
   onClose: () => void;
-  currentService: Service;
+  currentService: TableServiceRow|undefined;
 }
 
 
@@ -39,15 +34,15 @@ const ServiceModal_extend: React.FC<CreateServiceModalProps> = ({
   
   console.log("currentService", currentService);
   const currentIPPool = useGetIPPoolByIdQuery(
-   currentService.poolId.toString() 
+    currentService?.poolId ?? -1
   );
-  const selectedDCSubnet = useGetSubnetByIdQuery(currentService.DC.subnetId);
+  const selectedDCSubnet = useGetSubnetByIdQuery(Number(currentService?.DC?.subnetId ?? -1));
 
   const createMutation = useCreateServiceMutation();
   const extendMutation = useExtendIPPoolMutation();
   //const { data: subnets, isLoading: isLoadingSubnets } = useGetSubnetsQuery();
   
-  console.log("currentIPPool", currentService.cidr);
+  console.log("currentIPPool", currentService!.cidr);
   //console.log("selectedDCSubnet", selectedDCSubnet.data.cidr);
     
   // initialization
@@ -87,11 +82,13 @@ const ServiceModal_extend: React.FC<CreateServiceModalProps> = ({
       
       onClose();
     } catch (error) {
-      if (error.response){
+      if (axios.isAxiosError(error) && error.response) {
         console.error("儲存失敗", error.response.data);
         alert(`儲存失敗: ${error.response.data.message}`);
+      } else {
+        console.error("儲存失敗", error);
+        alert("儲存失敗: 發生未知錯誤");
       }
-      
     }
   };
 
@@ -138,9 +135,9 @@ const ServiceModal_extend: React.FC<CreateServiceModalProps> = ({
           <Button
             className={styles.saveButton}
             onClick={handleSubmit}
-            disabled={createMutation.isLoading || extendMutation.isLoading}
+            disabled={createMutation.isPending || extendMutation.isPending}
           >
-            {(createMutation.isLoading || extendMutation.isLoading)
+            {(createMutation.isPending || extendMutation.isPending)
               ? "儲存中..."
               : isEditMode
               ? "確認修改"

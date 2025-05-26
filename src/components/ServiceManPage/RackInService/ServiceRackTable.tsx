@@ -1,22 +1,13 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import styles from './ServiceRackTable.module.scss';
 import ServiceRackHeader from './ServiceRackHeader';
 import ServiceRackRow from './ServiceRackRow';
 import ServiceRackMachineRow from './ServiceRackMachineRow';
 import { Fragment } from 'react/jsx-runtime';
-import { useGetServicesQuery, useGetServiceByIdQuery, deleteService } from "@/features/service/hooks/useService";
-import { useGetDataCentersQuery, useGetDataCenterByIdQuery} from "@/features/dataCenter/hooks/useDataCenter";
-import { getlocalIPAddressbyMachineID} from "@/features/IPAddress/hooks/IPAddress";
+import { useGetServicesQuery } from "@/features/service/hooks/useService";
 import {useGetMachinesQuery} from"@/features/Machine/hooks/useMachine";
-import { useGetRackQuery, useGetRackByIdQuery } from "@/features/Racks/hooks/useRack";
-import { useGetIPPoolsQuery, useGetIPPoolByIdQuery, useExtendIPPoolMutation, useGetIPPoolUtilizationQuery, getIPPoolUtilization} from "@/features/ipPool/hooks/useIPPool";
-import { useGetSubnetsQuery } from "@/features/subnet/hooks/useSubnet";
-import { Rack } from "@/features/Racks/types";
+import { useGetRackQuery} from "@/features/Racks/hooks/useRack";
 import { Service } from "@/features/service/types";
-import { IPPool} from "@/features/ipPool/types";
-import { DC } from "@/features/dataCenter/types";
-import { Subnet } from "@/features/subnet/types";
-import { Machine } from "@/features/Machine/types";
 
 interface ServiceRackTableProps {
   selectedServiceRack: Service;
@@ -42,9 +33,9 @@ export default function ServiceRackTable({ selectedServiceRack }: ServiceRackTab
   //const [rack, setRack] = useState(initialRack);
   //const [machine, setMachine] = useState(initialMachine);
   const [expandedRackId, setExpandedRackId] = useState<number | null>(null);
-  const { data: serviceData, isLoading: isLoadingServices, isError: isErrorServices } = useGetServicesQuery();
-  const { data: rackData, isLoading: isLoadingRack, isError: isErrorRack } = useGetRackQuery();
-  const { data: machineData, isLoading: isLoadingMachine, isError: isErrorMachine } = useGetMachinesQuery();
+  const { data: serviceData, isLoading: isLoadingServices} = useGetServicesQuery();
+  const { data: rackData, isLoading: isLoadingRack} = useGetRackQuery();
+  const { data: machineData, isLoading: isLoadingMachine, } = useGetMachinesQuery();
   console.log('selectedServiceRack', selectedServiceRack);
   if (isLoadingRack || isLoadingServices || isLoadingMachine ||
     !rackData || !serviceData || !machineData) {
@@ -85,9 +76,9 @@ export default function ServiceRackTable({ selectedServiceRack }: ServiceRackTab
           <Fragment key={rack.id}>
             <ServiceRackRow 
               rack={rack} 
-              onToggle={() => toggleRack(rack.id)} 
+              onToggle={() => toggleRack(rack.id!)} 
               isExpanded={expandedRackId === rack.id}
-              rackUtilization={rackUtil}
+              rackUtilization={rackUtil!}
             />
             {expandedRackId === rack.id && (
               <>
