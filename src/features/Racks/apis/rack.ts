@@ -1,7 +1,6 @@
-import axios from "axios"
 import { Rack } from "../types"
 
-import api  from "@/lib/axios"
+import api from "@/lib/axios"
 
 export async function getRacks(): Promise<Rack[]> {
     try {
@@ -32,7 +31,10 @@ export async function createRack(data: Rack): Promise<Rack> {
     }
 }
 
-export async function updateRack(id: number, data: Rack): Promise<Rack> {
+export async function updateRack(
+    id: number,
+    data: Partial<Rack>
+): Promise<Rack> {
     try {
         const response = await api.patch(`/rack/${id}`, data)
         return response.data

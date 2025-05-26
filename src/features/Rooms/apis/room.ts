@@ -1,4 +1,3 @@
-import axios from "axios"
 import { Room } from "../types"
 import api from "@/lib/axios"
 
