@@ -4,22 +4,18 @@ import Button from "@/components/shared/Button";
 import Input from "@/components/shared/Input/Input";
 import Separator from "@/components/shared/Separator";
 import { XIcon } from "lucide-react";
-import {
-  useCreateDataCenterMutation,
-  useUpdateDataCenterMutation,
-} from "@/features/dataCenter/hooks/useDataCenter";
-import { useGetSubnetsQuery , getSubnetbyID, useGetSubnetByIdQuery } from "@/features/subnet/hooks/useSubnet";
+import { useGetSubnetByIdQuery } from "@/features/subnet/hooks/useSubnet";
 import { useGetDataCentersQuery } from "@/features/dataCenter/hooks/useDataCenter";
 import { useCreateServiceMutation, useUpdateServiceMutation} from "@/features/service/hooks/useService"
 import { CreateServiceRequest } from "@/features/service/types";
-import { Service } from "@/features/service/types";
+import { TableServiceRow } from "@/features/service/types";
 
 
 interface CreateServiceModalProps  {
   isOpen: boolean;
   onClose: () => void;
-  currentService?: Service | null;
-  onServiceUpdated?: () => void;
+  currentService?: TableServiceRow | null;
+  //onServiceUpdated?: () => void;
 }
 
 
@@ -28,7 +24,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
   isOpen,
   onClose,
   currentService,
-  onServiceUpdated,
+  //onServiceUpdated,
 }) => {
   const isEditMode = !!currentService;
 
@@ -63,8 +59,8 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
         },
         dataCenter: {
           name: currentService.datacenter,
-          location: currentServiceDC.location,
-          subnetId: currentServiceDC.subnetId,
+          location: currentServiceDC!.location,
+          subnetId: currentServiceDC!.subnetId,
         },
         cidrFromUser: currentService.cidr || "",
       });
@@ -129,7 +125,7 @@ const ServiceModal: React.FC<CreateServiceModalProps> = ({
         alert("服務已更新！");
       } else {
         await createMutation.mutateAsync(form);
-        onServiceUpdated?.();
+        //onServiceUpdated?.();
         alert("服務創建成功！");
       }
       onClose();

@@ -58,7 +58,7 @@ const Service_man = () => {
 
     return (
         <>
-            <ServiceModal isOpen = {isModalOpen} onClose={closeModal} currentService={selectedService} onServiceUpdated={triggerTableRefetch}/>
+            <ServiceModal isOpen = {isModalOpen} onClose={closeModal} currentService={selectedService} />
             <ServiceModal_edit isOpen = {isModalOpen_edit} onClose={closeModal_edit} currentService={selectedService} />
             {showExtendModal && (
                 <ServiceModal_extend 
