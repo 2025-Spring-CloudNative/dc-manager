@@ -5,6 +5,7 @@ import {
     createRack,
     updateRack,
     deleteRack,
+    getRackFaultRateByRackId,
 } from "../apis/rack"
 import { Rack } from "../types"
 export function useGetRackQuery() {
@@ -66,4 +67,20 @@ export function useDeleteRackMutation() {
             queryClient.invalidateQueries({ queryKey: ["rack"] })
         },
     })
+}
+
+export function useGetRackFaultRateByRackIdQuery(id: number) {
+    const { data, isLoading, isError, isSuccess, error } = useQuery({
+        queryKey: ["rack", "faultRate", id],
+        queryFn: () => getRackFaultRateByRackId(id),
+        enabled: !!id,
+    })
+
+    return {
+        data,
+        isLoading,
+        isError,
+        isSuccess,
+        error,
+    }
 }

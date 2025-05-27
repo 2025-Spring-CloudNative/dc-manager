@@ -51,3 +51,15 @@ export async function deleteRack(id: number): Promise<void> {
         throw error
     }
 }
+
+export async function getRackFaultRateByRackId(
+    id: number
+): Promise<{ faultRate: number }> {
+    try {
+        const response = await api.get(`/rack/fault/${id}`)
+        return response.data
+    } catch (error) {
+        console.error("Error fetching rack fault rate:", error)
+        throw error
+    }
+}
