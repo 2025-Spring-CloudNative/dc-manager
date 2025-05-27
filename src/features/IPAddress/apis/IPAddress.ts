@@ -23,7 +23,9 @@ export async function getIPAddressbypoolId(poolId: number) {
     }
 }
 
-export async function getIPAddressbymachineId(machineId: number) {
+export async function getIPAddressbymachineId(
+    machineId: number
+): Promise<IPAddress[]> {
     try {
         const response = await api.get(`/ip-address/?machineId=${machineId}`)
         return response.data
