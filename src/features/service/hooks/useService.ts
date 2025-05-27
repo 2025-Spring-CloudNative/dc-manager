@@ -5,6 +5,7 @@ import {
     createService,
     updateService,
     deleteService,
+    getServiceFaultRateById,
 } from "../apis/serviceApi"
 import { Service, CreateServiceRequest } from "../types"
 
@@ -68,4 +69,20 @@ export function useDeleteServiceMutation() {
             queryClient.invalidateQueries({ queryKey: ["service"] })
         },
     })
+}
+
+export function useGetServiceFaultRateByIdQuery(id: number) {
+    const { data, isLoading, isError, isSuccess, error } = useQuery({
+        queryKey: ["service", "faultRate", id],
+        queryFn: () => getServiceFaultRateById(id),
+        enabled: !!id,
+    })
+
+    return {
+        data,
+        isLoading,
+        isError,
+        isSuccess,
+        error,
+    }
 }
