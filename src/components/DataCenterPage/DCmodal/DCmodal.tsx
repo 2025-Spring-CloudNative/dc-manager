@@ -163,7 +163,7 @@ const DataCenterModal: React.FC<DataCenterModalProps> = ({
                             >
                                 <option value="">自動分配</option>
                                 {subnets?.map((subnet) => (
-                                    <option key={subnet.id} value={subnet.cidr}>
+                                    <option key={subnet.id} value={subnet.id}>
                                         id = {subnet.id}, cidr = {subnet.cidr}
                                     </option>
                                 ))}
