@@ -1,5 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
-import { getIPAddress, getIPAddressbypoolId, getIPAddressbymachineId } from "../apis/IPAddress"
+import {
+    getIPAddress,
+    getIPAddressbypoolId,
+    getIPAddressbymachineId,
+} from "../apis/IPAddress"
 import { IPAddress } from "../types"
 
 // All
@@ -38,6 +42,7 @@ export function useGetIPAddressbymachineIdQuery(machineID: number) {
     const { data, isLoading, isError, isSuccess, error } = useQuery({
         queryKey: ["ip-machine", machineID],
         queryFn: () => getIPAddressbymachineId(machineID),
+        enabled: !!machineID,
     })
     return {
         data,
@@ -71,16 +76,21 @@ export function getlocalIPAddressbypoolID(poolID: number) {
 
 //add
 export function getlocalIPAddressbyMachineID(machineID: number) {
-    const { data: allIPs, isLoading, isError, isSuccess, error } = useGetIPAddressQuery();
+    const {
+        data: allIPs,
+        isLoading,
+        isError,
+        isSuccess,
+        error,
+    } = useGetIPAddressQuery()
 
-    const data = allIPs?.filter((ip: IPAddress) => ip.machineId === machineID);
+    const data = allIPs?.filter((ip: IPAddress) => ip.machineId === machineID)
 
     return {
-      data,
-      isLoading,
-      isError,
-      isSuccess,
-      error,
+        data,
+        isLoading,
+        isError,
+        isSuccess,
+        error,
     }
 }
-
