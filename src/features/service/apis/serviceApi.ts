@@ -1,8 +1,6 @@
 import api from "@/lib/axios"
 import { Service, CreateServiceRequest } from "../types"
 
-
-
 export async function getService() {
     try {
         const response = await api.get("/service")
@@ -54,6 +52,18 @@ export async function deleteService(id: number): Promise<void> {
         return response.data
     } catch (error) {
         console.error("Error deleting service:", error)
+        throw error
+    }
+}
+
+export async function getServiceFaultRateById(
+    id: number
+): Promise<{ faultRate: number }> {
+    try {
+        const response = await api.get(`/service/fault/${id}`)
+        return response.data
+    } catch (error) {
+        console.error("Error fetching rack fault rate:", error)
         throw error
     }
 }
