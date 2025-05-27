@@ -30,6 +30,7 @@ export function useGetDataCenterByIdQuery(id: number) {
     const { data, isLoading, isError, isSuccess, error } = useQuery({
         queryKey: ["dataCenter", id],
         queryFn: () => getDataCenterById(id),
+        enabled: !!id,
     })
     return {
         data,
@@ -93,4 +94,3 @@ export function useDeleteDataCenterMutation() {
 }
 
 //add
-

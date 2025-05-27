@@ -24,7 +24,7 @@ export async function getDataCenters(filters: DataCenterFilters = {}) {
     }
 }
 
-export async function getDataCenterById(id: number) {
+export async function getDataCenterById(id: number): Promise<DataCenter> {
     try {
         const response = await api.get(`/data-center/${id}`)
         return response.data
